@@ -9,7 +9,6 @@ import javabaseproject.Main;
  */
 public class App {
     public static void start() throws SQLException, Exception {
-        Container.bootstrap();
         Main.main(null);
     }
 }

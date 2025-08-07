@@ -29,7 +29,7 @@ public class Model<T> extends AbstractModel<T> {
         return super.getAll(clazz);
     }
 
-    public boolean save(){
+    public boolean save() throws Exception{
         return super.save(this);
     }
 }

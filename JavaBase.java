@@ -1,7 +1,5 @@
 
 import java.io.IOException;
-import javabaseproject.javabase.App;
-import javabaseproject.javabase.core.commandline.ModelCommands;
 
 /**
  * command line helper to fast develop by the library    
@@ -24,17 +22,23 @@ public class JavaBase {
      * - make:model <ModelName> -> create new model
      * - run -> start the application
      * - migrate -> migrate models to database
+     * - init -> create database
      * - 
      * 
      */
     public static void handle(String []args) throws IOException, Exception{
-        
         switch(args[0]){
-            case "make:model" : {
-                ModelCommands.handle(args);
-            }break;
-            case "run" : {
-                App.start();
+            case "make:model" -> {
+                javabaseproject.javabase.core.commandline.ModelCommands.handle(args);
+            }
+            case "run" -> {
+                javabaseproject.javabase.App.start();
+            }
+            case "migrate" -> {
+                javabaseproject.javabase.core.database.Migration.migrateAll();
+            }
+            case "init" -> {
+                javabaseproject.javabase.core.database.Migration.initDatabase();
             }
         }
     }
