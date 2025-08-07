@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group>
+            <file>file:/D:/InteljiProjects/ReviewJDB/src/reviewjdb/jdbcmodel/core/database/framework/MigrationsModel.java</file>
+            <file>file:/D:/InteljiProjects/ReviewJDB/src/reviewjdb/jdbcmodel/core/database/ConnectWithDB.java</file>
+            <file>file:/D:/InteljiProjects/ReviewJDB/src/reviewjdb/jdbcmodel/core/database/quarybuilders/BuildCreateTableQuary.java</file>
+            <file>file:/D:/InteljiProjects/ReviewJDB/src/reviewjdb/jdbcmodel/core/database/quarybuilders/MYSQLBuilder.java</file>
+            <file>file:/D:/InteljiProjects/ReviewJDB/src/reviewjdb/jdbcmodel/App.java</file>
+            <file>file:/D:/InteljiProjects/ReviewJDB/src/reviewjdb/user/Item.java</file>
+            <file>file:/D:/InteljiProjects/ReviewJDB/src/reviewjdb/testmodels/Student.java</file>
+            <file>file:/D:/InteljiProjects/ReviewJDB/src/reviewjdb/testmodels/Person.java</file>
+            <file>file:/D:/InteljiProjects/ReviewJDB/src/reviewjdb/testmodels/Book.java</file>
+            <file>file:/D:/InteljiProjects/ReviewJDB/src/reviewjdb/jdbcmodel/config/ENV.java</file>
+            <file>file:/D:/InteljiProjects/ReviewJDB/src/reviewjdb/Main.java</file>
+            <file>file:/D:/InteljiProjects/ReviewJDB/src/reviewjdb/jdbcmodel/core/Constraints.java</file>
+            <file>file:/D:/InteljiProjects/ReviewJDB/src/reviewjdb/jdbcmodel/core/RecordedClass.java</file>
+            <file>file:/D:/InteljiProjects/ReviewJDB/src/reviewjdb/jdbcmodel/MyModels.java</file>
+            <file>file:/D:/InteljiProjects/ReviewJDB/src/reviewjdb/jdbcmodel/core/Types.java</file>
+            <file>file:/D:/InteljiProjects/ReviewJDB/src/reviewjdb/jdbcmodel/Container.java</file>
+            <file>file:/D:/InteljiProjects/ReviewJDB/src/reviewjdb/jdbcmodel/core/Recorder.java</file>
+            <file>file:/D:/InteljiProjects/ReviewJDB/src/reviewjdb/ReviewJDB.java</file>
+            <file>file:/D:/InteljiProjects/ReviewJDB/src/reviewjdb/user/Model.java</file>
+        </group>
+    </open-files>
+</project-private>
