@@ -4,8 +4,8 @@ import javabaseproject.javabase.core.RecordedClass;
 import javabaseproject.javabase.core.RecordedClass.RecordedField;
 
 /**
- * @Coder Asem Najee
- * @author Al-Reecha
+ * 
+ * @author AsemNajee
  */
 public class MYSQLBuilder {
     public static String createTableQuary(RecordedClass rclass){
@@ -23,8 +23,11 @@ public class MYSQLBuilder {
     }
     
     private static String filterConstraints(RecordedField f){
-        
-        return " ";
+        String subSql = "";
+        for(var field : f.getConstraints()){
+            subSql += " " + field;
+        }
+        return subSql;
     }
     
     public static String insertQuary(RecordedClass rclass){
@@ -48,6 +51,12 @@ public class MYSQLBuilder {
         return """
                 SELECT * FROM {{table}} 
                 WHERE id = ?
+                """.replace("{{table}}", rclass.getName());
+    }
+
+    public static String dropTable(RecordedClass rclass){
+        return """  
+                DROP TABLE {{table}};
                 """.replace("{{table}}", rclass.getName());
     }
 }

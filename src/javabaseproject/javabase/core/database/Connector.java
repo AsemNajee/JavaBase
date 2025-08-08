@@ -1,8 +1,3 @@
- /**
-  *   >> Al-Reecha .~
-  *   << BY : Asem Najee >>
-  */
-
 package javabaseproject.javabase.core.database;
 
 import java.sql.DriverManager;
@@ -13,8 +8,8 @@ import javabaseproject.javabase.config.ENV;
 import static javabaseproject.javabase.core.database.Drivers.MYSQL;
 
 /**
- * @Coder Asem Najee
- * @author Al-Reecha
+ * 
+ * @author AsemNajee
  */
 public class Connector {
     private static java.sql.Connection c;
@@ -33,4 +28,9 @@ public class Connector {
             return null;
         }
     }
+
+    public static void start(){
+        getConnection();
+    }
+
 }

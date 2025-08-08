@@ -4,12 +4,11 @@ import java.sql.SQLException;
 import javabaseproject.javabase.MyModels;
 import javabaseproject.javabase.config.ENV;
 import javabaseproject.javabase.core.RecordedClass;
-import javabaseproject.javabase.core.database.Connector;
 import javabaseproject.javabase.core.database.quarybuilders.Build;
 
 /**
- * @Coder Asem Najee
- * @author Al-Reecha
+ * 
+ * @author AsemNajee
  */
 public class Migration {
     /**
@@ -25,7 +24,9 @@ public class Migration {
 
     public static boolean migrate(RecordedClass cls) throws SQLException{
         String quary = Build.create(cls);
-        return Connector.getConnection().createStatement().execute(quary);
+        try(var stmt = Connector.getConnection().createStatement()){
+            return stmt.execute(quary);
+        }
     }
     
     public static boolean initDatabase() throws SQLException{

@@ -3,6 +3,7 @@ package javabaseproject.javabase.core;
 import java.lang.reflect.AccessFlag;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import javabaseproject.javabase.core.RecordedClass.RecordedField;
 import javabaseproject.javabase.core.annotations.ForeignKey;
@@ -12,8 +13,8 @@ import javabaseproject.javabase.core.annotations.Unique;
 import javabaseproject.model.Model;
 
 /**
- * @Coder Asem Najee
- * @author Al-Reecha
+ * 
+ * @author AsemNajee
  */
 public class Recorder {
 
@@ -52,7 +53,7 @@ public class Recorder {
     }
     
     private static void filterAllFields(Class clazz, RecordedClass cls) {
-        for(Field f : clazz.getSuperclass().getDeclaredFields()){
+        for(Field f : clazz.getDeclaredFields()){
             if(isFieldAcceptable(f)){
                 RecordedField rf = filterField(f);
                 cls.addField(rf.getName(), rf);
@@ -76,18 +77,14 @@ public class Recorder {
     
     private static void setPrimaryKey(Class<? extends  Model> clazz, RecordedClass cls){
         if(clazz.isAnnotationPresent(PrimaryKey.class)){
+            System.out.println(Arrays.toString(clazz.getAnnotations()));
+            System.out.println(cls);
             cls.setPrimaryKey(cls.getField(clazz.getAnnotation(PrimaryKey.class).value()));
             cls.getField(cls.getPrimaryKey().getName()).addConstraint(Constraints.PRIMARY_KEY);
         }else{
             if(cls.getFields().containsKey("id")){
                 cls.setPrimaryKey(cls.getField("id"));
             }
-//            else{
-//                for(String key : cls.getFields().keySet()){
-//                    cls.setPrimaryKey(cls.getField(key));
-//                    break;
-//                }
-//            }
         }
     }
     
@@ -112,9 +109,12 @@ public class Recorder {
         if(field.isAnnotationPresent(NotNull.class)){
             constraints.add(Constraints.NOT_NULL);
         }
-        if(field.isAnnotationPresent(ForeignKey.class)){
-            constraints.add(Constraints.FOREIGN_KEY);
+        if(field.isAnnotationPresent(PrimaryKey.class)){
+            constraints.add(Constraints.PRIMARY_KEY);
         }
+//        if(field.isAnnotationPresent(ForeignKey.class)){
+//            constraints.add(Constraints.FOREIGN_KEY);
+//        }
         return constraints;
     }
     
@@ -126,7 +126,7 @@ public class Recorder {
      * @return 
      */
     protected static boolean isFieldAcceptable(Field f){
-        return f.getAnnotatedType().toString().matches("^[A-Za-z0-9\\.]*(String|int|float|long|byte|short|boolean)$")
+        return f.getAnnotatedType().toString().matches("^[A-Za-z0-9.]*(String|int|float|long|byte|short|boolean)$")
                 && f.accessFlags().size() == 1
                 && f.accessFlags().stream()
                         .filter(m -> m == AccessFlag.PROTECTED)

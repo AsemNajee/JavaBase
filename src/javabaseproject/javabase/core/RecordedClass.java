@@ -106,6 +106,10 @@ public class RecordedClass {
             return type;
         }
 
+        public ArrayList<Constraints> getConstraints(){
+            return constraints;
+        }
+
         @Override
         public String toString() {
             return "RecordedField{" + "name=" + name + ", type=" + type + ", constraints=" + constraints + '}';

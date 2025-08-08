@@ -1,5 +1,11 @@
-
 import java.io.IOException;
+
+/**
+ * to change this file to byte code
+ *
+ * javac .\javabase\core\commandline\ModelCommands.java
+ * javac java\io\IOException.java
+ */
 
 /**
  * command line helper to fast develop by the library    

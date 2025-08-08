@@ -1,14 +1,19 @@
- /**
-  *   >> Al-Reecha .~
-  *   << BY : Asem Najee >>
-  */
-
 package javabaseproject.javabase.core;
 
 /**
- * @Coder Asem Najee
- * @author Al-Reecha
+ * 
+ * @author AsemNajee
  */
 public enum Constraints {
-    UNIQUE, PRIMARY_KEY, NOT_NULL, FOREIGN_KEY
+    UNIQUE("UNIQUE"), PRIMARY_KEY("PRIMARY KEY"), NOT_NULL("NOT NULL"), /*FOREIGN_KEY("REFERENCES")*/;
+
+    private String sqlConstraint;
+    Constraints(String cons){
+        sqlConstraint = cons;
+    }
+
+    @Override
+    public String toString(){
+        return sqlConstraint.replace("_", " ");
+    }
 }

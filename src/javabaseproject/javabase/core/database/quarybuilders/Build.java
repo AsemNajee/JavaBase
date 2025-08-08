@@ -4,8 +4,8 @@ import javabaseproject.javabase.config.ENV;
 import javabaseproject.javabase.core.RecordedClass;
 
 /**
- * @Coder Asem Najee
- * @author Al-Reecha
+ * 
+ * @author AsemNajee
  */
 public class Build {
 
@@ -20,6 +20,13 @@ public class Build {
         return switch(ENV.DRIVER) {
             case MYSQL -> MYSQLBuilder.insertQuary(rclass);
             default -> MYSQLBuilder.insertQuary(rclass);
+        };
+    }
+
+    public static String dropTable(RecordedClass rclass){
+        return switch(ENV.DRIVER) {
+            case MYSQL -> MYSQLBuilder.dropTable(rclass);
+            default -> MYSQLBuilder.dropTable(rclass);
         };
     }
 }

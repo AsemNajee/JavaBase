@@ -1,13 +1,8 @@
- /**
-  *   >> Al-Reecha .~
-  *   << BY : Asem Najee >>
-  */
-
 package javabaseproject.javabase.core;
 
 /**
- * @Coder Asem Najee
- * @author Al-Reecha
+ * 
+ * @author AsemNajee
  */
 public enum Types {
     STRING("VARCHAR(255)"), INT, FLOAT("FLOAT"), LONG, SHORT("TINYINT"), BYTE, DOUBLE, BOOLEAN;
