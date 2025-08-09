@@ -4,11 +4,10 @@
  */
 package javabaseproject.javabase;
 
-import javabaseproject.javabase.core.commandline.ModelCommands;
-import javabaseproject.javabase.core.database.Migration;
-import javabaseproject.javabase.core.database.Seeder;
+import javabaseproject.javabase.framework.commandline.DatabaseCommands;
+import javabaseproject.javabase.framework.commandline.InputCommand;
+import javabaseproject.javabase.framework.commandline.ModelCommands;
 
-import java.io.IOException;
 import java.util.Scanner;
 
 /**
@@ -17,45 +16,27 @@ import java.util.Scanner;
  */
 public class CommandLineTemp {
 
-    public static void main(String[] args) throws IOException, Exception {
+    public static void main(String[] args) throws Exception {
         Scanner in = new Scanner(System.in);
         while (true) {
-            System.out.println("""
-                           - make:model <ModelName> : to create new model and register it
-                           - migrate                : migrate models to the database for first time only
+            System.out.println(
+                           """
                            - run                    : run the project
-                           - init                   : create the database
-                           - seed                   : seed data to database
+                           - make:model <ModelName> : create new model and register it
+                           - drop:model <ModelName> : drop the model and delete it from registered models
+                           - db:drop                : drop all database
+                           - db:migrate             : migrate models to the database for first time only
+                           - db:init                : create the database
+                           - db:seed                : seed data to database
                            - 0                      : exit
                            """);
-            System.out.print("JavaBase > ");
-            String[] input = in.nextLine().split(" ");
-            switch (input[0]) {
-                case "make:model" -> {
-                    ModelCommands.handle(input);
-                }
-                case "run" -> {
-                    App.start();
-                }
-                case "migrate" -> {
-                    Migration.migrateAll();
-                }
-                case "init" -> {
-                    Migration.initDatabase();
-                }
-                case "seed" -> {
-                    App.start(rgs -> {
-                        try {
-                            Seeder.seed();
-                        } catch (Exception e) {
-                            throw new RuntimeException(e);
-                        }
-                        return null;
-                    });
-                }
-                case "0" -> {
-                    break;
-                }
+            System.out.print("JavaBase:> ");
+            InputCommand inpc = new InputCommand(in.nextLine());
+            if(inpc.isCommandFor(ModelCommands.class)){
+                ModelCommands.handle(inpc.getMatcher().group("verb"), inpc.getMatcher().group("model"), inpc.getMatcher().group("etc"));
+            }
+            if(inpc.isCommandFor(DatabaseCommands.class)){
+                DatabaseCommands.handle(inpc.getMatcher().group("verb"), inpc.getMatcher().group("model"));
             }
         }
     }

@@ -6,9 +6,10 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Collectors;
+
+import javabaseproject.javabase.config.ENV;
 import javabaseproject.javabase.core.annotations.NotNull;
 import javabaseproject.javabase.core.annotations.Unique;
-import javabaseproject.model.Student;
 
 public class ReviewJDB {
     
@@ -35,7 +36,10 @@ public class ReviewJDB {
 
     public static void main(String[] args) throws SQLException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException, Exception {
         
-        System.out.println(Arrays.toString(Student.class.getSuperclass().getDeclaredFields()));
+//        System.out.println(Arrays.toString(Student.class.getSuperclass().getDeclaredFields()));
+        System.out.println("get CanonicalName: " + ReviewJDB.class.getCanonicalName());
+        System.out.println("get Package: " + ENV.class.getPackage());
+        System.out.println("get Package regex: " + ENV.class.getPackage().getName().replaceAll("\\.(.*)", ""));
 //        System.out.println(Arrays.asList(Student.class.getDeclaredFields());
 //        System.out.println(new Controller(Student.class));
 //        System.out.println(Student.class.desiredAssertionStatus());

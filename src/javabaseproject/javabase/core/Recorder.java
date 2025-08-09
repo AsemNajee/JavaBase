@@ -3,14 +3,12 @@ package javabaseproject.javabase.core;
 import java.lang.reflect.AccessFlag;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import javabaseproject.javabase.core.RecordedClass.RecordedField;
-import javabaseproject.javabase.core.annotations.ForeignKey;
 import javabaseproject.javabase.core.annotations.NotNull;
 import javabaseproject.javabase.core.annotations.PrimaryKey;
 import javabaseproject.javabase.core.annotations.Unique;
-import javabaseproject.model.Model;
+import javabaseproject.models.Model;
 
 /**
  * 
@@ -18,11 +16,9 @@ import javabaseproject.model.Model;
  */
 public class Recorder {
 
-    private static final ArrayList<RecordedClass> models;
     private static final HashMap<String, RecordedClass> modelsAsKeyValue;
     
     static {
-        models = new ArrayList<>();
         modelsAsKeyValue = new HashMap<>();
     }
 
@@ -32,6 +28,14 @@ public class Recorder {
     
     public static RecordedClass getRecordedClass(Class clazz){
         return modelsAsKeyValue.get(clazz.getName());
+    }
+    public static RecordedClass getRecordedClass(String modelName){
+        for(var rc : getModels().values()){
+            if(rc.getName().equals(modelName)){
+                return rc;
+            }
+        }
+        return null;
     }
     
     /**
@@ -47,7 +51,6 @@ public class Recorder {
         filterAllFields(clazz, cls);
         filterAllFields(clazz.getSuperclass(), cls);
         setPrimaryKey(clazz, cls);
-        models.add(cls);
         modelsAsKeyValue.put(clazz.getName(), cls);
         return cls;
     }
@@ -77,8 +80,6 @@ public class Recorder {
     
     private static void setPrimaryKey(Class<? extends  Model> clazz, RecordedClass cls){
         if(clazz.isAnnotationPresent(PrimaryKey.class)){
-            System.out.println(Arrays.toString(clazz.getAnnotations()));
-            System.out.println(cls);
             cls.setPrimaryKey(cls.getField(clazz.getAnnotation(PrimaryKey.class).value()));
             cls.getField(cls.getPrimaryKey().getName()).addConstraint(Constraints.PRIMARY_KEY);
         }else{

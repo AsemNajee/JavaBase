@@ -12,20 +12,16 @@ import javabaseproject.javabase.core.database.Connector;
  */
 public class App {
     public static void start() throws Exception {
-        start(args -> {
-            try {
-                Main.main(args);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-            return null;
-        });
+        start(Main::main);
     }
 
-    public static void start(Function<String[], Void> fn) throws Exception {
+    public static void start(Startable fn) throws Exception {
         MyModels.registerAll();
-//        Connector.start();
-        fn.apply(null);
-//        Connector.getConnection().close();
+        Connector.start();
+        fn.start();
+        Connector.close();
     }
+}
+interface Startable{
+    void start() throws Exception;
 }

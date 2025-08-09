@@ -8,7 +8,7 @@ package javabaseproject.javabase.config;
         DRIVER              = Drivers.MYSQL;
         DATABASE_NAME       = "javabase";
         DEFAULT_PRIMARY_KEY = "id";
-        DEFAULT_PACKAGE     = "javabaseproject";
+        ROOT_PACKAGE        = "javabaseproject";
     };
     
     
@@ -16,5 +16,5 @@ package javabaseproject.javabase.config;
     public static final Drivers DRIVER;
     public static final String DATABASE_NAME;
     public static final String DEFAULT_PRIMARY_KEY;
-    public static final String DEFAULT_PACKAGE;
+    public static final String ROOT_PACKAGE;
 }

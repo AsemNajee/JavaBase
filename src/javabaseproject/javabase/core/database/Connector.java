@@ -13,24 +13,46 @@ import static javabaseproject.javabase.core.database.Drivers.MYSQL;
  */
 public class Connector {
     private static java.sql.Connection c;
-    public static java.sql.Connection getConnection() {
-        try {
-            if(c != null)
-                return c;
-            
-            c = switch(ENV.DRIVER){
-                case MYSQL -> DriverManager.getConnection("jdbc:mysql://localhost:3306/javadb", "root", "");
-                default -> DriverManager.getConnection("jdbc:mysql://localhost:3306/javadb", "root", "");
-            };
-            return c;
-        } catch (SQLException ex) {
-            Logger.getLogger(Connector.class.getName()).log(Level.SEVERE, "Fails to connect with database", ex);
-            return null;
-        }
-    }
+    private static java.sql.Connection cWithoutDB;
 
-    public static void start(){
+    public static java.sql.Connection getConnection() throws SQLException {
+        return getConnection(getUri(), c);
+    }
+    public static java.sql.Connection getConnectionWithoutDatabaseName() throws SQLException {
+        System.out.println(getUri(false));
+        return getConnection(getUri(false), cWithoutDB);
+    }
+    private static java.sql.Connection getConnection(String uri, java.sql.Connection conn) throws SQLException {
+            if(conn != null)
+                return conn;
+            
+            conn = switch(ENV.DRIVER){
+                case MYSQL -> DriverManager.getConnection(uri, "root", "");
+                default -> DriverManager.getConnection(uri, "root", "");
+            };
+            return conn;
+    }
+    public static void start() throws SQLException {
+        getConnectionWithoutDatabaseName();
         getConnection();
     }
 
+    private static String getUri(){
+        return getUri(true);
+    }
+    private static String getUri(boolean withDBName){
+        return switch(ENV.DRIVER){
+            case MYSQL -> "jdbc:mysql://localhost:3306" + (withDBName ? "/" + ENV.DATABASE_NAME : "");
+            default -> "jdbc:mysql://localhost:3306" + (withDBName ? "/" + ENV.DATABASE_NAME : "");
+        };
+    }
+
+    public static void close() throws SQLException {
+        if(c != null) {
+            c.close();
+        }
+        if(cWithoutDB != null) {
+            cWithoutDB.close();
+        }
+    }
 }
