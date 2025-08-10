@@ -9,7 +9,7 @@ import javabaseproject.javabase.core.RecordedClass.RecordedField;
  * @author AsemNajee
  */
 public class MYSQLBuilder {
-    public static String createTableQuary(RecordedClass rclass){
+    public static String createTableQuery(RecordedClass rclass){
         String tableName = rclass.getName();
         String sql = "CREATE TABLE " + tableName.toUpperCase() + " (\n";
         for(String k : rclass.getFields().keySet()){
@@ -23,7 +23,7 @@ public class MYSQLBuilder {
         return sql;
     }
     
-    public static String insertQuary(RecordedClass rclass){
+    public static String insertQuery(RecordedClass rclass){
         String fields = ""; 
         for(String f : rclass.getFields().keySet()){
             fields += f + ", ";
@@ -40,9 +40,22 @@ public class MYSQLBuilder {
         return sql;
     }
     
-    public static String selectItemQuary(RecordedClass rclass){
+    public static String selectItemQuery(RecordedClass rclass){
         return """
-                SELECT * FROM {{table}} 
+                SELECT * FROM {{table}}
+                WHERE id = ?
+                """.replace("{{table}}", rclass.getName());
+    }
+
+    public static String selectAllQuery(RecordedClass rclass){
+        return """
+                SELECT * FROM {{table}}
+                """.replace("{{table}}", rclass.getName());
+    }
+
+    public static String deleteItemQuery(RecordedClass rclass) {
+        return """
+                DELETE FROM {{table}}
                 WHERE id = ?
                 """.replace("{{table}}", rclass.getName());
     }

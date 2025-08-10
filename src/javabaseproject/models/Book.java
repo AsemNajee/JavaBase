@@ -13,12 +13,11 @@ public class Book extends Model<Book> implements HasFactory<Book> {
     @Unique
     protected String name;
 
-    public Book(){
-        super(Book.class);
-    }
+    public Book(){}
 
     public Book(int id, String name){
-        super(Book.class);
+        this.id = id;
+        this.name = name;
     }
 
     @Override

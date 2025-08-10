@@ -1,38 +1,34 @@
 package javabaseproject.models;
 
-import javabaseproject.javabase.core.Recorder;
-import javabaseproject.javabase.core.database.DBMS;
-import javabaseproject.javabase.core.database.querybuilders.Build;
-
+import java.lang.reflect.InvocationTargetException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
  * 
  * @author AsemNajee
  */
-public class Model<T> extends AbstractModel<T> {
-    
-    private Class clazz;
-    
-    protected Model(Class clazz){
-        this.clazz = clazz;
-    }
-
-    @Override
-    public T find(int id) throws Exception {
-        return super.find(id, clazz);
-    }
-
-    @Override
-    public ArrayList<T> getAll() throws Exception {
-        return super.getAll(clazz);
-    }
+public class Model<T extends Model<T>> extends AbstractModel<T> {
 
     public boolean save() throws Exception{
         return super.save(this);
     }
-
-    public boolean dropTable() throws Exception {
-        return DBMS.execute(Build.dropTable(Recorder.getRecordedClass(clazz)));
+    public boolean delete() throws SQLException, NoSuchFieldException, IllegalAccessException {
+        return super.delete(this);
     }
+
+    public static <R extends Model<R>> R find(Class<R> clazz, int id) throws SQLException, NoSuchFieldException, InvocationTargetException, IllegalAccessException, NoSuchMethodException, InstantiationException, ClassNotFoundException {
+        var t = clazz.getDeclaredConstructor().newInstance();
+        return (R) t.find(id);
+    }
+
+    public static <R extends Model<R>> ArrayList<R> getAll(Class<R> clazz) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException, SQLException, NoSuchFieldException {
+        var t = clazz.getDeclaredConstructor().newInstance();
+        return t.getAll();
+    }
+
+    public String[] hidden(){
+        return new String[]{};
+    }
+
 }

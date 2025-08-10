@@ -8,16 +8,13 @@ public class InputCommand{
 
     private Matcher matcher;
     private final HashMap<String, Pattern> commandsPatterns;
-    private String command;
+    private final String command;
     public InputCommand(String command){
-        if(command.equals("0")){
-            System.exit(0); // 0 - exit
-        }
         this.command = command;
         commandsPatterns = new HashMap<>();
         registerAllPatterns();
     }
-    public boolean isCommandFor(Class<? extends Commands> cmd){
+    public boolean isCommandFor(Class<? extends Command> cmd){
         matcher = commandsPatterns.get(cmd.getName()).matcher(command);
         return matcher.find();
     }
@@ -26,8 +23,12 @@ public class InputCommand{
         return matcher;
     }
 
-    public void registerAllPatterns(){
-        commandsPatterns.put(ModelCommands.class.getName(), Pattern.compile("^(?<verb>make|drop):model( )+(?<model>[A-Z][A-Za-z0-9]*)(?<etc> -(key=(?<key>[A-Za-z]+)))*"));
+    public boolean equals(String text) {
+        return command.equals(text);
+    }
+
+    private void registerAllPatterns(){
+        commandsPatterns.put(ModelCommands.class.getName(), Pattern.compile("^(?<verb>make|drop):model( )+(?<model>[A-Z][A-Za-z0-9]*)( -key=(?<key>[A-Za-z]+))?(?<factory> -f)?"));
         commandsPatterns.put(DatabaseCommands.class.getName(), Pattern.compile("^db:(?<verb>init|migrate|seed|drop)(?<model> [A-Z][A-Za-z0-9])?"));
     }
 }

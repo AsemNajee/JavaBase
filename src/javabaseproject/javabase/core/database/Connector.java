@@ -19,7 +19,6 @@ public class Connector {
         return getConnection(getUri(), c);
     }
     public static java.sql.Connection getConnectionWithoutDatabaseName() throws SQLException {
-        System.out.println(getUri(false));
         return getConnection(getUri(false), cWithoutDB);
     }
     private static java.sql.Connection getConnection(String uri, java.sql.Connection conn) throws SQLException {

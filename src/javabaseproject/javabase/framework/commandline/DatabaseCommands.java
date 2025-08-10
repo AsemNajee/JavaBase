@@ -6,7 +6,7 @@ import javabaseproject.javabase.core.database.Migration;
 import javabaseproject.seeders.Seeder;
 import javabaseproject.javabase.output.Colors;
 
-public class DatabaseCommands extends Commands{
+public class DatabaseCommands extends Command{
 
     /**
      * @param model is optional and only will make different in db:migrate modelName

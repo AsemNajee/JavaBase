@@ -5,8 +5,6 @@ import javabaseproject.models.Book;
 
 import java.util.ArrayList;
 
-public class Factory {
-    public static Factory make(){
-        return new Factory();
-    }
+public abstract class Factory {
+    public abstract Factory make();
 }

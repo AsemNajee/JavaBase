@@ -2,6 +2,7 @@ package javabaseproject.javabase.framework.commandline;
 
 import java.io.*;
 import java.sql.SQLException;
+import java.util.regex.Matcher;
 
 import javabaseproject.javabase.config.ENV;
 import javabaseproject.javabase.core.RecordedClass;
@@ -12,14 +13,16 @@ import javabaseproject.javabase.framework.FilePathes;
 import javabaseproject.javabase.output.Colors;
 import javabaseproject.javabase.output.Style;
 
-public class ModelCommands extends Commands{
-    public static void handle(String commandVerb, String modelName, String etc) throws IOException, SQLException {
+public class ModelCommands extends Command{
+    private static Matcher command;
+    public static void handle(String commandVerb, String modelName, Matcher matcher) throws IOException, SQLException {
+        command = matcher;
         switch (commandVerb){
             case "make" -> {
                 makeModel(modelName);
             }
             case "drop" -> {
-                dropModel(modelName);
+                dropModel(modelName, false);
             }
         }
     }
@@ -31,6 +34,9 @@ public class ModelCommands extends Commands{
         } else {
             if (createModel(modelName, file)) {
                 registerModel(modelName);
+                if(command.group("factory") != null){
+                    
+                }
                 println("Model {" + modelName + "} created in " + file.getAbsolutePath(), Colors.GREEN);
             } else {
                 println("Model Not Created", Colors.RED);
@@ -38,7 +44,7 @@ public class ModelCommands extends Commands{
         }
     }
 
-    public static void dropModel(String model) throws IOException, SQLException {
+    public static void dropModel(String model, boolean force) throws IOException, SQLException {
         RecordedClass rclass = null;
         for(var rc : Recorder.getModels().values()){
             if(rc.getName().equals(model)){
@@ -52,7 +58,9 @@ public class ModelCommands extends Commands{
         }
         dropTableFromDB(rclass);
         unregisterModel(model);
-//        deleteModelJavaClass(model); // delete the model file from the project structure
+        if(force){
+            deleteModelJavaClass(model); // delete the model file from the project structure
+        }
     }
     private static boolean dropTableFromDB(RecordedClass rclass) throws SQLException {
         return Connector.getConnection().createStatement().execute(Build.dropTable(rclass));
@@ -71,34 +79,40 @@ public class ModelCommands extends Commands{
         }
     }
 
-    private static String getModelContent(String modelName){
+    private static String getModelNewContent(String modelName, String key){
         return """
                 package {package}.models;
                                
                 import {package}.javabase.core.annotations.PrimaryKey;
                 import {package}.javabase.core.annotations.Unique;
                                
-                @PrimaryKey("id")
+                @PrimaryKey("{key}")
                 public class {Model} extends Model<{Model}>{
                                
-                    protected int id;
+                    protected int {key};
                     @Unique
                     protected String name;
                     
                     public {Model}(){
-                        super({Model}.class);
+                        super({Model}.class); // must call in every single constructor
                     }
-                               
+                    
+                   {factoyMethods}
                 // ... add more props with protected access modifier
                 }
                 """.replace("{Model}", modelName)
-                  .replace("{package}", ENV.ROOT_PACKAGE);
+                   .replace("{key}", modelName)
+                   .replace("{package}", ENV.ROOT_PACKAGE);
     }
 
     private static boolean createModel(String model, File file) throws IOException {
         if(file.createNewFile()){
             FileWriter fr = new FileWriter(file);
-            fr.write(getModelContent(model));
+            String key = "id";
+            if(command.group("key") != null){
+                key = command.group("key");
+            }
+            fr.write(getModelNewContent(model, key));
             fr.close();
             return true;
         }

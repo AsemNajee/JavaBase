@@ -5,6 +5,8 @@ import java.util.function.Function;
 
 import javabaseproject.Main;
 import javabaseproject.javabase.core.database.Connector;
+import javabaseproject.javabase.core.interfaces.CheckedRunnable;
+import javabaseproject.javabase.framework.exceptions.ExceptionHandler;
 
 /**
  * 
@@ -15,13 +17,12 @@ public class App {
         start(Main::main);
     }
 
-    public static void start(Startable fn) throws Exception {
-        MyModels.registerAll();
-        Connector.start();
-        fn.start();
-        Connector.close();
+    public static void start(CheckedRunnable fn) throws Exception {
+        ExceptionHandler.handle(() -> {
+            MyModels.registerAll();
+            Connector.start();
+            fn.run();
+            Connector.close();
+        });
     }
-}
-interface Startable{
-    void start() throws Exception;
 }

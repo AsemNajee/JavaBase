@@ -10,9 +10,5 @@ public class Car extends Model<Car>{
     @Unique
     protected String name;
 
-    public Car(){
-        super(Car.class);
-    }
-
 // ... add more props with protected access modifier
 }

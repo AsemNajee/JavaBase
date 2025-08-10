@@ -5,7 +5,7 @@ import javabaseproject.javabase.output.Style;
 
 import java.util.regex.Pattern;
 
-public class Commands {
+public class Command {
     public static void println(String text){
         System.out.println(text);
     }
