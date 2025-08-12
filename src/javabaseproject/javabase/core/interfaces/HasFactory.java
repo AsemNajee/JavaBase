@@ -1,8 +1,8 @@
 package javabaseproject.javabase.core.interfaces;
 
-import java.util.ArrayList;
+import javabaseproject.javabase.core.database.Factory;
 
-public interface HasFactory<T>{
-    ArrayList<T> make(int count);
-    T make();
+public interface HasFactory{
+
+    Factory factory();
 }

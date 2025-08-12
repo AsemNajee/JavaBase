@@ -1,4 +1,8 @@
-package javabaseproject.javabase.core;
+package javabaseproject.javabase.core.recorder;
+
+import javabaseproject.javabase.core.database.Factory;
+import javabaseproject.javabase.core.database.models.Model;
+import javabaseproject.javabase.core.database.Seeder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,19 +13,22 @@ import java.util.HashMap;
  * @author PC
  */
 public class RecordedClass {
-
     private final String name;
-    private HashMap<String, RecordedField> fields;
+    private final HashMap<String, RecordedField> fields;
     private RecordedField primary;
+    private Factory factory;
+    private Seeder seeder;
+    private final Class<? extends Model<?>> clazz;
 
-    public RecordedClass(String name) {
-        this(name, new HashMap<>(), null);
+    public RecordedClass(String name, Class<? extends Model<?>> clazz) {
+        this(name, new HashMap<>(), null, clazz);
     }
     
-    public RecordedClass(String name, HashMap<String, RecordedField> fields, RecordedField primary){
+    public RecordedClass(String name, HashMap<String, RecordedField> fields, RecordedField primary, Class<? extends Model<?>> clazz){
         this.name = name;
         this.fields = fields;
         this.primary = primary;
+        this.clazz = clazz;
     }
 
     public String getName() {
@@ -39,6 +46,9 @@ public class RecordedClass {
     public RecordedField getPrimaryKey(){
         return primary;
     }
+    public Class<? extends Model<?>> getClazz(){
+        return clazz;
+    }
     
     protected void setPrimaryKey(RecordedField primary){
         this.primary = primary;
@@ -46,6 +56,22 @@ public class RecordedClass {
 
     protected void addField(String key, RecordedField value) {
         fields.put(key, value);
+    }
+
+    public Factory getFactory() {
+        return factory;
+    }
+
+    public void setFactory(Factory factory) {
+        this.factory = factory;
+    }
+
+    public Seeder getSeeder() {
+        return seeder;
+    }
+
+    public void setSeeder(Seeder seeder) {
+        this.seeder = seeder;
     }
 
     /**
@@ -71,7 +97,7 @@ public class RecordedClass {
 
     @Override
     public String toString() {
-        return "RecordedClass{" + "name=" + name + ", fields=" + fields + '}';
+        return "RecordedClass{" + "name=" + name + ", clazz=" + clazz + ", fields=" + fields + '}';
     }
 
     /**

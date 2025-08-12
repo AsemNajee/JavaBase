@@ -1,7 +1,7 @@
 package javabaseproject.javabase.core.database.querybuilders;
 
 import javabaseproject.javabase.config.ENV;
-import javabaseproject.javabase.core.RecordedClass;
+import javabaseproject.javabase.core.recorder.RecordedClass;
 
 /**
  * 

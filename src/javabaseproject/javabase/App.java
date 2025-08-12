@@ -1,9 +1,10 @@
 package javabaseproject.javabase;
 
-import java.sql.SQLException;
-import java.util.function.Function;
+import java.util.Arrays;
 
 import javabaseproject.Main;
+import javabaseproject.javabase.core.recorder.RecordedClass;
+import javabaseproject.javabase.core.recorder.Recorder;
 import javabaseproject.javabase.core.database.Connector;
 import javabaseproject.javabase.core.interfaces.CheckedRunnable;
 import javabaseproject.javabase.framework.exceptions.ExceptionHandler;
@@ -19,7 +20,7 @@ public class App {
 
     public static void start(CheckedRunnable fn) throws Exception {
         ExceptionHandler.handle(() -> {
-            MyModels.registerAll();
+            MyModels.getRegisteredModels();
             Connector.start();
             fn.run();
             Connector.close();

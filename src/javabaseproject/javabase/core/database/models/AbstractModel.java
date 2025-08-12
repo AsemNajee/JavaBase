@@ -1,14 +1,13 @@
-package javabaseproject.models;
+package javabaseproject.javabase.core.database.models;
 
-import java.lang.reflect.Array;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import javabaseproject.javabase.core.FieldController;
-import javabaseproject.javabase.core.Recorder;
-import static javabaseproject.javabase.core.RecordedClass.RecordedField;
+import javabaseproject.javabase.core.recorder.FieldController;
+import javabaseproject.javabase.core.recorder.Recorder;
+import static javabaseproject.javabase.core.recorder.RecordedClass.RecordedField;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 

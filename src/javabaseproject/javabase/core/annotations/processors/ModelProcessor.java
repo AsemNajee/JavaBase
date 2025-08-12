@@ -1,7 +1,7 @@
 package javabaseproject.javabase.core.annotations.processors;
 
 import javabaseproject.javabase.core.annotations.PrimaryKey;
-import javabaseproject.models.Model;
+import javabaseproject.javabase.core.database.models.Model;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.RoundEnvironment;
@@ -9,7 +9,6 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeKind;
-import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic;
 import java.util.Set;
 

@@ -1,4 +1,4 @@
-package javabaseproject.javabase.core.database;
+package javabaseproject.javabase.config;
 
 /**
  * only mysql is supported for now

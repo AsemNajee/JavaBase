@@ -1,9 +1,9 @@
 package javabaseproject.javabase.core.database.statements;
 
-import javabaseproject.javabase.core.Recorder;
+import javabaseproject.javabase.core.recorder.Recorder;
 import javabaseproject.javabase.core.database.Connector;
 import javabaseproject.javabase.core.database.querybuilders.Build;
-import javabaseproject.models.Model;
+import javabaseproject.javabase.core.database.models.Model;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;

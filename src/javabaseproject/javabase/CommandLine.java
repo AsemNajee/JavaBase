@@ -5,6 +5,7 @@
 package javabaseproject.javabase;
 
 import javabaseproject.javabase.framework.commandline.DatabaseCommands;
+import javabaseproject.javabase.framework.commandline.FactoryCommands;
 import javabaseproject.javabase.framework.commandline.InputCommand;
 import javabaseproject.javabase.framework.commandline.ModelCommands;
 
@@ -48,6 +49,9 @@ public class CommandLine {
             }
             if(inpc.isCommandFor(DatabaseCommands.class)){
                 DatabaseCommands.handle(inpc.getMatcher().group("verb"), inpc.getMatcher().group("model"));
+            }
+            if(inpc.isCommandFor(FactoryCommands.class)){
+                FactoryCommands.handle(inpc.getMatcher().group("verb"), inpc.getMatcher().group("model"));
             }
         }
         System.out.println("Program Finished");

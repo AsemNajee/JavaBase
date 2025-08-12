@@ -2,10 +2,8 @@ package javabaseproject.javabase.core.database;
 
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import javabaseproject.javabase.config.ENV;
-import static javabaseproject.javabase.core.database.Drivers.MYSQL;
 
 /**
  * 

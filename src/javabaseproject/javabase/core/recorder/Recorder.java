@@ -1,14 +1,20 @@
-package javabaseproject.javabase.core;
+package javabaseproject.javabase.core.recorder;
 
 import java.lang.reflect.AccessFlag;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import javabaseproject.javabase.core.RecordedClass.RecordedField;
+
+import javabaseproject.javabase.core.database.Factory;
+import javabaseproject.javabase.core.database.Seeder;
+import javabaseproject.javabase.core.recorder.RecordedClass.RecordedField;
 import javabaseproject.javabase.core.annotations.NotNull;
 import javabaseproject.javabase.core.annotations.PrimaryKey;
 import javabaseproject.javabase.core.annotations.Unique;
-import javabaseproject.models.Model;
+import javabaseproject.javabase.core.database.models.Model;
+import javabaseproject.javabase.framework.FileHandler;
+import javabaseproject.javabase.framework.FilePaths;
 
 /**
  * 
@@ -40,14 +46,23 @@ public class Recorder {
     
     /**
      * filter all class fields and class name to prepare it to contact with database
-     * fields are stored in hash map like [name => object(RecordedField)]
-     * this method is take the attributes from the class and its parent
+     * fields are stored in hash map like <b>[name => object(RecordedField)]</b>
+     * <br />
+     * this method is taking the attributes from the class and its parent
+     * <br />
+     * also its register the factory and seeder from {@code FilePaths.get[Seeder|Factory]Package()}
      * @param clazz 
      * @return  
      */
-    public static RecordedClass add(Class<? extends Model> clazz) {
-        String splits[] = clazz.getName().split("\\.");
-        RecordedClass cls = new RecordedClass(splits[splits.length - 1]);
+    public static RecordedClass add(Class<? extends Model<?>> clazz) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+        String modelName = clazz.getName().replaceAll("(.*)\\.", "");
+        RecordedClass cls = new RecordedClass(modelName, clazz);
+        if(FileHandler.of(FilePaths.getSeedersPath() + modelName + "Seeder.java").exists()){
+            cls.setSeeder((Seeder) Class.forName(FilePaths.getSeedersPackage() + "." + modelName + "Seeder" ).getConstructor().newInstance());
+        }
+        if(FileHandler.of(FilePaths.getFactoriesPath() + modelName + "Factory.java").exists()){
+            cls.setFactory((Factory) Class.forName(FilePaths.getFactoriesPackage() + "." + modelName + "Factory" ).getConstructor().newInstance());
+        }
         filterAllFields(clazz, cls);
         filterAllFields(clazz.getSuperclass(), cls);
         setPrimaryKey(clazz, cls);
@@ -90,16 +105,16 @@ public class Recorder {
     }
     
     private static Types getFieldType(Field field){
-        String[] pathToAnnotatinType = field.getAnnotatedType().toString().split("\\.");
-        return switch(pathToAnnotatinType[pathToAnnotatinType.length -1]){
+        String[] pathToAnnotationType = field.getAnnotatedType().toString().split("\\.");
+        return switch(pathToAnnotationType[pathToAnnotationType.length -1]){
                     case "boolean"  -> Types.BOOLEAN;
                     case "byte"     -> Types.BYTE;
                     case "short"    -> Types.SHORT;
                     case "int"      -> Types.INT;
                     case "long"     -> Types.LONG;
-                    case "String"   -> Types.STRING;
-                    default         -> Types.STRING;
-                };
+                    case "String" -> Types.STRING;
+                    default -> Types.STRING;
+        };
     }
     
     private static ArrayList<Constraints> getFieldConstraints(Field field){

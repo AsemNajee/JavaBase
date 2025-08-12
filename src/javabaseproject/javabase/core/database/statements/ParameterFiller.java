@@ -1,14 +1,13 @@
 package javabaseproject.javabase.core.database.statements;
 
-import javabaseproject.javabase.core.FieldController;
-import javabaseproject.javabase.core.Recorder;
-import javabaseproject.models.Model;
+import javabaseproject.javabase.core.recorder.FieldController;
+import javabaseproject.javabase.core.recorder.Recorder;
+import javabaseproject.javabase.core.database.models.Model;
 
 import java.lang.reflect.Field;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Arrays;
-import java.util.stream.Collectors;
 
 public class ParameterFiller {
     private ParameterFiller(){}

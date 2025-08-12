@@ -1,4 +1,4 @@
-package javabaseproject.javabase.output;
+package javabaseproject.javabase.framework.commandline.output;
 
 public enum Colors {
     BLACK(0), 

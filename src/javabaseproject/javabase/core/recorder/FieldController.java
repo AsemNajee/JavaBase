@@ -1,6 +1,6 @@
-package javabaseproject.javabase.core;
+package javabaseproject.javabase.core.recorder;
 
-import javabaseproject.models.Model;
+import javabaseproject.javabase.core.database.models.Model;
 
 import java.lang.reflect.Field;
 import java.sql.ResultSet;

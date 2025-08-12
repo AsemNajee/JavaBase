@@ -1,4 +1,8 @@
-package javabaseproject.models;
+package javabaseproject.javabase.core.database.models;
+
+import javabaseproject.javabase.core.database.Factory;
+import javabaseproject.javabase.core.database.Seeder;
+import javabaseproject.javabase.core.recorder.Recorder;
 
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
@@ -30,5 +34,16 @@ public class Model<T extends Model<T>> extends AbstractModel<T> {
     public String[] hidden(){
         return new String[]{};
     }
-
+    public Factory factory(){
+        return Recorder.getRecordedClass(this.getClass()).getFactory();
+    }
+    public Seeder seeder(){
+        return Recorder.getRecordedClass(this.getClass()).getSeeder();
+    }
+    public static Model<? extends Model<?>> of(Class<? extends Model<?>> clazz) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+        return clazz.getDeclaredConstructor().newInstance();
+    }
+    public static Model<? extends Model<?>> of(String model) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+        return (Model<? extends Model<?>>)Recorder.getRecordedClass(model).getClazz().getDeclaredConstructor().newInstance();
+    }
 }

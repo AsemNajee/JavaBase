@@ -1,9 +1,7 @@
 package javabaseproject.javabase.framework.commandline;
 
-import javabaseproject.javabase.output.Colors;
-import javabaseproject.javabase.output.Style;
-
-import java.util.regex.Pattern;
+import javabaseproject.javabase.framework.commandline.output.Colors;
+import javabaseproject.javabase.framework.commandline.output.Style;
 
 public class Command {
     public static void println(String text){
@@ -25,7 +23,7 @@ public class Command {
         System.out.print(Style.style(text, bgColor, textColor));
     }
 
-    public static void printf(String text, String ...vararage){
-        System.out.printf(text, vararage);
+    public static void printf(String text, String ...varArgs){
+        System.out.printf(text + "\n", varArgs);
     }
 }

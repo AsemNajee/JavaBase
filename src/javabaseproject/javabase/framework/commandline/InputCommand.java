@@ -28,7 +28,13 @@ public class InputCommand{
     }
 
     private void registerAllPatterns(){
-        commandsPatterns.put(ModelCommands.class.getName(), Pattern.compile("^(?<verb>make|drop):model( )+(?<model>[A-Z][A-Za-z0-9]*)( -key=(?<key>[A-Za-z]+))?(?<factory> -f)?"));
-        commandsPatterns.put(DatabaseCommands.class.getName(), Pattern.compile("^db:(?<verb>init|migrate|seed|drop)(?<model> [A-Z][A-Za-z0-9])?"));
+//        make:model Animal -key=id -keyType=int -f
+//        drop:model Animal -force
+//        register:model Animal
+        commandsPatterns.put(ModelCommands.class.getName(), Pattern.compile("^(?<verb>make|drop|register):model( )+(?<model>[A-Z][A-Za-z0-9]*)( -key=(?<key>[A-Za-z]+))?( -key[Tt]ype=(?<keyType>(String|int|float|double|byte|long|short)))?(?<factory> -f)?(?<force> -force)?"));
+//        db:init, db:migrate, db:migrate Animal, db:seed, db:seed Animal, db:drop
+        commandsPatterns.put(DatabaseCommands.class.getName(), Pattern.compile("^db:(?<verb>init|migrate|seed|drop)( )+(?<model>[A-Z][A-Za-z0-9]*)?"));
+//        make:factory Animal, drop:factory Animal
+        commandsPatterns.put(FactoryCommands.class.getName(), Pattern.compile("^(?<verb>make|drop):factory( )+(?<model> [A-Z][A-Za-z0-9])?Factory"));
     }
 }

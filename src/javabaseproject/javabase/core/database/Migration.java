@@ -1,12 +1,13 @@
 package javabaseproject.javabase.core.database;
 
+import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import javabaseproject.javabase.MyModels;
 import javabaseproject.javabase.config.ENV;
-import javabaseproject.javabase.core.RecordedClass;
+import javabaseproject.javabase.core.recorder.RecordedClass;
 import javabaseproject.javabase.core.database.querybuilders.Build;
-import javabaseproject.javabase.output.Colors;
-import javabaseproject.javabase.output.Style;
+import javabaseproject.javabase.framework.commandline.output.Colors;
+import javabaseproject.javabase.framework.commandline.output.Style;
 
 /**
  * 
@@ -17,7 +18,7 @@ public class Migration {
      * publish all models as tables in database
      * @throws SQLException 
      */
-    public static void migrateAll() {
+    public static void migrateAll() throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         var regModls = MyModels.getRegisteredModels();
         String tables = "";
         for(RecordedClass rclass : regModls.values()){
@@ -30,8 +31,8 @@ public class Migration {
         System.out.println(Style.textColor("tables migrated: ", Colors.BLUE) + tables);
     }
 
-    public static boolean migrate(RecordedClass cls) {
-        String query = Build.create(cls);
+    public static boolean migrate(RecordedClass rclass) {
+        String query = Build.create(rclass);
         try(var stmt = Connector.getConnection().createStatement()){
             stmt.executeUpdate(query);
             return true;

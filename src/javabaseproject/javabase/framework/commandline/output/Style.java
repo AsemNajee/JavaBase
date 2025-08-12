@@ -1,4 +1,4 @@
-package javabaseproject.javabase.output;
+package javabaseproject.javabase.framework.commandline.output;
 
 public class Style {
     public static String textColor(String text, Colors clr){

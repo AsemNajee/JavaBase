@@ -1,8 +1,7 @@
 package javabaseproject.javabase.core.database.querybuilders;
 
-import javabaseproject.javabase.config.ENV;
-import javabaseproject.javabase.core.RecordedClass;
-import javabaseproject.javabase.core.RecordedClass.RecordedField;
+import javabaseproject.javabase.core.recorder.RecordedClass;
+import javabaseproject.javabase.core.recorder.RecordedClass.RecordedField;
 
 /**
  * 
@@ -61,6 +60,7 @@ public class MYSQLBuilder {
     }
 
     public static String dropTable(RecordedClass rclass){
+        System.out.println(rclass.getName());
         return """  
                 DROP TABLE {{table}};
                 """.replace("{{table}}", rclass.getName());

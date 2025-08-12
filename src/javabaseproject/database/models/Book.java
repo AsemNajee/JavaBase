@@ -1,13 +1,12 @@
-package javabaseproject.models;
+package javabaseproject.database.models;
 
 import javabaseproject.javabase.core.annotations.PrimaryKey;
 import javabaseproject.javabase.core.annotations.Unique;
 import javabaseproject.javabase.core.interfaces.HasFactory;
-
-import java.util.ArrayList;
+import javabaseproject.javabase.core.database.models.Model;
 
 @PrimaryKey("id")
-public class Book extends Model<Book> implements HasFactory<Book> {
+public class Book extends Model<Book> implements HasFactory {
 
     protected int id;
     @Unique
@@ -18,16 +17,6 @@ public class Book extends Model<Book> implements HasFactory<Book> {
     public Book(int id, String name){
         this.id = id;
         this.name = name;
-    }
-
-    @Override
-    public ArrayList<Book> make(int count) {
-        return null;
-    }
-
-    @Override
-    public Book make() {
-        return null;
     }
 
 // ... add more props with protected access modifier

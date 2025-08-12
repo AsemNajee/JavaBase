@@ -1,4 +1,4 @@
-package javabaseproject.javabase.core;
+package javabaseproject.javabase.core.recorder;
 
 /**
  * 
