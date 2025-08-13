@@ -9,20 +9,23 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 /**
- * create prepared statements and fills there's parameters by {@code ParameterFiller} or by hand
+ * create prepared statements and fills there's parameters
+ * by {@code ParameterFiller} or by hand
  */
 public class StatementBuilder {
 
-    public static PreparedStatement getSelectQueryForItemWithId(Class clazz, int id) throws SQLException, NoSuchFieldException, IllegalAccessException {
+    public static PreparedStatement getSelectQueryForItemWithKey(Class<? extends Model<?>> clazz, Object key) throws SQLException, NoSuchFieldException, IllegalAccessException {
         String sql = Build.select(Recorder.getRecordedClass(clazz));
         var stmt = Connector.getConnection().prepareStatement(sql);
-        stmt.setInt(1, id);
+        ParameterFiller.bindParam(
+                stmt,
+                Recorder.getRecordedClass(clazz).getPrimaryKey().getType(),
+                key, 1);
         return stmt;
     }
     public static PreparedStatement getSelectQueryForAllItems(Class clazz) throws SQLException{
         String sql = Build.selectAll(Recorder.getRecordedClass(clazz));
-        var stmt = Connector.getConnection().prepareStatement(sql);
-        return stmt;
+        return Connector.getConnection().prepareStatement(sql);
     }
     public static PreparedStatement getInsertQueryForOneItem(Model<? extends Model<?>> item) throws SQLException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException{
         String sql = Build.insert(Recorder.getRecordedClass(item.getClass()));
@@ -33,7 +36,7 @@ public class StatementBuilder {
     public static PreparedStatement getDeleteQueryForOneItem(Model<? extends Model<?>> item) throws SQLException, NoSuchFieldException, IllegalAccessException {
         String sql = Build.delete(Recorder.getRecordedClass(item.getClass()));
         var stmt = Connector.getConnection().prepareStatement(sql);
-        ParameterFiller.fill(stmt, item, "id");
+        ParameterFiller.fill(stmt, item, Recorder.getRecordedClass(item.getClass()).getPrimaryKey().getName());
         return stmt;
     }
 }

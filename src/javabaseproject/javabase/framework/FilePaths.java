@@ -14,11 +14,14 @@ public class FilePaths {
     public static String getSeedersPath(){
         return basePath(ENV.SEEDERS_PACKAGE) + File.separator;
     }
+    public static String getSeederPath(String model){
+        return getSeedersPath() + File.separator + model.replaceAll("(.*)Seeder$", "$1") + "Seeder.java";
+    }
     public static String getModelPath(String model){
         return getModelsPath() + File.separator + model + ".java";
     }
     public static String getFactoryPath(String model){
-        return getFactoriesPath() + File.separator + model + "Factory.java";
+        return getFactoriesPath() + File.separator + model.replaceAll("(.*)Factory$", "$1") + "Factory.java";
     }
     public static String getRegisterFilePath(){
         return frameworkPath("MyModels.java");

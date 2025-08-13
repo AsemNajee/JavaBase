@@ -4,6 +4,7 @@ import java.util.regex.Matcher;
 
 import javabaseproject.javabase.App;
 import javabaseproject.javabase.framework.commandline.controllers.ModelController;
+import javabaseproject.javabase.framework.commandline.controllers.RegisterController;
 
 public class ModelCommands extends Command{
     private static Matcher command;
@@ -11,27 +12,21 @@ public class ModelCommands extends Command{
         command = matcher;
         switch (commandVerb){
             case "make" -> {
-                App.start(() -> {
-                    ModelController.make(
-                            modelName,
-                            command.group("factory") != null,
-                            command.group("key"),
-                            command.group("keyType")
-                    );
-                });
+                ModelController.make(
+                        modelName,
+                        command.group("factory") != null,
+                        command.group("key"),
+                        command.group("keyType")
+                );
             }
             case "drop" -> {
-                App.start(() -> {
-                    ModelController.drop(
-                            modelName,
-                            command.group("force") != null
-                    );
-                });
+                ModelController.drop(
+                        modelName,
+                        command.group("force") != null
+                );
             }
             case "register" -> {
-                App.start(() -> {
-                    RegisterController.register(modelName);
-                });
+                RegisterController.register(modelName);
             }
         }
     }

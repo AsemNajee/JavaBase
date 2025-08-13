@@ -1,59 +1,49 @@
-/**
- *   >> Al-Reecha .~
- *   << BY : Asem Najee >>
- */
 package javabaseproject.javabase;
 
-import javabaseproject.javabase.framework.commandline.DatabaseCommands;
-import javabaseproject.javabase.framework.commandline.FactoryCommands;
-import javabaseproject.javabase.framework.commandline.InputCommand;
-import javabaseproject.javabase.framework.commandline.ModelCommands;
+import javabaseproject.Main;
+import javabaseproject.javabase.framework.commandline.*;
+import javabaseproject.javabase.framework.commandline.output.Console;
 
 import java.util.Scanner;
 
 /**
- * @Coder Asem Najee
- * @author Al-Reecha
+ * <h1>JavaBase</h1> is a framework helps you to link your java files with database
+ * by one command line {@code make:model <ModelName>} and one command to migrate
+ * the data from the file to database is {@code db:migrate <ModelName>} .
+ * congratulation now you have a table in your database with name {@code <ModelName>}
+ * @author Asem Najee
  */
 public class CommandLine {
 
     public static void main(String[] args) throws Exception {
         Scanner in = new Scanner(System.in);
+        Command.println(Console.help());
         while (true) {
-            System.out.println(
-                           """
-                           - run                    : run the project
-                           - make:model <ModelName> : create new model and register it
-                                [-f]                    :> create factory and seeder for model
-                                [-key=<attribute>]      :> set and attribute as a primary key for model
-                           - drop:model <ModelName> : drop the model and delete it from registered models
-                                [-m]                    :> delete model java class file from models package
-                           - db:drop                : drop all database
-                           - db:migrate             : migrate models to the database for first time only
-                                <ModelName>             :> migrate a specific model
-                           - db:init                : create the database
-                           - db:seed                : seed data to database
-                               <ModelName>             :> seed a specific model
-                           - 0                      : exit
-                           """);
-            System.out.print("JavaBase:> ");
+            Command.print("JavaBase:> ");
             InputCommand inpc = new InputCommand(in.nextLine());
             if(inpc.equals("0")){
                 break;
-            }
+            }else
+            if(inpc.equals("-h") || inpc.equals("help")){
+                Command.println(Console.help());
+            }else
             if(inpc.equals("run")){
-                App.start();
-            }
+                Main.main(args);
+            }else
             if(inpc.isCommandFor(ModelCommands.class)){
                 ModelCommands.handle(inpc.getMatcher().group("verb"), inpc.getMatcher().group("model"), inpc.getMatcher());
-            }
+            }else
             if(inpc.isCommandFor(DatabaseCommands.class)){
                 DatabaseCommands.handle(inpc.getMatcher().group("verb"), inpc.getMatcher().group("model"));
-            }
+            }else
             if(inpc.isCommandFor(FactoryCommands.class)){
                 FactoryCommands.handle(inpc.getMatcher().group("verb"), inpc.getMatcher().group("model"));
-            }
+            }else
+            if(inpc.isCommandFor(SeederCommands.class)){
+                SeederCommands.handle(inpc.getMatcher().group("verb"), inpc.getMatcher().group("model"));
+            }else
+                Command.println("y{UNKNOWN COMMAND}");
         }
-        System.out.println("Program Finished");
+        Command.println("Program Finished");
     }
 }

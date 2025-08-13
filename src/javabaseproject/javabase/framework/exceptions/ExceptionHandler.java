@@ -10,9 +10,9 @@ public class ExceptionHandler {
             fn.run();
         }catch (Exception e){
             e.printStackTrace();
-            Command.println("-".repeat(e.getMessage().length() + 8), Colors.RED);
-            Command.println("|\t" + e.getMessage() + "\t|", Colors.RED);
-            Command.println("-".repeat(e.getMessage().length() + 8), Colors.RED);
+            Command.println("r{" + "-".repeat(e.getMessage().length() + 8) + "}");
+            Command.println("r{|\t" + e.getMessage() + "\t|}");
+            Command.println("r{" + "-".repeat(e.getMessage().length() + 8) + "}");
         }
     }
 }

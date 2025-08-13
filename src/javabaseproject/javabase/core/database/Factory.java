@@ -6,7 +6,11 @@ import javabaseproject.javabase.framework.commandline.output.Colors;
 
 import java.util.ArrayList;
 
-
+/**
+ * insert fake data to the model, these called factories
+ * @param <M> the model class type to make sure the return type of the factory
+ *           is the object of the model
+ */
 public abstract class Factory<M extends Model<M>> {
     public abstract M item();
 
@@ -18,7 +22,7 @@ public abstract class Factory<M extends Model<M>> {
         for (int i = 0; i < count; i++) {
             models.add(item());
         }
-        Command.println(count + " items was seeded", Colors.GREEN);
+        Command.printf("g{%d items was seeded}", count);
         return models;
     }
 

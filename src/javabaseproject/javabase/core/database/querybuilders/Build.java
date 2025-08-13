@@ -4,7 +4,8 @@ import javabaseproject.javabase.config.ENV;
 import javabaseproject.javabase.core.recorder.RecordedClass;
 
 /**
- * 
+ * build queries depend on the {@code ENV.DRIVER}
+ * support only mysql, and you could add more by your self :)
  * @author AsemNajee
  */
 public class Build {

@@ -1,3 +1,4 @@
+
 package javabaseproject.database.models;
 
 import javabaseproject.javabase.core.annotations.PrimaryKey;
@@ -5,13 +6,22 @@ import javabaseproject.javabase.core.annotations.Unique;
 import javabaseproject.javabase.core.database.models.Model;
 
 @PrimaryKey("id")
-public class Animal extends Model<Animal>{
+public class User extends Model<User>{
+    public User(String password, String name, int id){
+        this.password = password;
+        this.name = name;
+        this.id = id;
+    }
 
     protected int id;
     @Unique
     protected String name;
+    protected String password;
 
-    public Animal(int id, String name){
+    // Don't delete this constructor please (: it will cause a problem
+    public User(){}
+
+    public User(int id, String name){
         this.id = id;
         this.name = name;
     }
@@ -30,5 +40,12 @@ public class Animal extends Model<Animal>{
         return name;
     }
 
-// ... add more props with protected access modifier
+    @Override
+    public String[] hidden(){
+        return new String[]{
+                "password"
+        };
+    }
+
+// ... add more fields with protected access modifier
 }

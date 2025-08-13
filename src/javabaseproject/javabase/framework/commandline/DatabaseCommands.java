@@ -5,7 +5,7 @@ import javabaseproject.javabase.core.recorder.RecordedClass;
 import javabaseproject.javabase.core.recorder.Recorder;
 import javabaseproject.javabase.core.database.Migration;
 import javabaseproject.javabase.core.database.models.Model;
-import javabaseproject.javabase.framework.commandline.output.Colors;
+import javabaseproject.javabase.framework.commandline.output.Console;
 
 public class DatabaseCommands extends Command{
 
@@ -22,24 +22,17 @@ public class DatabaseCommands extends Command{
                     RecordedClass rclass = Recorder.getRecordedClass(model);
                     if(rclass != null){
                         if(Migration.migrate(rclass)){
-                            printf("Model %s is migrated successfully", rclass.getName());
+                            printf(Console.style("g[\tModel %s is migrated successfully\t]"), rclass.getName());
                         }else{
-                            println("Field to migrate a model", Colors.RED);
+                            printf(Console.style("Field to migrate a model {y{%s}}"), rclass.getName());
                         }
                     }
                 }else{
-                    App.start(Migration::migrateAll);
-                }
-            }
-            case "seed" -> {
-                if(model != null){
-                    App.start(() -> {
-                        Model.of(model).seeder().run();
-                    });
+                    Migration.migrateAll();
                 }
             }
             case "drop" -> {
-                App.start(Migration::dropDatabase);
+                Migration.dropDatabase();
             }
         }
     }

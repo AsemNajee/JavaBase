@@ -6,6 +6,7 @@ import javabaseproject.javabase.MyModels;
 import javabaseproject.javabase.config.ENV;
 import javabaseproject.javabase.core.recorder.RecordedClass;
 import javabaseproject.javabase.core.database.querybuilders.Build;
+import javabaseproject.javabase.framework.commandline.Command;
 import javabaseproject.javabase.framework.commandline.output.Colors;
 import javabaseproject.javabase.framework.commandline.output.Style;
 
@@ -23,12 +24,12 @@ public class Migration {
         String tables = "";
         for(RecordedClass rclass : regModls.values()){
             if(migrate(rclass)){
-                tables += "\n" + Style.textColor("DONE", Colors.GREEN) + ": " + rclass.getName();
+                tables += "\ng{DONE} : " + rclass.getName();
             }else{
-                tables += "\n" + Style.textColor("FAIL", Colors.RED) + ": " + rclass.getName();
+                tables += "\nr{FAIL}: " + rclass.getName();
             }
         }
-        System.out.println(Style.textColor("tables migrated: ", Colors.BLUE) + tables);
+        Command.printf("b{tables migrated: }" + tables);
     }
 
     public static boolean migrate(RecordedClass rclass) {

@@ -1,7 +1,41 @@
 package javabaseproject.javabase.framework.commandline.controllers;
 
-public class SeederController {
-    public static void handle(){
+import javabaseproject.javabase.App;
+import javabaseproject.javabase.core.database.models.Model;
+import javabaseproject.javabase.core.recorder.Recorder;
+import javabaseproject.javabase.framework.FileHandler;
+import javabaseproject.javabase.framework.FilePaths;
+import javabaseproject.javabase.framework.commandline.Command;
+import javabaseproject.javabase.framework.generators.SeederGenerator;
 
+import java.io.IOException;
+
+public class SeederController {
+
+    public static void make(String modelName) throws IOException {
+        FileHandler.of(FilePaths.getSeederPath(modelName))
+                .write(new SeederGenerator(modelName).seederFile());
+        Command.printf("g{Seeder %s Has created successfully.}", modelName);
+    }
+
+    public static void drop(String modelName){
+        if(FileHandler.of(FilePaths.getSeederPath(modelName)).delete()){
+            Command.printf("y{Seeder %s has deleted.}", modelName);
+        }else{
+            Command.printf("r{Seeder %s not deleted.}", modelName);
+        }
+    }
+
+    public static void seed(String modelName) throws Exception {
+        Recorder.getRecordedClass(modelName).getSeeder().run();
+        Command.printf("g{Data for %s has been inserted to database}", modelName);
+    }
+
+    public static void seed() throws Exception {
+        for(var model : Recorder.getModels().values()){
+            if(model.getSeeder() != null)
+                seed(model.getName());
+        }
+        Command.println("g[All models seeded to the database successfully.]");
     }
 }

@@ -6,7 +6,10 @@ import java.lang.reflect.Field;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-
+/**
+ * this control by the fields in the class/model
+ * it let us use the value of the private and protected fields
+ */
 public class FieldController {
     public static Object get(Field field, Model<? extends Model<?>> instance) throws IllegalAccessException {
         if(instance.isHidden(field)){

@@ -2,8 +2,6 @@ package javabaseproject.javabase.framework.commandline;
 
 import javabaseproject.javabase.framework.commandline.controllers.FactoryController;
 
-import java.io.IOException;
-
 public class FactoryCommands extends Command{
 
     /**
@@ -11,9 +9,9 @@ public class FactoryCommands extends Command{
      * drop:factory Animal
      */
 
-    public static void handle(String verb, String model) throws IOException {
+    public static void handle(String verb, String model) throws Exception {
         switch (verb){
-            case "make" -> FactoryController.make(model);
+            case "make" -> FactoryController.make(model, false);
             case "drop" -> FactoryController.drop(model);
         }
     }

@@ -1,4 +1,4 @@
-package javabaseproject.javabase.framework.commandline;
+package javabaseproject.javabase.framework.commandline.controllers;
 
 import javabaseproject.javabase.config.ENV;
 import javabaseproject.javabase.framework.FileHandler;

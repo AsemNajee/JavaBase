@@ -51,16 +51,16 @@ public class Recorder {
      * this method is taking the attributes from the class and its parent
      * <br />
      * also its register the factory and seeder from {@code FilePaths.get[Seeder|Factory]Package()}
-     * @param clazz 
-     * @return  
+     * @param clazz the class will be registered
+     * @return class information after registering
      */
     public static RecordedClass add(Class<? extends Model<?>> clazz) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         String modelName = clazz.getName().replaceAll("(.*)\\.", "");
         RecordedClass cls = new RecordedClass(modelName, clazz);
-        if(FileHandler.of(FilePaths.getSeedersPath() + modelName + "Seeder.java").exists()){
+        if(FileHandler.of(FilePaths.getSeederPath(modelName)).exists()){
             cls.setSeeder((Seeder) Class.forName(FilePaths.getSeedersPackage() + "." + modelName + "Seeder" ).getConstructor().newInstance());
         }
-        if(FileHandler.of(FilePaths.getFactoriesPath() + modelName + "Factory.java").exists()){
+        if(FileHandler.of(FilePaths.getFactoryPath(modelName)).exists()){
             cls.setFactory((Factory) Class.forName(FilePaths.getFactoriesPackage() + "." + modelName + "Factory" ).getConstructor().newInstance());
         }
         filterAllFields(clazz, cls);

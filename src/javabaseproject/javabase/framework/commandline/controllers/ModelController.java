@@ -7,10 +7,9 @@ import javabaseproject.javabase.core.database.querybuilders.Build;
 import javabaseproject.javabase.framework.FileHandler;
 import javabaseproject.javabase.framework.FilePaths;
 import javabaseproject.javabase.framework.commandline.Command;
-import javabaseproject.javabase.framework.commandline.RegisterController;
 import javabaseproject.javabase.framework.commandline.output.Colors;
 import javabaseproject.javabase.framework.commandline.output.Style;
-import javabaseproject.javabase.framework.readycontent.NewContent;
+import javabaseproject.javabase.framework.generators.ModelGenerator;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,16 +22,17 @@ public class ModelController {
         if((path = createModelFile(modelName, key, keyType)) != null) {
             RegisterController.register(modelName);
             if (withFactory) {
-                FactoryController.make(modelName);
+                FactoryController.make(modelName, true);
+                SeederController.make(modelName);
             }
-            Command.println("Model {" + modelName + "} created in " + path, Colors.GREEN);
+            Command.println("g{Model {" + modelName + "} created in " + path + "}");
         }
     }
 
     public static void drop(String model, boolean deleteModelFile) throws IOException, SQLException {
         RecordedClass rclass = Recorder.getRecordedClass(model);
         if(rclass == null){
-            Command.println("Model name is wrong", Colors.YELLOW);
+            Command.println("y{Model name is wrong}");
             return;
         }
         dropModelTable(rclass);
@@ -54,7 +54,7 @@ public class ModelController {
     private static String createModelFile(String modelName, String key, String keyType) throws IOException {
         File file = new File(FilePaths.getModelPath(modelName));
         if (file.isFile()) {
-            Command.println("Model is already exists.", Colors.RED);
+            Command.println("r{Model is already exists.}");
             return null;
         }
         if(key == null){
@@ -63,7 +63,7 @@ public class ModelController {
         if(keyType == null){
             keyType = "int";
         }
-        FileHandler.of(file).write(NewContent.modelContent(modelName, key, keyType));
+        FileHandler.of(file).write(new ModelGenerator(modelName, key, keyType).modelFile());
         return file.getAbsolutePath();
     }
 

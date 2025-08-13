@@ -3,6 +3,7 @@ package javabaseproject.javabase.core.database.statements;
 import javabaseproject.javabase.core.recorder.FieldController;
 import javabaseproject.javabase.core.recorder.Recorder;
 import javabaseproject.javabase.core.database.models.Model;
+import javabaseproject.javabase.core.recorder.Types;
 
 import java.lang.reflect.Field;
 import java.sql.PreparedStatement;
@@ -26,33 +27,43 @@ public class ParameterFiller {
         for(String fname : params){
             Field field = item.getClass().getDeclaredField(fname);
             Object value = FieldController.get(field, item);
-            switch(Recorder.getRecordedClass(item.getClass()).getFields().get(fname).getType()){
-                case BOOLEAN -> {
-                    stmt.setBoolean(i, (boolean) value);
-                }
-                case BYTE -> {
-                    stmt.setByte(i, (byte) value);
-                }
-                case DOUBLE -> {
-                    stmt.setDouble(i, (double) value);
-                }
-                case FLOAT -> {
-                    stmt.setFloat(i, (float) value);
-                }
-                case INT -> {
-                    stmt.setInt(i, (int) value);
-                }
-                case LONG -> {
-                    stmt.setLong(i, (long) value);
-                }
-                case SHORT -> {
-                    stmt.setShort(i, (short) value);
-                }
-                case STRING -> {
-                    stmt.setString(i, (String) value);
-                }
-            }
+            bindParam(
+                    stmt,
+                    Recorder.getRecordedClass(item.getClass()).getFields().get(fname).getType(),
+                    value,
+                    i
+            );
             i++;
+        }
+        return stmt;
+    }
+
+    public static PreparedStatement bindParam(PreparedStatement stmt, Types type, Object value, int i) throws SQLException {
+        switch(type){
+            case BOOLEAN -> {
+                stmt.setBoolean(i, (boolean) value);
+            }
+            case BYTE -> {
+                stmt.setByte(i, (byte) value);
+            }
+            case DOUBLE -> {
+                stmt.setDouble(i, (double) value);
+            }
+            case FLOAT -> {
+                stmt.setFloat(i, (float) value);
+            }
+            case INT -> {
+                stmt.setInt(i, (int) value);
+            }
+            case LONG -> {
+                stmt.setLong(i, (long) value);
+            }
+            case SHORT -> {
+                stmt.setShort(i, (short) value);
+            }
+            case STRING -> {
+                stmt.setString(i, (String) value);
+            }
         }
         return stmt;
     }
