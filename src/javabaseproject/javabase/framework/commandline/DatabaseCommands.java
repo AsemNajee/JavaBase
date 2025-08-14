@@ -16,15 +16,16 @@ public class DatabaseCommands extends Command{
         switch (verb){
             case "init" -> {
                 Migration.initDatabase();
+                Command.println("g[The database was created]");
             }
             case "migrate" -> {
                 if(model != null){
                     RecordedClass rclass = Recorder.getRecordedClass(model);
                     if(rclass != null){
                         if(Migration.migrate(rclass)){
-                            printf(Console.style("g[\tModel %s is migrated successfully\t]"), rclass.getName());
+                           Command.printf("g[\tModel %s is migrated successfully\t]", rclass.getName());
                         }else{
-                            printf(Console.style("Field to migrate a model {y{%s}}"), rclass.getName());
+                            Command.printf("Field to migrate a model {y{%s}}", rclass.getName());
                         }
                     }
                 }else{
@@ -33,6 +34,7 @@ public class DatabaseCommands extends Command{
             }
             case "drop" -> {
                 Migration.dropDatabase();
+                Command.println("y{Database was dropped}");
             }
         }
     }

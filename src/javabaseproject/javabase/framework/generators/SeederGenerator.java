@@ -21,11 +21,10 @@ public class SeederGenerator {
                 import {basePackage}.javabase.framework.exceptions.ExceptionHandler;
                                 
                 public class {model}Seeder extends Seeder {
-                    public CheckedRunnable run() {
+                    public void run() {
                         ExceptionHandler.handle(() -> {
                             Model.of({model}.class).factory().create(10);
                         });
-                        return null;
                     }
                 }
                 """.replace("{modelsPackage}", FilePaths.getModelsPackage())

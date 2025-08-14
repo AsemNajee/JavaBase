@@ -63,9 +63,11 @@ public abstract class AbstractModel<T extends Model<T>> {
         T item;
         var stmt = StatementBuilder.getSelectQueryForItemWithKey(clazz, key);
         var result = stmt.executeQuery();
-        result.next();
-        item = fetch(result);
-        return item;
+        if(result.next()){
+            item = fetch(result);
+            return item;
+        }
+        return null;
     }
 
     /**
@@ -89,7 +91,7 @@ public abstract class AbstractModel<T extends Model<T>> {
      *              not {@code AbstractModel}, so we cannot use {@code this}
      * @return status of save operation
      */
-    public boolean save(Model<T> model) throws SQLException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException{
+    protected boolean save(Model<T> model) throws SQLException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException{
         var stmt = StatementBuilder.getInsertQueryForOneItem(model);
         int effectedRows = stmt.executeUpdate();
         return effectedRows == 1;
@@ -100,7 +102,7 @@ public abstract class AbstractModel<T extends Model<T>> {
      * @param model is the object contains the data and primary key
      * @return status of deleting
      */
-    public boolean delete(Model<T> model) throws SQLException, NoSuchFieldException, IllegalAccessException {
+    protected boolean delete(Model<T> model) throws SQLException, NoSuchFieldException, IllegalAccessException {
         var stmt = StatementBuilder.getDeleteQueryForOneItem(model);
         int effectedRows = stmt.executeUpdate();
         return effectedRows == 1;

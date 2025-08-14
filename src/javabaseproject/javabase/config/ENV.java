@@ -35,6 +35,8 @@ public class ENV {
     /**
      * the name of your application package
      * this is necessary to run without errors
+     * this is necessary to be able to call classes in base package
+     * like Main and Handler
      */
     public static final String ROOT_PACKAGE;
     /**

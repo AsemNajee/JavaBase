@@ -1,5 +1,6 @@
 package javabaseproject.javabase.framework.commandline.controllers;
 
+import javabaseproject.javabase.config.ENV;
 import javabaseproject.javabase.core.recorder.RecordedClass;
 import javabaseproject.javabase.core.recorder.Recorder;
 import javabaseproject.javabase.core.database.Connector;
@@ -58,7 +59,7 @@ public class ModelController {
             return null;
         }
         if(key == null){
-            key = "id";
+            key = ENV.DEFAULT_PRIMARY_KEY;
         }
         if(keyType == null){
             keyType = "int";
