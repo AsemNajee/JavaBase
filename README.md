@@ -48,9 +48,7 @@ Recorder.add(User.class);
 ~~~java
 public class Handler {
     public static void main(String[] args) throws Exception {
-        App.start(() -> {
-            CommandLine.main(args);
-        });
+        App.start(() -> CommandLine.main(args));
     }
 }
 ~~~
@@ -136,8 +134,12 @@ drop:model Person
 اذا اردت ادخال بيانات الى قاعدة البيانات يمكنك انشاء كائن ثم استدعا الدالة ```save()``` منه كالتالي : 
 
 ~~~java
-Person person = new Person(1, "Asem");
-person.save();
+public class Main{
+    public static void main(String[] args) {
+        Person person = new Person(1, "Asem");
+        person.save();
+    }
+}
 ~~~
 
 تم حفظ البيانات في قاعدة البيانات .
@@ -145,20 +147,32 @@ person.save();
 استعمل الدالة ```find(Object key)``` او ```getAll()``` لجلب البيانات من قاعدة البيانات : 
 
 ```java
-Person person = new Person();
-person = person.find(1);
+public class Main{
+    public static void main(String[] args) {
+        Person person = new Person();
+        person = person.find(1);
+    }
+}
 ```
 
 الدالة ```find``` تقوم بجلب البيانات من القاعدة وتقوم بارجاع كائن مليئ بالبيانات كما في المثال خزنا قيمته في person نفسه ولاحظ ان انشاء الكائن هو فقط لكي نستطيع استخدام الدالة ```find``` ويمكن استبدال الامر السابق بالتالي : 
 
 ```java 
-Person person = (Person) Model.of(Person.class).find(1);
+public class Main {
+    public static void main(String[] args) {
+        Person person = (Person) Model.of(Person.class).find(1);
+    }
+}
 ```
 
 او :
 
 ```java
-person = Model.find(Person.class, 1);
+public class Main {
+    public static void main(String[] args) {
+        person = Model.find(Person.class, 1);
+    }
+}
 ```
 
 استعمل الدالة ```toJson()``` لتحويل النص الى json لطباعته .
@@ -171,20 +185,20 @@ Command.println(person.toJson());
 
 ```json
 {
-   id:1,
-   name:Asem
+   "id" : 1,
+   "name" : "Asem"
 }
 ```
 
 ## مرجع شامل للدوال التي يمكنك استعمالها
 
-|اسم الدالة| وظيفتها|
-|---|---|
-|```find(key)``` | جلب البيانات من قاعدة البيانات اعتماداً على المفتاح الرئيسي الذي تم تحديده في الفئة باستخدام @PrimaryKey()|
-|```getAll()```| جلب كل الحقول المخزنة في القاعدة وتعيد ```ArrayList``` تحتوي على كائنات من من نفس نوع الفئة التي استدعتها|
-|```delete()```| حذف البيانات من قاعدة البيانات اعتماداً على قيمة محتوى المفتاح الرئيسي|
-|```factory()```| جلب كائن من كلاس المصنع ، هذا الكلاس يمكنك انشائه باستخدام الامر ```make:factory Person```|
-|```seeder()```| جلب كائن من كلاس البذر ، هذا الكلاس يمكنك انشائه باستخدام الامر ```make:seeder Person```|
+| اسم الدالة      | وظيفتها                                                                                                    |
+|-----------------|------------------------------------------------------------------------------------------------------------|
+| ```find(key)``` | جلب البيانات من قاعدة البيانات اعتماداً على المفتاح الرئيسي الذي تم تحديده في الفئة باستخدام @PrimaryKey() |
+| ```getAll()```  | جلب كل الحقول المخزنة في القاعدة وتعيد ```ArrayList``` تحتوي على كائنات من من نفس نوع الفئة التي استدعتها  |
+| ```delete()```  | حذف البيانات من قاعدة البيانات اعتماداً على قيمة محتوى المفتاح الرئيسي                                     |
+| ```factory()``` | جلب كائن من كلاس المصنع ، هذا الكلاس يمكنك انشائه باستخدام الامر ```make:factory Person```                 |
+| ```seeder()```  | جلب كائن من كلاس البذر ، هذا الكلاس يمكنك انشائه باستخدام الامر ```make:seeder Person```                   |
 
 ## مصانع البيانات
 
@@ -205,11 +219,16 @@ make:factory Person
 ستجد انه تم اضافة constructor الى ```Person``` :
 
 ```java
-public Person(String name, int id, String email){
-    this.name = name;
-    this.id = id;
-    this.email = email;
+import javabaseproject.javabase.core.database.models.Model;
+
+public class Person extends Model<Person>{
+    public Person(String name, int id, String email) {
+        this.name = name;
+        this.id = id;
+        this.email = email;
+    }
 }
+
 ```
 
 وتم اضافة ملف جديد في ```database.factories``` باسم ```PersonFactory``` ويحتوي على :
@@ -259,9 +278,13 @@ start:seeder Person
 وستحصل على 10 صفوف عشوائية البيانات في قاعدة البيانات جرب استدعيها باستعمال الدالة ```getAll()``` :
 
 ~~~java
-Model.of(User.class)
-    .getAll().stream()
-    .forEach(item -> Command.println(item.toJson()));
+public class Main{
+    public static void main(String[] args) {
+        Model.of(User.class)
+            .getAll().stream()
+            .forEach(item -> Command.println(item.toJson()));
+    }
+}
 ~~~
 
 ## الطباعة
@@ -269,20 +292,24 @@ Model.of(User.class)
 لاحظ اننا نستعمل ```Command.println``` للطباعة وهذا يجعلك تلون المخرجات كما تريد كالتالي :
 
 ~~~java
-Command.println("r{Hello}, World");
+public class Main {
+    public static void main(String[] args) {
+        Command.println("r{Hello}, World");
+    }
+}
 ~~~
 
 سيتم طباعة الكلمة ```Hello```  باللون الاحمر ، انظر الجدول التالي :
 
-|اللون | لون النص | لون الخلفية|
-|---|---|---|
-| احمر | r{text} | r[text]|
-| اخضر | g{text} | g[text]|
-| اصفر | y{text} | y[text]|
-| ازرق | b{text} | b[text]|
-| بنفسحي | p{text} | p[text]|
-| اسود | k{text} | k[text]|
-| ابيض | w{text} | w[text]|
+| اللون  | لون النص | لون الخلفية |
+|--------|----------|-------------|
+| احمر   | r{text}  | r[text]     |
+| اخضر   | g{text}  | g[text]     |
+| اصفر   | y{text}  | y[text]     |
+| ازرق   | b{text}  | b[text]     |
+| بنفسحي | p{text}  | p[text]     |
+| اسود   | k{text}  | k[text]     |
+| ابيض   | w{text}  | w[text]     |
 
 <b>ملاحظة : </b> لا يمكن عمل تلوين متداخل .
 

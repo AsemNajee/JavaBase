@@ -1,6 +1,6 @@
 package javabaseproject.javabase.framework.generators;
 
-import javabaseproject.javabase.config.ENV;
+import javabaseproject.ENV;
 import javabaseproject.javabase.config.STATIC;
 import javabaseproject.javabase.core.database.models.Model;
 import javabaseproject.javabase.core.recorder.Recorder;

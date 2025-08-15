@@ -1,6 +1,6 @@
 package javabaseproject.javabase.lang;
 
-import javabaseproject.javabase.config.ENV;
+import javabaseproject.ENV;
 import javabaseproject.javabase.lang.en.EnglishFakeData;
 
 public class FakeData {

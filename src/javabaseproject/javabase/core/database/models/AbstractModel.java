@@ -14,6 +14,7 @@ import java.lang.reflect.InvocationTargetException;
 import javabaseproject.javabase.core.database.DBMS;
 import javabaseproject.javabase.core.database.querybuilders.Build;
 import javabaseproject.javabase.core.database.statements.StatementBuilder;
+import javabaseproject.javabase.core.recorder.Types;
 
 /**
  * Abstract model is the core class in this framework
@@ -158,7 +159,13 @@ public abstract class AbstractModel<T extends Model<T>> {
         for(var field : clazz.getDeclaredFields()){
             try {
                 field.setAccessible(true);
-                result.append("\n\t").append(field.getName()).append(":").append(field.get(this)).append(",");
+                result.append("\n\t\"").append(field.getName()).append("\" : ");
+                if(FieldController.getFieldType(field).equals(Types.STRING)){
+                    result.append("\"").append(field.get(this)).append("\"");
+                }else{
+                    result.append(field.get(this));
+                }
+                result.append(",");
                 field.setAccessible(false);
             } catch (IllegalAccessException e) {
                 throw new RuntimeException(e);

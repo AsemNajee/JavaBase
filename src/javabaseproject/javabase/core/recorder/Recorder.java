@@ -88,12 +88,12 @@ public class Recorder {
     private static RecordedField filterField(Field field) {
         return new RecordedField(
                 field.getName(),
-                getFieldType(field),
+                FieldController.getFieldType(field),
                 getFieldConstraints(field)
         );
     }
     
-    private static void setPrimaryKey(Class<? extends  Model> clazz, RecordedClass cls){
+    private static void setPrimaryKey(Class<? extends  Model<?>> clazz, RecordedClass cls){
         if(clazz.isAnnotationPresent(PrimaryKey.class)){
             cls.setPrimaryKey(cls.getField(clazz.getAnnotation(PrimaryKey.class).value()));
             cls.getField(cls.getPrimaryKey().getName()).addConstraint(Constraints.PRIMARY_KEY);
@@ -102,19 +102,6 @@ public class Recorder {
                 cls.setPrimaryKey(cls.getField("id"));
             }
         }
-    }
-    
-    private static Types getFieldType(Field field){
-        String[] pathToAnnotationType = field.getAnnotatedType().toString().split("\\.");
-        return switch(pathToAnnotationType[pathToAnnotationType.length -1]){
-                    case "boolean"  -> Types.BOOLEAN;
-                    case "byte"     -> Types.BYTE;
-                    case "short"    -> Types.SHORT;
-                    case "int"      -> Types.INT;
-                    case "long"     -> Types.LONG;
-                    case "String" -> Types.STRING;
-                    default -> Types.STRING;
-        };
     }
     
     private static ArrayList<Constraints> getFieldConstraints(Field field){

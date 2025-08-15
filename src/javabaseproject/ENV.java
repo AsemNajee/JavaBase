@@ -1,4 +1,8 @@
-package javabaseproject.javabase.config;
+package javabaseproject;
+
+import javabaseproject.javabase.config.Drivers;
+import javabaseproject.javabase.config.Languages;
+
 /**
  * configuration file for your application
  * change your application settings and be carefully with this config

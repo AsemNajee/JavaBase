@@ -1,5 +1,6 @@
 package javabaseproject.javabase;
 
+import javabaseproject.Handler;
 import javabaseproject.Main;
 import javabaseproject.javabase.framework.commandline.*;
 import javabaseproject.javabase.framework.commandline.output.Console;
@@ -28,7 +29,7 @@ public class CommandLine {
                 Command.println(Console.help());
             }else
             if(inpc.equals("run")){
-                Main.main(args);
+                Handler.main(args);
             }else
             if(inpc.isCommandFor(ModelCommands.class)){
                 ModelCommands.handle(inpc.getMatcher().group("verb"), inpc.getMatcher().group("model"), inpc.getMatcher());

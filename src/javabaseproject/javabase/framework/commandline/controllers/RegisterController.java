@@ -1,6 +1,6 @@
 package javabaseproject.javabase.framework.commandline.controllers;
 
-import javabaseproject.javabase.config.ENV;
+import javabaseproject.ENV;
 import javabaseproject.javabase.framework.FileHandler;
 import javabaseproject.javabase.framework.FilePaths;
 

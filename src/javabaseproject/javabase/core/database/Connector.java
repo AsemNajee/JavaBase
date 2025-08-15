@@ -3,7 +3,7 @@ package javabaseproject.javabase.core.database;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import javabaseproject.javabase.config.ENV;
+import javabaseproject.ENV;
 
 /**
  * 

@@ -22,7 +22,7 @@ public Person(String name, int id){
     protected int id;
     @Unique
     protected String name;
-    protected String email;
+    private String email;
 
     // Don't delete this constructor please (: it will cause a problem
     public Person(){}

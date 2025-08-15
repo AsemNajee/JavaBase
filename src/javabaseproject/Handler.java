@@ -1,7 +1,6 @@
 package javabaseproject;
 
 import javabaseproject.javabase.App;
-import javabaseproject.javabase.CommandLine;
 
 /**
  * Entry point for the application please start from here and don't run any other files
@@ -9,9 +8,6 @@ import javabaseproject.javabase.CommandLine;
  */
 public class Handler {
     public static void main(String[] args) throws Exception {
-//        call your main method inside the lambda
-        App.start(() -> {
-            CommandLine.main(args);
-        });
+        App.start(() -> Main.main(args));
     }
 }

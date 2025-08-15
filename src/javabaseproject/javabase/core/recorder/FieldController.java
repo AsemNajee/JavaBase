@@ -37,4 +37,17 @@ public class FieldController {
         );
         field.setAccessible(false);
     }
+
+    public static Types getFieldType(Field field){
+        String[] pathToAnnotationType = field.getAnnotatedType().toString().split("\\.");
+        return switch(pathToAnnotationType[pathToAnnotationType.length -1]){
+            case "boolean"  -> Types.BOOLEAN;
+            case "byte"     -> Types.BYTE;
+            case "short"    -> Types.SHORT;
+            case "int"      -> Types.INT;
+            case "long"     -> Types.LONG;
+            case "String" -> Types.STRING;
+            default -> Types.STRING;
+        };
+    }
 }

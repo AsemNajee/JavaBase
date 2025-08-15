@@ -12,6 +12,7 @@
             <file>file:/D:/InteljiProjects/JavaBase/src/javabaseproject/javabase/App.java</file>
             <file>file:/D:/InteljiProjects/JavaBase/src/javabaseproject/javabase/core/database/Connector.java</file>
             <file>file:/D:/InteljiProjects/JavaBase/src/javabaseproject/javabase/core/annotations/ForeignKey.java</file>
+            <file>file:/D:/InteljiProjects/JavaBase/src/javabaseproject/database/models/User.java</file>
             <file>file:/D:/InteljiProjects/JavaBase/src/javabaseproject/javabase/core/annotations/Unique.java</file>
             <file>file:/D:/InteljiProjects/JavaBase/src/javabaseproject/javabase/framework/commandline/DatabaseCommands.java</file>
             <file>file:/D:/InteljiProjects/JavaBase/manifest.mf</file>
@@ -22,6 +23,7 @@
             <file>file:/D:/InteljiProjects/JavaBase/src/javabaseproject/javabase/framework/commandline/InputCommand.java</file>
             <file>file:/D:/InteljiProjects/JavaBase/src/javabaseproject/javabase/core/database/Migration.java</file>
             <file>file:/D:/InteljiProjects/JavaBase/src/javabaseproject/javabase/core/annotations/NotNull.java</file>
+            <file>file:/D:/InteljiProjects/JavaBase/src/javabaseproject/Handler.java</file>
         </group>
     </open-files>
 </project-private>

@@ -1,6 +1,6 @@
 package javabaseproject.javabase.framework;
 
-import javabaseproject.javabase.config.ENV;
+import javabaseproject.ENV;
 
 import java.io.File;
 

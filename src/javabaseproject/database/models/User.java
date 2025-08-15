@@ -40,6 +40,10 @@ public class User extends Model<User>{
         return name;
     }
 
+    /**
+     * set the password as hidden value,
+     * that hidden will not be shown if you use {@code user.toJson()}
+     */
     @Override
     public String[] hidden(){
         return new String[]{
