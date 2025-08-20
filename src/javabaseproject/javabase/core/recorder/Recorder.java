@@ -63,17 +63,17 @@ public class Recorder {
         if(FileHandler.of(FilePaths.getFactoryPath(modelName)).exists()){
             cls.setFactory((Factory) Class.forName(FilePaths.getFactoriesPackage() + "." + modelName + "Factory" ).getConstructor().newInstance());
         }
-        filterAllFields(clazz, cls);
-        filterAllFields(clazz.getSuperclass(), cls);
+        filterAllFields(clazz, cls, false);
+        filterAllFields(clazz.getSuperclass(), cls, true);
         setPrimaryKey(clazz, cls);
         modelsAsKeyValue.put(clazz.getName(), cls);
         return cls;
     }
     
-    private static void filterAllFields(Class clazz, RecordedClass cls) {
+    private static void filterAllFields(Class clazz, RecordedClass cls, boolean isParent) {
         for(Field f : clazz.getDeclaredFields()){
             if(isFieldAcceptable(f)){
-                RecordedField rf = filterField(f);
+                RecordedField rf = filterField(f, isParent);
                 cls.addField(rf.getName(), rf);
             }
         }
@@ -85,11 +85,12 @@ public class Recorder {
      * @param field
      * @return 
      */
-    private static RecordedField filterField(Field field) {
+    private static RecordedField filterField(Field field, boolean isFromParent) {
         return new RecordedField(
                 field.getName(),
                 FieldController.getFieldType(field),
-                getFieldConstraints(field)
+                getFieldConstraints(field),
+                isFromParent
         );
     }
     
@@ -132,7 +133,7 @@ public class Recorder {
         return f.getAnnotatedType().toString().matches("^[A-Za-z0-9.]*(String|int|float|long|byte|short|boolean)$")
                 && f.accessFlags().size() == 1
                 && f.accessFlags().stream()
-                        .filter(m -> m == AccessFlag.PROTECTED)
+                        .filter(m -> m == AccessFlag.PROTECTED || m == AccessFlag.PRIVATE)
                         .count() == f.accessFlags().size();
     }
 }

@@ -3,6 +3,7 @@ package javabaseproject;
 import javabaseproject.database.models.Person;
 import javabaseproject.database.models.User;
 import javabaseproject.javabase.core.database.models.Model;
+import javabaseproject.javabase.core.recorder.Recorder;
 import javabaseproject.javabase.framework.commandline.Command;
 
 /**
@@ -11,8 +12,9 @@ import javabaseproject.javabase.framework.commandline.Command;
  */
 public class Main {
     public static void main(String[] args) throws Exception {
+        Test.main(args);
         Command.println("... Hello From b{Buzog} ^_^");
-        User user = new User(1, "Asem");
+        User user = new User(1, "Asem", 20);
         Command.println(user.toJson()); // print the user
     }
 }

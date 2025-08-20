@@ -21,6 +21,13 @@ public class FieldController {
         return value;
     }
 
+    public static Object get(String field, Model<? extends Model<?>> instance) throws NoSuchFieldException, IllegalAccessException {
+        return get(
+                instance.getClass().getDeclaredField(field),
+                instance
+        );
+    }
+
     public static void set(Field field, RecordedClass.RecordedField rfield, ResultSet result, Model<? extends Model<?>> instance) throws SQLException, IllegalAccessException {
         field.setAccessible(true);
         field.set(instance, switch(rfield.getType())

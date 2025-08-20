@@ -97,7 +97,7 @@ public class RecordedClass {
 
     @Override
     public String toString() {
-        return "RecordedClass{" + "name=" + name + ", clazz=" + clazz + ", fields=" + fields + '}';
+        return "\nRecordedClass{\n" + "\tname=" + name + ", \n\tclazz=" + clazz + ", \n\tfields=" + fields + "\n}";
     }
 
     /**
@@ -108,15 +108,21 @@ public class RecordedClass {
         private String name;
         private Types type;
         private ArrayList<Constraints> constraints;
+        private boolean parentField;
 
         public RecordedField() {
             constraints = new ArrayList<>();
         }
 
-        public RecordedField(String name, Types type, ArrayList<Constraints> constraints) {
+        public RecordedField(String name, Types type, ArrayList<Constraints> constraints, boolean parentField) {
             this.name = name;
             this.type = type;
             this.constraints = constraints;
+            this.parentField = parentField;
+        }
+
+        public RecordedField(String name, Types type, ArrayList<Constraints> constraints){
+            this(name, type, constraints, false);
         }
         
         public RecordedField addConstraint(Constraints cons){
@@ -132,13 +138,17 @@ public class RecordedClass {
             return type;
         }
 
+        public boolean isParentField() {
+            return parentField;
+        }
+
         public ArrayList<Constraints> getConstraints(){
             return constraints;
         }
 
         @Override
         public String toString() {
-            return "RecordedField{" + "name=" + name + ", type=" + type + ", constraints=" + constraints + '}';
+            return "RecordedField{" + "\n\t\tname=g{" + name + "}, \n\t\ttype=g{" + type + "}, \n\t\tconstraints=g{" + constraints + "}, \n\t\tisParentField=b{" + parentField + "}\n}";
         }
     }
 }

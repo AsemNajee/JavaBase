@@ -1,6 +1,7 @@
 package javabaseproject.javabase.core.database.statements;
 
 import javabaseproject.javabase.core.recorder.FieldController;
+import javabaseproject.javabase.core.recorder.RecordedClass;
 import javabaseproject.javabase.core.recorder.Recorder;
 import javabaseproject.javabase.core.database.models.Model;
 import javabaseproject.javabase.core.recorder.Types;
@@ -25,11 +26,17 @@ public class ParameterFiller {
             throw new SQLException("parameter count is not the same with placeholders cound");
         }
         for(String fname : params){
-            Field field = item.getClass().getDeclaredField(fname);
+            RecordedClass.RecordedField rField = Recorder.getRecordedClass(item.getClass()).getField(fname);
+            Field field;
+            if(rField.isParentField()){
+                field = item.getClass().getSuperclass().getDeclaredField(fname);
+            }else{
+                field = item.getClass().getDeclaredField(fname);
+            }
             Object value = FieldController.get(field, item);
             bindParam(
                     stmt,
-                    Recorder.getRecordedClass(item.getClass()).getFields().get(fname).getType(),
+                    Recorder.getRecordedClass(item.getClass()).getField(fname).getType(),
                     value,
                     i
             );

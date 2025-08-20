@@ -154,19 +154,26 @@ public abstract class AbstractModel<T extends Model<T>> {
      * you can help by create a pull request
      * @return string of data as json
      */
-    public String toJson() {
+    public String toJson(){
         StringBuilder result = new StringBuilder("{");
-        for(var field : clazz.getDeclaredFields()){
+        for(var fname : Recorder.getRecordedClass(this.clazz).getFields().keySet()){
+            RecordedField rField = Recorder.getRecordedClass(clazz).getField(fname);
             try {
-                field.setAccessible(true);
-                result.append("\n\t\"").append(field.getName()).append("\" : ");
-                if(FieldController.getFieldType(field).equals(Types.STRING)){
-                    result.append("\"").append(field.get(this)).append("\"");
+                Field field;
+                result.append("\n\t\"").append(fname).append("\" : ");
+                if(rField.isParentField()){
+                    field = this.clazz.getSuperclass().getDeclaredField(fname);
                 }else{
-                    result.append(field.get(this));
+                    field = this.clazz.getDeclaredField(fname);
+                }
+                if(rField.getType() == Types.STRING){
+                    result.append("\"").append(FieldController.get(field, (Model)this)).append("\"");
+                }else{
+                    result.append((FieldController.get(field, (Model)this)));
                 }
                 result.append(",");
-                field.setAccessible(false);
+            } catch (NoSuchFieldException e) {
+                throw new RuntimeException(e);
             } catch (IllegalAccessException e) {
                 throw new RuntimeException(e);
             }
