@@ -57,16 +57,6 @@ public class Model<T extends Model<T>> extends AbstractModel<T> {
     }
 
     /**
-     * select the hidden fields, <br />
-     * <b>notice that :</b> the hidden fields will not be filled
-     * in the object when you call {@code find(key)} or {@code getAll()}
-     * @return array of string contains the hidden fields of this object
-     */
-    public String[] hidden(){
-        return new String[]{};
-    }
-
-    /**
      * get the factory of this model
      * @return instance of factory of this model
      */

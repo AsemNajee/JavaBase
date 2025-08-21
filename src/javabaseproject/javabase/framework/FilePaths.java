@@ -32,6 +32,13 @@ public class FilePaths {
     public static String toPackage(String path){
         return path.replace(File.separator, ".");
     }
+    public static String toPath(String packag){
+        return toPath(packag, File.separator);
+    }
+
+    public static String toPath(String packag, String separator){
+        return packag.replace(".", separator);
+    }
     public static String basePath(String path){
         return System.getProperty("user.dir")
                 + File.separator + "src"

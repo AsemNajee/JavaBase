@@ -1,6 +1,7 @@
 package javabaseproject.javabase.framework.commandline.controllers;
 
 import javabaseproject.javabase.App;
+import javabaseproject.javabase.Register;
 import javabaseproject.javabase.core.database.models.Model;
 import javabaseproject.javabase.core.recorder.Recorder;
 import javabaseproject.javabase.framework.FileHandler;
@@ -32,7 +33,7 @@ public class SeederController {
     }
 
     public static void seed() throws Exception {
-        for(var model : Recorder.getModels().values()){
+        for(var model : Register.getModels().values()){
             if(model.getSeeder() != null)
                 seed(model.getName());
         }

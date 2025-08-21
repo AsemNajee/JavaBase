@@ -65,7 +65,7 @@ public class ENV {
     /**
      * this set your application logs and errors and confirms messages language
      * it's not ready for now and need to implement
-     * {@see javabaseproject.javabase.lang.FakeData}
+     * {@see javabaseproject.javabase.core.database.faker.FakeData}
      */
     public static final Languages LANGUAGE;
 }

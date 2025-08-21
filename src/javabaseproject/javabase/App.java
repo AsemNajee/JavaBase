@@ -12,7 +12,7 @@ import javabaseproject.javabase.framework.exceptions.ExceptionHandler;
 public class App {
     public static void start(CheckedRunnable fn) throws Exception {
         ExceptionHandler.handle(() -> {
-            MyModels.getRegisteredModels();
+            Register.getRegisteredModels();
             Connector.start();
             fn.run();
             Connector.close();

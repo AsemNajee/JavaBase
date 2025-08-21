@@ -8,7 +8,6 @@ public class UserFactory extends Factory<User>{
     public User item() {
         return new User(
                 
-			Fake.sentence(),
 			Fake.name(),
 			Fake.randomNumber()
         );

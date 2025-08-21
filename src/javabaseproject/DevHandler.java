@@ -8,8 +8,6 @@ import javabaseproject.javabase.CommandLine;
  */
 public class DevHandler {
     public static void main(String[] args) throws Exception {
-        App.start(() -> {
-            CommandLine.main(args);
-        });
+        App.start(() -> CommandLine.main(args));
     }
 }

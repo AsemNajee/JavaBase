@@ -12,9 +12,9 @@ import java.sql.SQLException;
  */
 public class FieldController {
     public static Object get(Field field, Model<? extends Model<?>> instance) throws IllegalAccessException {
-        if(instance.isHidden(field)){
-            return null;
-        }
+//        if(instance.isHidden(field)){
+//            return null;
+//        }
         field.setAccessible(true);
         Object value = field.get(instance);
         field.setAccessible(false);
@@ -28,21 +28,59 @@ public class FieldController {
         );
     }
 
-    public static void set(Field field, RecordedClass.RecordedField rfield, ResultSet result, Model<? extends Model<?>> instance) throws SQLException, IllegalAccessException {
-        field.setAccessible(true);
-        field.set(instance, switch(rfield.getType())
-            {
-                case INT -> result.getInt(field.getName());
-                case LONG -> result.getLong(field.getName());
-                case STRING -> result.getString(field.getName());
-                case BOOLEAN -> result.getBoolean(field.getName());
-                case BYTE -> result.getByte(field.getName());
-                case SHORT -> result.getShort(field.getName());
-                case DOUBLE -> result.getDouble(field.getName());
-                case FLOAT -> result.getFloat(field.getName());
-            }
+    /**
+     * this is used when fetching data from database to set field value
+     * @param field
+     * @param result
+     * @param instance
+     * @throws SQLException
+     * @throws IllegalAccessException
+     */
+    public static void set(Field field, ResultSet result, Model<? extends Model<?>> instance) throws SQLException, IllegalAccessException {
+        var rfield = Recorder.getRecordedClass(instance.getClass()).getField(field.getName());
+        set(
+                field,
+                switch(rfield.getType())
+                {
+                    case INT -> result.getInt(field.getName());
+                    case LONG -> result.getLong(field.getName());
+                    case STRING -> result.getString(field.getName());
+                    case BOOLEAN -> result.getBoolean(field.getName());
+                    case BYTE -> result.getByte(field.getName());
+                    case SHORT -> result.getShort(field.getName());
+                    case DOUBLE -> result.getDouble(field.getName());
+                    case FLOAT -> result.getFloat(field.getName());
+                },
+                instance
         );
+    }
+
+    private static void set(Field field, Object value, Model<? extends Model<?>> instance) throws IllegalAccessException {
+        field.setAccessible(true);
+        field.set(instance, value);
         field.setAccessible(false);
+    }
+
+    /**
+     * this use to set a field value from string
+     * it's used in json when convert from json text to instance
+     * @param field
+     * @param value
+     * @param instance
+     * @throws IllegalAccessException
+     */
+    public static void set(Field field, String value, Model<? extends Model<?>> instance) throws IllegalAccessException {
+        var rfield = Recorder.getRecordedClass(instance.getClass()).getField(field.getName());
+        set(field, switch (rfield.getType()){
+            case STRING -> value;
+            case INT -> Integer.parseInt(value);
+            case FLOAT -> Float.parseFloat(value);
+            case LONG -> Long.parseLong(value);
+            case SHORT -> Short.parseShort(value);
+            case BYTE -> Byte.parseByte(value);
+            case DOUBLE -> Double.parseDouble(value);
+            case BOOLEAN -> Boolean.parseBoolean(value);
+        }, instance);
     }
 
     public static Types getFieldType(Field field){

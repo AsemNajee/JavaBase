@@ -1,15 +1,20 @@
 package javabaseproject.javabase.core.database.models;
 
+import java.lang.reflect.AccessFlag;
+import java.lang.reflect.Type;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import javabaseproject.javabase.Register;
+import javabaseproject.javabase.core.database.Json;
 import javabaseproject.javabase.core.recorder.FieldController;
 import javabaseproject.javabase.core.recorder.Recorder;
 import static javabaseproject.javabase.core.recorder.RecordedClass.RecordedField;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.util.regex.Pattern;
 
 import javabaseproject.javabase.core.database.DBMS;
 import javabaseproject.javabase.core.database.querybuilders.Build;
@@ -27,29 +32,6 @@ public abstract class AbstractModel<T extends Model<T>> {
      * the class of the model that own the instance
      */
     private final Class<? extends Model<?>> clazz;
-
-    /**
-     * hidden fields from the database
-     * this method is set the fields which is security and may not be shown
-     * <h2>Example</h2>
-     * in your application if you have model for users (id, name, email, password)
-     * the password field is secure, and you should not show it in any case
-     * you must add it to the hidden in your model
-     * <br />
-     * {@code Users.java}
-     * <br />
-     * <pre>
-     * <code>
-     * public String[] hidden(){
-     *    return new String []{
-     *        "password"
-     *      };
-     *  }
-     * </code>
-     * </pre>
-     * @return array of string contains the hidden fields
-     */
-    public abstract String[] hidden();
 
     protected AbstractModel(){
         this.clazz = (Class<? extends Model<?>>) this.getClass();
@@ -116,7 +98,7 @@ public abstract class AbstractModel<T extends Model<T>> {
      */
     private T fetch(ResultSet result) throws SQLException, IllegalArgumentException, IllegalAccessException, NoSuchFieldException, NoSuchMethodException, InstantiationException, InvocationTargetException{
         T item;
-        HashMap<String, RecordedField> fields = Recorder.getModels().get(this.getClass().getName()).getFields();
+        HashMap<String, RecordedField> fields = Recorder.getRecordedClass(clazz).getFields();
         item = (T) clazz.getDeclaredConstructor().newInstance();
         for(var field : fields.keySet()){
             Class cls;
@@ -125,7 +107,7 @@ public abstract class AbstractModel<T extends Model<T>> {
             }else{
                 cls = clazz;
             }
-            FieldController.set(cls.getDeclaredField(field), fields.get(field), result, item);
+            FieldController.set(cls.getDeclaredField(field), result, item);
         }
         return item;
     }
@@ -160,12 +142,15 @@ public abstract class AbstractModel<T extends Model<T>> {
             RecordedField rField = Recorder.getRecordedClass(clazz).getField(fname);
             try {
                 Field field;
-                result.append("\n\t\"").append(fname).append("\" : ");
                 if(rField.isParentField()){
                     field = this.clazz.getSuperclass().getDeclaredField(fname);
                 }else{
                     field = this.clazz.getDeclaredField(fname);
                 }
+                if(isHidden(field)){
+                    continue;
+                }
+                result.append("\n\t\"").append(fname).append("\" : ");
                 if(rField.getType() == Types.STRING){
                     result.append("\"").append(FieldController.get(field, (Model)this)).append("\"");
                 }else{
@@ -183,17 +168,17 @@ public abstract class AbstractModel<T extends Model<T>> {
         return result.toString();
     }
 
+    public T fromJson(String jsonText) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchFieldException {
+        Json json = new Json(jsonText);
+        return json.getObject((Class<T>) clazz);
+    }
+
     /**
-     * check if the field is hidden from {@link this.hidden()}
+     * check if the field is hidden, all private fields are hidden
      * @param field the field to check
      * @return status of hidden
      */
     public boolean isHidden(Field field){
-        for (var hidden : hidden()){
-            if(field.getName().equals(hidden)){
-                return true;
-            }
-        }
-        return false;
+        return field.accessFlags().contains(AccessFlag.PRIVATE);
     }
 }

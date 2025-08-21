@@ -1,6 +1,7 @@
 package javabaseproject.javabase.framework.commandline.controllers;
 
 import javabaseproject.ENV;
+import javabaseproject.javabase.Register;
 import javabaseproject.javabase.core.recorder.RecordedClass;
 import javabaseproject.javabase.core.recorder.Recorder;
 import javabaseproject.javabase.core.database.Connector;
@@ -21,7 +22,6 @@ public class ModelController {
     public static void make(String modelName, boolean withFactory, String key, String keyType) throws IOException {
         String path;
         if((path = createModelFile(modelName, key, keyType)) != null) {
-            RegisterController.register(modelName);
             if (withFactory) {
                 FactoryController.make(modelName, true);
                 SeederController.make(modelName);
@@ -37,11 +37,10 @@ public class ModelController {
             return;
         }
         dropModelTable(rclass);
-        RegisterController.unregister(model);
         if(deleteModelFile){
             deleteModelFile(model); // delete the model file from the project structure
         }
-        Recorder.getModels().remove(model);
+        Register.getModels().remove(model);
         Command.println("model dropped {" + Style.textColor(model, Colors.RED) + "} successfully");
     }
 

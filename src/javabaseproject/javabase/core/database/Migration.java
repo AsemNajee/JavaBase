@@ -2,8 +2,9 @@ package javabaseproject.javabase.core.database;
 
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
-import javabaseproject.javabase.MyModels;
+
 import javabaseproject.ENV;
+import javabaseproject.javabase.Register;
 import javabaseproject.javabase.core.recorder.RecordedClass;
 import javabaseproject.javabase.core.database.querybuilders.Build;
 import javabaseproject.javabase.framework.commandline.Command;
@@ -20,7 +21,7 @@ public class Migration {
      * @throws SQLException 
      */
     public static void migrateAll() throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
-        var regModls = MyModels.getRegisteredModels();
+        var regModls = Register.getRegisteredModels();
         String tables = "";
         for(RecordedClass rclass : regModls.values()){
             if(migrate(rclass)){

@@ -2,9 +2,7 @@ package javabaseproject.javabase.framework.commandline;
 
 import java.util.regex.Matcher;
 
-import javabaseproject.javabase.App;
 import javabaseproject.javabase.framework.commandline.controllers.ModelController;
-import javabaseproject.javabase.framework.commandline.controllers.RegisterController;
 
 public class ModelCommands extends Command{
     private static Matcher command;
@@ -24,9 +22,6 @@ public class ModelCommands extends Command{
                         modelName,
                         command.group("force") != null
                 );
-            }
-            case "register" -> {
-                RegisterController.register(modelName);
             }
         }
     }

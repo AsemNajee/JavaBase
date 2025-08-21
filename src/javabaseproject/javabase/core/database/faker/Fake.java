@@ -1,11 +1,16 @@
 package javabaseproject.javabase.core.database.faker;
 
-import javabaseproject.javabase.lang.FakeData;
+import java.util.Random;
 
 /**
  * fake and random data for help developer in factories and where he wants :)
  */
 public class Fake {
+
+    private static Random random;
+    static {
+        random = new Random();
+    }
     /**
      * random name of person
      * all names are for men
@@ -22,9 +27,7 @@ public class Fake {
      * @return random email with random domain
      */
     public static String email(){
-        return email(random(
-                "gmail.com", "outlook.com"
-        ));
+        return email(random("gmail.com", "outlook.com"));
     }
 
     /**
@@ -42,9 +45,7 @@ public class Fake {
      * @return random sentence
      */
     public static String sentence(){
-        return random(
-                "", ""
-        );
+        return random(FakeData.sentences());
     }
 
     /**
@@ -63,7 +64,7 @@ public class Fake {
         return randomNumber(0, Integer.MAX_VALUE);
     }
     public static int randomNumber(int min, int max){
-        return (int)randomFloat(min, max);
+        return random.nextInt(min, max);
     }
 
     public static short randomShort(){
@@ -84,7 +85,8 @@ public class Fake {
         return randomFloat(0, Float.MAX_VALUE);
     }
     public static float randomFloat(float min, float max){
-        return (float)((Math.random() * (max - min)) + min);
+        return random.nextFloat(min, max);
+//        return (float)((Math.random() * (max - min)) + min);
     }
 
     public static boolean randomBoolean(){

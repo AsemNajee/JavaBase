@@ -110,19 +110,26 @@ public class RecordedClass {
         private ArrayList<Constraints> constraints;
         private boolean parentField;
 
+        private boolean hidden;
+
         public RecordedField() {
             constraints = new ArrayList<>();
         }
 
-        public RecordedField(String name, Types type, ArrayList<Constraints> constraints, boolean parentField) {
+        public RecordedField(String name, Types type, ArrayList<Constraints> constraints, boolean parentField, boolean isHidden) {
             this.name = name;
             this.type = type;
             this.constraints = constraints;
             this.parentField = parentField;
+            this.hidden = isHidden;
         }
 
         public RecordedField(String name, Types type, ArrayList<Constraints> constraints){
             this(name, type, constraints, false);
+        }
+
+        public RecordedField(String name, Types type, ArrayList<Constraints> constraints, boolean isParent){
+            this(name, type, constraints, isParent, false);
         }
         
         public RecordedField addConstraint(Constraints cons){
@@ -140,6 +147,10 @@ public class RecordedClass {
 
         public boolean isParentField() {
             return parentField;
+        }
+
+        public boolean isHidden() {
+            return hidden;
         }
 
         public ArrayList<Constraints> getConstraints(){

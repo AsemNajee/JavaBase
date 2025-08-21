@@ -7,8 +7,7 @@ import javabaseproject.javabase.core.database.models.Model;
 
 @PrimaryKey("id")
 public class User extends Model<User>{
-    public User(String password, String name, int id){
-        this.password = password;
+	public User(String name, int id){
         this.name = name;
         this.id = id;
     }
@@ -16,17 +15,13 @@ public class User extends Model<User>{
     protected int id;
     @Unique
     protected String name;
-    protected String password;
-
-    private int age;
 
     // Don't delete this constructor please (: it will cause a problem
     public User(){}
 
-    public User(int id, String name, int age){
+    public User(int id, String name){
         this.id = id;
         this.name = name;
-        this.age = age;
     }
 
     public void setId(int id){
@@ -41,17 +36,6 @@ public class User extends Model<User>{
     }
     public String getName(){
         return name;
-    }
-
-    /**
-     * set the password as hidden value,
-     * that hidden will not be shown if you use {@code user.toJson()}
-     */
-    @Override
-    public String[] hidden(){
-        return new String[]{
-                "password"
-        };
     }
 
 // ... add more fields with protected access modifier

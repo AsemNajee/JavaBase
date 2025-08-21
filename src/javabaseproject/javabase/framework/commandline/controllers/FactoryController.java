@@ -1,6 +1,5 @@
 package javabaseproject.javabase.framework.commandline.controllers;
 
-import javabaseproject.javabase.core.recorder.Recorder;
 import javabaseproject.javabase.framework.FileHandler;
 import javabaseproject.javabase.framework.FilePaths;
 import javabaseproject.javabase.framework.commandline.Command;
@@ -21,7 +20,7 @@ public class FactoryController {
             FileHandler.of(FilePaths.getModelPath(modelName))
                     .write(modelContent.replaceAll(
                             "(public class .* extends Model<.*>\\{)",
-                            "$1\n" + ModelGenerator.constructorForAllFields(modelName))
+                            "$1\n\t" + ModelGenerator.constructorForAllFields(modelName))
                     );
         }
         Command.printf("g[Factory %sFactory Created Successfully.]", modelName);
