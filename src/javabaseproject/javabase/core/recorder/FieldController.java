@@ -36,7 +36,7 @@ public class FieldController {
      * @throws SQLException
      * @throws IllegalAccessException
      */
-    public static void set(Field field, ResultSet result, Model<? extends Model<?>> instance) throws SQLException, IllegalAccessException {
+    public static <M extends Model<M>> void set(Field field, ResultSet result, Model<M> instance) throws SQLException, IllegalAccessException {
         var rfield = Recorder.getRecordedClass(instance.getClass()).getField(field.getName());
         set(
                 field,

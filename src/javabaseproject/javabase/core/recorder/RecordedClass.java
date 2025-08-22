@@ -5,6 +5,7 @@ import javabaseproject.javabase.core.database.models.Model;
 import javabaseproject.javabase.core.database.Seeder;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
 /**
@@ -12,19 +13,19 @@ import java.util.HashMap;
  *
  * @author PC
  */
-public class RecordedClass {
+public class RecordedClass<T extends Model<T>> {
     private final String name;
     private final HashMap<String, RecordedField> fields;
     private RecordedField primary;
-    private Factory factory;
+    private Factory<T> factory;
     private Seeder seeder;
-    private final Class<? extends Model<?>> clazz;
+    private final Class<T> clazz;
 
-    public RecordedClass(String name, Class<? extends Model<?>> clazz) {
+    public RecordedClass(String name, Class<T> clazz) {
         this(name, new HashMap<>(), null, clazz);
     }
     
-    public RecordedClass(String name, HashMap<String, RecordedField> fields, RecordedField primary, Class<? extends Model<?>> clazz){
+    public RecordedClass(String name, HashMap<String, RecordedField> fields, RecordedField primary, Class<T> clazz){
         this.name = name;
         this.fields = fields;
         this.primary = primary;
@@ -46,7 +47,7 @@ public class RecordedClass {
     public RecordedField getPrimaryKey(){
         return primary;
     }
-    public Class<? extends Model<?>> getClazz(){
+    public Class<T> getClazz(){
         return clazz;
     }
     
@@ -58,11 +59,11 @@ public class RecordedClass {
         fields.put(key, value);
     }
 
-    public Factory getFactory() {
+    public Factory<T> getFactory() {
         return factory;
     }
 
-    public void setFactory(Factory factory) {
+    public void setFactory(Factory<T> factory) {
         this.factory = factory;
     }
 
@@ -80,17 +81,14 @@ public class RecordedClass {
      * @param field field name as string like its name in the class model
      * @param constraint constraint from Constraints Enum
      * @param more more constraints
-     * @return
      */
-    public RecordedClass constraint(String field, Constraints constraint, Constraints... more) {
+    public RecordedClass<T> constraint(String field, Constraints constraint, Constraints... more) {
         if (!fields.containsKey(field)) {
 //            throw an error
         }
         fields.get(field).constraints.add(constraint);
         if (more != null) {
-            for (Constraints c : more) {
-                fields.get(field).constraints.add(c);
-            }
+            Collections.addAll(fields.get(field).constraints, more);
         }
         return this;
     }
@@ -105,16 +103,12 @@ public class RecordedClass {
      */
     public static class RecordedField {
 
-        private String name;
-        private Types type;
-        private ArrayList<Constraints> constraints;
-        private boolean parentField;
+        private final String name;
+        private final Types type;
+        private final ArrayList<Constraints> constraints;
+        private final boolean parentField;
 
-        private boolean hidden;
-
-        public RecordedField() {
-            constraints = new ArrayList<>();
-        }
+        private final boolean hidden;
 
         public RecordedField(String name, Types type, ArrayList<Constraints> constraints, boolean parentField, boolean isHidden) {
             this.name = name;
@@ -145,6 +139,11 @@ public class RecordedClass {
             return type;
         }
 
+        /**
+         * check if the field is from the parent
+         * this help in inheritance
+         * @return if the field is from parent
+         */
         public boolean isParentField() {
             return parentField;
         }

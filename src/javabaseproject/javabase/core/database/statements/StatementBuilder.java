@@ -14,7 +14,7 @@ import java.sql.SQLException;
  */
 public class StatementBuilder {
 
-    public static PreparedStatement getSelectQueryForItemWithKey(Class<? extends Model<?>> clazz, Object key) throws SQLException, NoSuchFieldException, IllegalAccessException {
+    public static <M extends Model<M>> PreparedStatement getSelectQueryForItemWithKey(Class<M> clazz, Object key) throws SQLException, NoSuchFieldException, IllegalAccessException {
         String sql = Build.select(Recorder.getRecordedClass(clazz));
         var stmt = Connector.getConnection().prepareStatement(sql);
         ParameterFiller.bindParam(
@@ -23,20 +23,28 @@ public class StatementBuilder {
                 key, 1);
         return stmt;
     }
-    public static PreparedStatement getSelectQueryForAllItems(Class clazz) throws SQLException{
+    public static <M extends Model<M>> PreparedStatement getSelectQueryForAllItems(Class<M> clazz) throws SQLException{
         String sql = Build.selectAll(Recorder.getRecordedClass(clazz));
         return Connector.getConnection().prepareStatement(sql);
     }
-    public static PreparedStatement getInsertQueryForOneItem(Model<? extends Model<?>> item) throws SQLException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException{
+    public static <M extends Model<M>> PreparedStatement getInsertQueryForOneItem(Model<M> item) throws SQLException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException{
         String sql = Build.insert(Recorder.getRecordedClass(item.getClass()));
         var stmt = Connector.getConnection().prepareStatement(sql);
         ParameterFiller.fill(stmt, item);
         return stmt;
     }
-    public static PreparedStatement getDeleteQueryForOneItem(Model<? extends Model<?>> item) throws SQLException, NoSuchFieldException, IllegalAccessException {
+    public static <M extends Model<M>> PreparedStatement getDeleteQueryForOneItem(Model<M> item) throws SQLException, NoSuchFieldException, IllegalAccessException {
         String sql = Build.delete(Recorder.getRecordedClass(item.getClass()));
         var stmt = Connector.getConnection().prepareStatement(sql);
         ParameterFiller.fill(stmt, item, Recorder.getRecordedClass(item.getClass()).getPrimaryKey().getName());
+        return stmt;
+    }
+
+    public static PreparedStatement getSelectQueryForOneItemWithForeignKey(Class clazzOfForeignModel, Object foreignKey) throws SQLException {
+//        need to change select to selectWithForeignKey
+        String sql = Build.select(Recorder.getRecordedClass(clazzOfForeignModel));
+        var stmt = Connector.getConnection().prepareStatement(sql);
+        ParameterFiller.bindParam(stmt, Recorder.getRecordedClass(clazzOfForeignModel).getPrimaryKey().getType(), foreignKey, 1);
         return stmt;
     }
 }

@@ -1,12 +1,13 @@
 package javabaseproject.javabase.core.database.models;
 
+import javabaseproject.javabase.core.collections.ModelsCollection;
 import javabaseproject.javabase.core.database.Factory;
 import javabaseproject.javabase.core.database.Seeder;
+import javabaseproject.javabase.core.database.querybuilders.query.DB;
 import javabaseproject.javabase.core.recorder.Recorder;
 
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 /**
  * the parent model of all your models
@@ -41,7 +42,7 @@ public class Model<T extends Model<T>> extends AbstractModel<T> {
      */
     public static <R extends Model<R>> R find(Class<R> clazz, Object key) throws SQLException, NoSuchFieldException, InvocationTargetException, IllegalAccessException, NoSuchMethodException, InstantiationException, ClassNotFoundException {
         var t = clazz.getDeclaredConstructor().newInstance();
-        return (R) t.find(key);
+        return t.find(key);
     }
 
     /**
@@ -51,7 +52,7 @@ public class Model<T extends Model<T>> extends AbstractModel<T> {
      * @return collection of models of {@code clazz} class
      * @param <R> the result type
      */
-    public static <R extends Model<R>> ArrayList<R> getAll(Class<R> clazz) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException, SQLException, NoSuchFieldException {
+    public static <R extends Model<R>> ModelsCollection<R> getAll(Class<R> clazz) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException, SQLException, NoSuchFieldException {
         var t = clazz.getDeclaredConstructor().newInstance();
         return t.getAll();
     }
@@ -60,7 +61,7 @@ public class Model<T extends Model<T>> extends AbstractModel<T> {
      * get the factory of this model
      * @return instance of factory of this model
      */
-    public Factory factory(){
+    public Factory<T> factory(){
         return Recorder.getRecordedClass(this.getClass()).getFactory();
     }
 
@@ -77,7 +78,7 @@ public class Model<T extends Model<T>> extends AbstractModel<T> {
      * @param clazz type of the object will be returned
      * @return new instance of the object of {@code clazz}
      */
-    public static Model<? extends Model<?>> of(Class<? extends Model<?>> clazz) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+    public static <T extends Model<T>> T of(Class<T> clazz) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         return clazz.getDeclaredConstructor().newInstance();
     }
 
@@ -86,7 +87,11 @@ public class Model<T extends Model<T>> extends AbstractModel<T> {
      * @param model name of the class that the object will be returned
      * @return new instance of the object of {@code model} class
      */
-    public static Model<? extends Model<?>> of(String model) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
-        return (Model<? extends Model<?>>)Recorder.getRecordedClass(model).getClazz().getDeclaredConstructor().newInstance();
+    public static <T extends Model<T>> T of(String model) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+        return (T) Recorder.getRecordedClass(model).getClazz().getDeclaredConstructor().newInstance();
+    }
+
+    public DB<T> query(){
+        return new DB<>(Recorder.getRecordedClass(this.getClass()).getName());
     }
 }

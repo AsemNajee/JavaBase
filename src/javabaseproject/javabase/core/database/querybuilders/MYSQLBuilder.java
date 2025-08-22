@@ -1,5 +1,6 @@
 package javabaseproject.javabase.core.database.querybuilders;
 
+import javabaseproject.javabase.core.database.models.Model;
 import javabaseproject.javabase.core.recorder.RecordedClass;
 import javabaseproject.javabase.core.recorder.RecordedClass.RecordedField;
 
@@ -8,69 +9,66 @@ import javabaseproject.javabase.core.recorder.RecordedClass.RecordedField;
  * @author AsemNajee
  */
 public class MYSQLBuilder {
-    public static String createTableQuery(RecordedClass rclass){
+    public static <M extends Model<M>> String createTableQuery(RecordedClass<M> rclass){
         String tableName = rclass.getName();
-        String sql = "CREATE TABLE " + tableName.toUpperCase() + " (\n";
+        StringBuilder sql = new StringBuilder("CREATE TABLE " + tableName.toUpperCase() + " (\n");
         for(String k : rclass.getFields().keySet()){
             RecordedClass.RecordedField field = rclass.getFields().get(k);
-            sql += field.getName() + " " + 
-                   field.getType().getType() +
-                   filterConstraints(field) + ", \n";
+            sql.append(field.getName()).append(" ").append(field.getType().getType()).append(filterConstraints(field)).append(", \n");
         }
-        sql = sql.substring(0, sql.length() -3);
-        sql += "\n);";
-        return sql;
+        sql = new StringBuilder(sql.substring(0, sql.length() - 3));
+        sql.append("\n);");
+        return sql.toString();
     }
     
-    public static String insertQuery(RecordedClass rclass){
-        String fields = ""; 
+    public static <M extends Model<M>> String insertQuery(RecordedClass<M> rclass){
+        StringBuilder fields = new StringBuilder();
         for(String f : rclass.getFields().keySet()){
-            fields += f + ", ";
+            fields.append(f).append(", ");
         }
-        fields = fields.substring(0, fields.length() -2);
+        fields = new StringBuilder(fields.substring(0, fields.length() - 2));
         String sql = """
                      INSERT INTO {{table}} 
                         ({{fields}}) 
                      VALUES 
                         ({{values}});
                      """.replace("{{table}}", rclass.getName())
-                        .replace("{{fields}}", fields)
-                        .replace("{{values}}", fields.replaceAll("[A-Za-z]+", "?"));
+                        .replace("{{fields}}", fields.toString())
+                        .replace("{{values}}", fields.toString().replaceAll("[A-Za-z]+", "?"));
         return sql;
     }
     
-    public static String selectItemQuery(RecordedClass rclass){
+    public static <M extends Model<M>> String selectItemQuery(RecordedClass<M> rclass){
         return """
                 SELECT * FROM {{table}}
                 WHERE id = ?
                 """.replace("{{table}}", rclass.getName());
     }
 
-    public static String selectAllQuery(RecordedClass rclass){
+    public static <M extends Model<M>> String selectAllQuery(RecordedClass<M> rclass){
         return """
                 SELECT * FROM {{table}}
                 """.replace("{{table}}", rclass.getName());
     }
 
-    public static String deleteItemQuery(RecordedClass rclass) {
+    public static <M extends Model<M>> String deleteItemQuery(RecordedClass<M> rclass) {
         return """
                 DELETE FROM {{table}}
                 WHERE id = ?
                 """.replace("{{table}}", rclass.getName());
     }
 
-    public static String dropTable(RecordedClass rclass){
-        System.out.println(rclass.getName());
+    public static <M extends Model<M>> String dropTable(RecordedClass<M> rclass){
         return """  
                 DROP TABLE {{table}};
                 """.replace("{{table}}", rclass.getName());
     }
 
     private static String filterConstraints(RecordedField f){
-        String subSql = "";
+        StringBuilder subSql = new StringBuilder();
         for(var field : f.getConstraints()){
-            subSql += " " + field;
+            subSql.append(" ").append(field);
         }
-        return subSql;
+        return subSql.toString();
     }
 }

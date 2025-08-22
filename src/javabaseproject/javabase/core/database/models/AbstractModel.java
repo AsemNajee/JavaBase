@@ -1,23 +1,18 @@
 package javabaseproject.javabase.core.database.models;
 
 import java.lang.reflect.AccessFlag;
-import java.lang.reflect.Type;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
 
-import javabaseproject.javabase.Register;
-import javabaseproject.javabase.core.database.Json;
+import javabaseproject.javabase.core.collections.ModelsCollection;
+import javabaseproject.javabase.core.database.io.Fetcher;
+import javabaseproject.javabase.core.database.io.Json;
+import javabaseproject.javabase.core.interfaces.Jsonable;
 import javabaseproject.javabase.core.recorder.FieldController;
 import javabaseproject.javabase.core.recorder.Recorder;
 import static javabaseproject.javabase.core.recorder.RecordedClass.RecordedField;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.util.regex.Pattern;
 
-import javabaseproject.javabase.core.database.DBMS;
-import javabaseproject.javabase.core.database.querybuilders.Build;
 import javabaseproject.javabase.core.database.statements.StatementBuilder;
 import javabaseproject.javabase.core.recorder.Types;
 
@@ -26,15 +21,15 @@ import javabaseproject.javabase.core.recorder.Types;
  * this class is interacting with the database and models to easily the relation between them
  * @author Asem Najee
  */
-public abstract class AbstractModel<T extends Model<T>> {
+public abstract class AbstractModel<T extends Model<T>> implements Jsonable {
 
     /**
      * the class of the model that own the instance
      */
-    private final Class<? extends Model<?>> clazz;
+    private final Class<T> clazz;
 
     protected AbstractModel(){
-        this.clazz = (Class<? extends Model<?>>) this.getClass();
+        this.clazz = (Class<T>) this.getClass();
     }
 
     /**
@@ -47,7 +42,7 @@ public abstract class AbstractModel<T extends Model<T>> {
         var stmt = StatementBuilder.getSelectQueryForItemWithKey(clazz, key);
         var result = stmt.executeQuery();
         if(result.next()){
-            item = fetch(result);
+            item = Fetcher.fetch(clazz, result);
             return item;
         }
         return null;
@@ -57,12 +52,12 @@ public abstract class AbstractModel<T extends Model<T>> {
      * get all items from the database
      * @return a collection of objects of the class which called this method
      */
-    public ArrayList<T> getAll() throws SQLException, IllegalArgumentException, IllegalAccessException, NoSuchFieldException, NoSuchMethodException, InstantiationException, InvocationTargetException{
-        var stmt = StatementBuilder.getSelectQueryForAllItems(this.getClass());
+    public ModelsCollection<T> getAll() throws SQLException, IllegalArgumentException, IllegalAccessException, NoSuchFieldException, NoSuchMethodException, InstantiationException, InvocationTargetException{
+        var stmt = StatementBuilder.getSelectQueryForAllItems(clazz);
         var result = stmt.executeQuery();
-        ArrayList<T> list = new ArrayList<>();
+        ModelsCollection<T> list = new ModelsCollection<>();
         while(result.next()){
-            list.add(fetch(result));
+            list.add(Fetcher.fetch(clazz, result));
         }
         return list;
     }
@@ -91,43 +86,6 @@ public abstract class AbstractModel<T extends Model<T>> {
         return effectedRows == 1;
     }
 
-    /**
-     * fetch the result set to Object
-     * @param result the result set from the database
-     * @return object of the caller class filled with the data
-     */
-    private T fetch(ResultSet result) throws SQLException, IllegalArgumentException, IllegalAccessException, NoSuchFieldException, NoSuchMethodException, InstantiationException, InvocationTargetException{
-        T item;
-        HashMap<String, RecordedField> fields = Recorder.getRecordedClass(clazz).getFields();
-        item = (T) clazz.getDeclaredConstructor().newInstance();
-        for(var field : fields.keySet()){
-            Class cls;
-            if(isParentsField(field)){
-                cls = clazz.getSuperclass();
-            }else{
-                cls = clazz;
-            }
-            FieldController.set(cls.getDeclaredField(field), result, item);
-        }
-        return item;
-    }
-
-    /**
-     * check if the field is from the parent
-     * this help in inheritance
-     * this method is not implemented
-     * @param fieldName the field name
-     * @return if the field is from parent
-     */
-    private boolean isParentsField(String fieldName){
-        Field[] fieldsInParent = clazz.getSuperclass().getDeclaredFields();
-        for (Field f : fieldsInParent) {
-            if (f.getName().equals(fieldName)) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     /**
      * change the object from object to string with style like json
@@ -136,8 +94,14 @@ public abstract class AbstractModel<T extends Model<T>> {
      * you can help by create a pull request
      * @return string of data as json
      */
-    public String toJson(){
-        StringBuilder result = new StringBuilder("{");
+    @Override
+    public String toJson() {
+        return toJson(0);
+    }
+
+    public String toJson(int level){
+        String prefix = "\t".repeat(level);
+        StringBuilder result = new StringBuilder(prefix).append("{");
         for(var fname : Recorder.getRecordedClass(this.clazz).getFields().keySet()){
             RecordedField rField = Recorder.getRecordedClass(clazz).getField(fname);
             try {
@@ -150,27 +114,25 @@ public abstract class AbstractModel<T extends Model<T>> {
                 if(isHidden(field)){
                     continue;
                 }
-                result.append("\n\t\"").append(fname).append("\" : ");
+                result.append("\n").append(prefix).append("\t\"").append(fname).append("\" : ");
                 if(rField.getType() == Types.STRING){
-                    result.append("\"").append(FieldController.get(field, (Model)this)).append("\"");
+                    result.append("\"").append(FieldController.get(field, (Model<T>)this)).append("\"");
                 }else{
-                    result.append((FieldController.get(field, (Model)this)));
+                    result.append((FieldController.get(field, (Model<T>)this)));
                 }
                 result.append(",");
-            } catch (NoSuchFieldException e) {
-                throw new RuntimeException(e);
-            } catch (IllegalAccessException e) {
+            } catch (NoSuchFieldException | IllegalAccessException e) {
                 throw new RuntimeException(e);
             }
         }
         result.delete(result.length()-1, result.length());
-        result.append("\n}");
+        result.append("\n").append(prefix).append("}");
         return result.toString();
     }
 
     public T fromJson(String jsonText) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchFieldException {
         Json json = new Json(jsonText);
-        return json.getObject((Class<T>) clazz);
+        return json.getObject(clazz);
     }
 
     /**

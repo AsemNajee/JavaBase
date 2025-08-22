@@ -1,39 +1,28 @@
-
 package javabaseproject.database.models;
 
-import javabaseproject.javabase.core.collections.ModelsCollection;
 import javabaseproject.javabase.core.annotations.PrimaryKey;
-import javabaseproject.javabase.core.annotations.Relation;
 import javabaseproject.javabase.core.annotations.Unique;
 import javabaseproject.javabase.core.database.models.Model;
 import javabaseproject.javabase.core.database.models.Relations;
 
 @PrimaryKey("id")
-public class User extends Model<User>{
-	public User(String name, int id){
-        this.name = name;
-        this.id = id;
-    }
+public class Person extends Model<Person>{
 
     protected int id;
     @Unique
     protected String name;
-
-    @Relation
-    public Person person() throws Exception {
-        return Relations.hasOne(this, Person.class);
-    }
-
-    public ModelsCollection<Person> persons() throws Exception {
-        return Relations.hasMany(this, Person.class);
-    }
+    protected int user_id;
 
     // Don't delete this constructor please (: it will cause a problem
-    public User(){}
+    public Person(){}
 
-    public User(int id, String name){
+    public Person(int id, String name){
         this.id = id;
         this.name = name;
+    }
+
+    public User user() throws Exception {
+        return Relations.belongsTo(this, User.class);
     }
 
     public void setId(int id){

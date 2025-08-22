@@ -1,4 +1,4 @@
-package javabaseproject.javabase.core.database;
+package javabaseproject.javabase.core.database.io;
 
 import javabaseproject.database.models.User;
 import javabaseproject.javabase.core.database.models.Model;

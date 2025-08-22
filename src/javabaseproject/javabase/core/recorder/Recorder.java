@@ -22,23 +22,23 @@ import javabaseproject.javabase.framework.FilePaths;
  */
 public class Recorder {
 
-    private static final HashMap<String, RecordedClass> modelsAsKeyValue;
+    private static final HashMap<String, RecordedClass<? extends Model<?>>> modelsAsKeyValue;
     
     static {
         modelsAsKeyValue = new HashMap<>();
     }
 
-    public static HashMap<String, RecordedClass> getModels(){
+    public static HashMap<String, RecordedClass<? extends Model<?>>> getModels(){
         return modelsAsKeyValue;
     }
-    
-    public static RecordedClass getRecordedClass(Class clazz){
-        return modelsAsKeyValue.get(clazz.getName());
+
+    public static <M extends Model<M>> RecordedClass<M> getRecordedClass(Class<M> clazz){
+        return (RecordedClass<M>) modelsAsKeyValue.get(clazz.getName());
     }
-    public static RecordedClass getRecordedClass(String modelName){
+    public static <M extends Model<M>> RecordedClass<M> getRecordedClass(String modelName){
         for(var rc : getModels().values()){
             if(rc.getName().equals(modelName)){
-                return rc;
+                return (RecordedClass<M>) rc;
             }
         }
         return null;
@@ -54,9 +54,9 @@ public class Recorder {
      * @param clazz the class will be registered
      * @return class information after registering
      */
-    public static RecordedClass add(Class<? extends Model<?>> clazz) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+    public static <M extends Model<M>> RecordedClass<M> add(Class<M> clazz) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         String modelName = clazz.getName().replaceAll("(.*)\\.", "");
-        RecordedClass cls = new RecordedClass(modelName, clazz);
+        RecordedClass<M> cls = new RecordedClass<>(modelName, clazz);
         if(FileHandler.of(FilePaths.getSeederPath(modelName)).exists()){
             cls.setSeeder((Seeder) Class.forName(FilePaths.getSeedersPackage() + "." + modelName + "Seeder" ).getConstructor().newInstance());
         }
@@ -64,13 +64,15 @@ public class Recorder {
             cls.setFactory((Factory) Class.forName(FilePaths.getFactoriesPackage() + "." + modelName + "Factory" ).getConstructor().newInstance());
         }
         filterAllFields(clazz, cls, false);
-        filterAllFields(clazz.getSuperclass(), cls, true);
+        if(!clazz.getSuperclass().isNestmateOf(Model.class)){
+            filterAllFields((Class<M>) clazz.getSuperclass(), cls, true);
+        }
         setPrimaryKey(clazz, cls);
         modelsAsKeyValue.put(clazz.getName(), cls);
         return cls;
     }
     
-    private static void filterAllFields(Class clazz, RecordedClass cls, boolean isParent) {
+    private static <M extends Model<M>> void filterAllFields(Class<M> clazz, RecordedClass<M> cls, boolean isParent) {
         for(Field f : clazz.getDeclaredFields()){
             if(isFieldAcceptable(f)){
                 RecordedField rf = filterField(f, isParent);
@@ -82,19 +84,19 @@ public class Recorder {
     /**
      * filter field attributes and return them as object of RecordedField
      * this method is filter the name and type of the field
-     * @param field
-     * @return 
+     *
      */
     private static RecordedField filterField(Field field, boolean isFromParent) {
         return new RecordedField(
                 field.getName(),
                 FieldController.getFieldType(field),
                 getFieldConstraints(field),
-                isFromParent
+                isFromParent,
+                field.accessFlags().contains(AccessFlag.PRIVATE)
         );
     }
     
-    private static void setPrimaryKey(Class<? extends  Model<?>> clazz, RecordedClass cls){
+    private static <M extends Model<M>> void setPrimaryKey(Class<M> clazz, RecordedClass<M> cls){
         if(clazz.isAnnotationPresent(PrimaryKey.class)){
             cls.setPrimaryKey(cls.getField(clazz.getAnnotation(PrimaryKey.class).value()));
             cls.getField(cls.getPrimaryKey().getName()).addConstraint(Constraints.PRIMARY_KEY);

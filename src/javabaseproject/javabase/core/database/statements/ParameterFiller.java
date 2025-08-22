@@ -1,5 +1,6 @@
 package javabaseproject.javabase.core.database.statements;
 
+import javabaseproject.javabase.core.database.querybuilders.query.Param;
 import javabaseproject.javabase.core.recorder.FieldController;
 import javabaseproject.javabase.core.recorder.RecordedClass;
 import javabaseproject.javabase.core.recorder.Recorder;
@@ -10,15 +11,16 @@ import java.lang.reflect.Field;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.List;
 
 public class ParameterFiller {
     private ParameterFiller(){}
 
-    public static PreparedStatement fill(PreparedStatement stmt, Model<? extends Model<?>> item, String ...varArgs) throws SQLException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException{
+    public static <M extends Model<M>> void fill(PreparedStatement stmt, Model<M> item, String ...varArgs) throws SQLException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException{
         int i = 1;
         String[] params;
         if(varArgs == null || varArgs.length == 0){
-            params = Recorder.getRecordedClass(item.getClass()).getFields().keySet().toArray(new String[0]);
+            params = (String[]) Recorder.getRecordedClass(item.getClass()).getFields().keySet().toArray(new String[0]);
         }else{
             params = Arrays.stream(varArgs).filter(field -> Recorder.getRecordedClass(item.getClass()).getFields().containsKey(field)).toList().toArray(new String[0]);
         }
@@ -42,36 +44,41 @@ public class ParameterFiller {
             );
             i++;
         }
-        return stmt;
     }
 
-    public static PreparedStatement bindParam(PreparedStatement stmt, Types type, Object value, int i) throws SQLException {
+    public static void fill(PreparedStatement stmt, List<Param> params) throws SQLException {
+        int i = 1;
+        for (var param : params) {
+            bindParam(stmt, param.type, param.value, i++);
+        }
+    }
+
+    public static void bindParam(PreparedStatement stmt, Types type, Object value, int i) throws SQLException {
         switch(type){
             case BOOLEAN -> {
-                stmt.setBoolean(i, (boolean) value);
+                stmt.setBoolean(i, Boolean.parseBoolean(String.valueOf(value)));
             }
             case BYTE -> {
-                stmt.setByte(i, (byte) value);
+                stmt.setByte(i, Byte.parseByte(String.valueOf(value)));
             }
             case DOUBLE -> {
-                stmt.setDouble(i, (double) value);
+                stmt.setDouble(i, Double.parseDouble(String.valueOf(value)));
             }
             case FLOAT -> {
-                stmt.setFloat(i, (float) value);
+                stmt.setFloat(i, Float.parseFloat(String.valueOf(value)));
             }
             case INT -> {
-                stmt.setInt(i, (int) value);
+                stmt.setInt(i, Integer.parseInt(String.valueOf(value)));
             }
             case LONG -> {
-                stmt.setLong(i, (long) value);
+                stmt.setLong(i, Long.parseLong(String.valueOf(value)));
             }
             case SHORT -> {
-                stmt.setShort(i, (short) value);
+                stmt.setShort(i, Short.parseShort(String.valueOf(value)));
             }
             case STRING -> {
-                stmt.setString(i, (String) value);
+                stmt.setString(i, String.valueOf(value));
             }
         }
-        return stmt;
     }
 }

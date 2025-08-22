@@ -7,9 +7,9 @@ import javabaseproject.javabase.core.recorder.Recorder;
 import javabaseproject.javabase.framework.FilePaths;
 
 public class ModelGenerator {
-    private String modelName;
-    private String key;
-    private String keyType;
+    private final String modelName;
+    private final String key;
+    private final String keyType;
     public ModelGenerator(String modelName, String key, String keyType){
         this.modelName = modelName;
         this.key = key;
@@ -68,7 +68,7 @@ public class ModelGenerator {
         return constructorForAllFields(Recorder.getRecordedClass(modelName).getClazz());
     }
 
-    public static String constructorForAllFields(Class<? extends Model<?>> clazz){
+    public static <M extends Model<M>> String constructorForAllFields(Class<M> clazz){
         var fields = Recorder.getRecordedClass(clazz).getFields().values();
         String constructor = "public " + Recorder.getRecordedClass(clazz).getName() + "(";
         StringBuilder params = new StringBuilder();
