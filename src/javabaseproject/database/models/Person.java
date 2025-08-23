@@ -13,7 +13,6 @@ public class Person extends Model<Person>{
     protected int id;
     @Unique
     protected String name;
-    protected int user_id;
 
     // Don't delete this constructor please (: it will cause a problem
     public Person(){}

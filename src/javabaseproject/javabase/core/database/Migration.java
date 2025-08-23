@@ -10,6 +10,7 @@ import javabaseproject.javabase.core.database.querybuilders.Build;
 import javabaseproject.javabase.framework.commandline.Command;
 import javabaseproject.javabase.framework.commandline.output.Colors;
 import javabaseproject.javabase.framework.commandline.output.Style;
+import javabaseproject.javabase.framework.exceptions.ExceptionHandler;
 
 /**
  * 
@@ -38,7 +39,10 @@ public class Migration {
         try(var stmt = Connector.getConnection().createStatement()){
             stmt.executeUpdate(query);
             return true;
+        }catch (SQLException e){
+            ExceptionHandler.print(e);
         }
+        return false;
     }
     
     public static boolean initDatabase() throws SQLException{

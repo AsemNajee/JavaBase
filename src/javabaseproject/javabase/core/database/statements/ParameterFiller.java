@@ -27,6 +27,10 @@ public class ParameterFiller {
             params = Arrays.stream(varArgs).filter(field -> Recorder.getRecordedClass(item.getClass()).getFields().containsKey(field)).toList().toArray(new String[0]);
         }
         if(params.length != stmt.getParameterMetaData().getParameterCount()){
+            Command.println(Arrays.toString(params));
+            for (int j = 0; j < stmt.getParameterMetaData().getParameterCount(); j++) {
+                Command.println(stmt.getParameterMetaData().getParameterClassName(i));
+            }
             throw new SQLException("parameter count is not the same with placeholders cound");
         }
         for(String fname : params){

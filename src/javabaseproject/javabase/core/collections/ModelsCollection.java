@@ -22,6 +22,8 @@ public class ModelsCollection<M extends Model<M>> extends ArrayList<M> implement
     }
     @Override
     public String toJson(int level){
+        if(this.isEmpty())
+            return "[]";
         String prefix = "\t".repeat(level);
         StringBuilder totalJson = new StringBuilder(prefix).append("[\n");
         for (M model : this) {

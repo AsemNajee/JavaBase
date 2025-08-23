@@ -70,6 +70,7 @@ public class DB<T extends Model<T>> {
     }
     private ResultSet execute() throws SQLException {
         String sql = toQueryString();
+        Command.println(sql);
         PreparedStatement stmt = Connector.getConnection().prepareStatement(sql);
         ParameterFiller.fill(stmt, params);
         return stmt.executeQuery();

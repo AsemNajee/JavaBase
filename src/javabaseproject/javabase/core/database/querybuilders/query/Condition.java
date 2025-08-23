@@ -11,21 +11,22 @@ public class Condition{
     protected int parametersCount;
 
     private Condition(String left, String operation, String right){
-        this(left, operation, right, ConditionType.NORMAL, 1);
+        this(left, operation, right, ConditionType.NORMAL, 1, right);
     }
-    private Condition(String left, String operation, String right, ConditionType type, int parametersCount){
+    private Condition(String left, String operation, String right, ConditionType type, int parametersCount, Object... values){
         this.left = left;
         this.operation = operation;
         this.right = right;
         this.type = type;
         this.parametersCount = parametersCount;
+        this.values = values;
     }
 
     public static Condition where(String left, String operation, String right){
         return new Condition(left, operation, right);
     }
     public static Condition where(String left, String right){
-        return new Condition(left, "=", right);
+        return where(left, "=", right);
     }
 
     public static Condition whereIn(String left, Object[] right){
