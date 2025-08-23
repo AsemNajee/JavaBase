@@ -1,6 +1,7 @@
 package javabaseproject.javabase.core.database.querybuilders;
 
 import javabaseproject.javabase.core.database.models.Model;
+import javabaseproject.javabase.core.database.querybuilders.query.DB;
 import javabaseproject.javabase.core.recorder.RecordedClass;
 import javabaseproject.javabase.core.recorder.RecordedClass.RecordedField;
 

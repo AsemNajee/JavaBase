@@ -1,6 +1,7 @@
 package javabaseproject.javabase.core.database.io;
 
 import javabaseproject.javabase.core.database.models.Model;
+import javabaseproject.javabase.core.database.querybuilders.query.DB;
 import javabaseproject.javabase.core.recorder.FieldController;
 import javabaseproject.javabase.core.recorder.RecordedClass;
 import javabaseproject.javabase.core.recorder.Recorder;
@@ -31,5 +32,13 @@ public class Fetcher {
             FieldController.set(cls.getDeclaredField(field), result, item);
         }
         return item;
+    }
+
+    public static HashMap<String, Integer> metaData(ResultSet result) throws SQLException {
+        var map = new HashMap<String, Integer>();
+        for (int i = 1; i <= result.getMetaData().getColumnCount(); i++) {
+            map.put(result.getMetaData().getColumnName(i), i);
+        }
+        return map;
     }
 }

@@ -2,6 +2,7 @@ package javabaseproject.javabase;
 
 import javabaseproject.javabase.core.database.Connector;
 import javabaseproject.javabase.core.interfaces.CheckedRunnable;
+import javabaseproject.javabase.framework.commandline.Command;
 import javabaseproject.javabase.framework.exceptions.ExceptionHandler;
 
 /**

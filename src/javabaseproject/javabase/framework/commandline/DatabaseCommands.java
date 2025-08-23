@@ -20,7 +20,7 @@ public class DatabaseCommands extends Command{
             }
             case "migrate" -> {
                 if(model != null){
-                    RecordedClass rclass = Recorder.getRecordedClass(model);
+                    RecordedClass<?> rclass = Recorder.getRecordedClass(model);
                     if(rclass != null){
                         if(Migration.migrate(rclass)){
                            Command.printf("g[\tModel %s is migrated successfully\t]", rclass.getName());

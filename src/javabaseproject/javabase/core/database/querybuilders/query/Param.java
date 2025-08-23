@@ -13,4 +13,12 @@ public class Param{
         this.type = field.getType();
         this.value = value;
     }
+
+    @Override
+    public String toString() {
+        return "Param{" +
+                "type=" + type +
+                ", value='" + value + '\'' +
+                '}';
+    }
 }

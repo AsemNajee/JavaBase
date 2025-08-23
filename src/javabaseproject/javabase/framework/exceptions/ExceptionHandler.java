@@ -8,11 +8,12 @@ public class ExceptionHandler {
     public static void handle(CheckedRunnable fn) {
         try{
             fn.run();
-        }catch (Exception e){
+        }catch (Throwable e){
+            String error = "r{" + "-".repeat(e.getMessage().length() + 8) + "}\n";
+            error += "r{|\t" + e.getMessage() + "\t|}\n";
+            error += "r{" + "-".repeat(e.getMessage().length() + 8) + "}\n";
+            Command.println(error);
             e.printStackTrace();
-            Command.println("r{" + "-".repeat(e.getMessage().length() + 8) + "}");
-            Command.println("r{|\t" + e.getMessage() + "\t|}");
-            Command.println("r{" + "-".repeat(e.getMessage().length() + 8) + "}");
         }
     }
 }

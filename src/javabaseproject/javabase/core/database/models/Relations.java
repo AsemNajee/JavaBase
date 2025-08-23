@@ -1,6 +1,7 @@
 package javabaseproject.javabase.core.database.models;
 
 import javabaseproject.javabase.core.collections.ModelsCollection;
+import javabaseproject.javabase.core.database.querybuilders.query.Condition;
 import javabaseproject.javabase.core.database.querybuilders.query.DB;
 import javabaseproject.javabase.core.recorder.FieldController;
 import javabaseproject.javabase.core.recorder.RecordedClass;
@@ -69,4 +70,33 @@ public class Relations {
         return belongsTo(model, parentModel, foreignKey, localKey);
     }
 
+
+    /**
+     * id
+     * user_id
+     * book_id
+     */
+//    public static <T extends Model<T>, F extends Model<F>, P extends Pivot<T, F>> ModelsCollection<F> belongsToMany(T model, Class<F> parentModel, Class<P> pivot, String foreignKey, String localKey) throws Exception {
+//        String relationKeyValue = FieldController.get(foreignKey, model).toString();
+////        SELECT * FROM pivot WHERE model_id = ?
+//        String sql = DB.fromPivot(pivot).where(foreignKey, relationKeyValue).innerJoin(parentModel, Condition.on(foreignKey, localKey)).toQueryString();
+//        return null;
+//    }
+//    public static <T extends Model<T>, F extends Model<F>> List<F> belongsToMany(T model, Class<F> parentModel, String foreignKey) throws Exception {
+//        RecordedClass<F> rclass = Recorder.getRecordedClass(parentModel);
+//        String localKey = rclass.getPrimaryKey().getName();
+//        return belongsToMany(model, parentModel, foreignKey, localKey);
+//    }
+//    public static <T extends Model<T>, F extends Model<F>> ModelsCollection<F> belongsToMany(T model, Class<F> parentModel) throws Exception {
+//        RecordedClass<F> rclass = Recorder.getRecordedClass(parentModel);
+//        String localKey = rclass.getPrimaryKey().getName();
+//        String foreignKey = rclass.getName().toLowerCase() + "_" + localKey;
+//        return belongsToMany(model, parentModel, foreignKey, localKey);
+//    }
+
+
+    public static String getForeignKeyName(RecordedClass<?> localModel, RecordedClass<?> foreignModel){
+        String foreignModelName = foreignModel.getName().substring(0, 1).toLowerCase() + foreignModel.getName().substring(1, foreignModel.getName().length());
+        return foreignModelName + "_" + localModel.getPrimaryKey().getName();
+    }
 }

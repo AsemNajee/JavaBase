@@ -11,6 +11,9 @@ public class FakeData {
             case AR -> ArabicFakeData.names();
         };
     }
+    public static String[] emails(){
+        return EnglishFakeData.names();
+    }
     public static String[] sentences(){
         return switch (ENV.LANGUAGE){
             case EN -> EnglishFakeData.sentences();

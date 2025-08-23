@@ -2,34 +2,22 @@ package javabaseproject.database.models;
 
 import javabaseproject.javabase.core.annotations.PrimaryKey;
 import javabaseproject.javabase.core.annotations.Unique;
-import javabaseproject.javabase.core.collections.ModelsCollection;
 import javabaseproject.javabase.core.database.models.Model;
-import javabaseproject.javabase.core.database.models.Pivot;
-import javabaseproject.javabase.core.database.models.Relations;
 
 @PrimaryKey("id")
-public class Person extends Model<Person>{
+public class Book extends Model<Book>{
 
     protected int id;
     @Unique
     protected String name;
-    protected int user_id;
 
     // Don't delete this constructor please (: it will cause a problem
-    public Person(){}
+    public Book(){}
 
-    public Person(int id, String name){
+    public Book(int id, String name){
         this.id = id;
         this.name = name;
     }
-
-    public User user() throws Exception {
-        return Relations.belongsTo(this, User.class);
-    }
-
-//    public ModelsCollection<Book> books() throws Exception {
-//        return BookPerson.belongsToMany(this);
-//    }
 
     public void setId(int id){
         this.id = id;

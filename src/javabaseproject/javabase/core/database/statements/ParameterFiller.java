@@ -6,6 +6,8 @@ import javabaseproject.javabase.core.recorder.RecordedClass;
 import javabaseproject.javabase.core.recorder.Recorder;
 import javabaseproject.javabase.core.database.models.Model;
 import javabaseproject.javabase.core.recorder.Types;
+import javabaseproject.javabase.framework.commandline.Command;
+import javabaseproject.javabase.framework.commandline.output.Colors;
 
 import java.lang.reflect.Field;
 import java.sql.PreparedStatement;

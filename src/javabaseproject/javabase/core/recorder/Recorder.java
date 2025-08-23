@@ -133,7 +133,7 @@ public class Recorder {
      */
     protected static boolean isFieldAcceptable(Field f){
         return f.getAnnotatedType().toString().matches("^[A-Za-z0-9.]*(String|int|float|long|byte|short|boolean)$")
-                && f.accessFlags().size() == 1
+                && f.accessFlags().size() == 1 // only private or protected only and only without anymore access flags
                 && f.accessFlags().stream()
                         .filter(m -> m == AccessFlag.PROTECTED || m == AccessFlag.PRIVATE)
                         .count() == f.accessFlags().size();

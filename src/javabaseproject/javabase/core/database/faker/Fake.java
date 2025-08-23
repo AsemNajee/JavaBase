@@ -17,7 +17,7 @@ public class Fake {
      * @return random name
      */
     public static String name(){
-        return random(FakeData.names());
+        return random(FakeData.emails());
     }
 
     /**
@@ -52,12 +52,8 @@ public class Fake {
      * return a group of sentences to make a fake paragraph
      * @return fake paragraph is group of sentences
      */
-    public static String paragraph(){
-        String p = "";
-        p += sentence() + "\n";
-        p += sentence() + "\n";
-        p += sentence() + "\n";
-        return p;
+    public static String article(){
+        return random(FakeData.articles());
     }
 
     public static int randomNumber(){
@@ -86,7 +82,6 @@ public class Fake {
     }
     public static float randomFloat(float min, float max){
         return random.nextFloat(min, max);
-//        return (float)((Math.random() * (max - min)) + min);
     }
 
     public static boolean randomBoolean(){
