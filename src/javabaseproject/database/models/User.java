@@ -3,7 +3,6 @@ package javabaseproject.database.models;
 
 import javabaseproject.javabase.core.collections.ModelsCollection;
 import javabaseproject.javabase.core.annotations.PrimaryKey;
-import javabaseproject.javabase.core.annotations.Relation;
 import javabaseproject.javabase.core.annotations.Unique;
 import javabaseproject.javabase.core.database.models.Model;
 import javabaseproject.javabase.core.database.models.Relations;
@@ -19,7 +18,6 @@ public class User extends Model<User>{
     @Unique
     protected String name;
 
-    @Relation
     public Person person() throws Exception {
         return Relations.hasOne(this, Person.class);
     }

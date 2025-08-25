@@ -19,7 +19,9 @@ import javabaseproject.javabase.core.recorder.Types;
 /**
  * Abstract model is the core class in this framework
  * this class is interacting with the database and models to easily the relation between them
+ *
  * @author Asem Najee
+ * @version 1.0
  */
 public abstract class AbstractModel<T extends Model<T>> implements Jsonable {
 
@@ -34,6 +36,7 @@ public abstract class AbstractModel<T extends Model<T>> implements Jsonable {
 
     /**
      * find item in the database by the primary key
+     *
      * @param key the primary key value
      * @return new instance of the model how called it, filled by data
      */
@@ -50,6 +53,7 @@ public abstract class AbstractModel<T extends Model<T>> implements Jsonable {
 
     /**
      * get all items from the database
+     *
      * @return a collection of objects of the class which called this method
      */
     public ModelsCollection<T> getAll() throws SQLException, IllegalArgumentException, IllegalAccessException, NoSuchFieldException, NoSuchMethodException, InstantiationException, InvocationTargetException{
@@ -63,7 +67,8 @@ public abstract class AbstractModel<T extends Model<T>> implements Jsonable {
     }
 
     /**
-     * save the data in the object into database
+     * save the data from the object into database
+     *
      * @param model the object that contains the data,
      *              this is necessary because the method is accepting {@code Model}
      *              not {@code AbstractModel}, so we cannot use {@code this}
@@ -77,6 +82,7 @@ public abstract class AbstractModel<T extends Model<T>> implements Jsonable {
 
     /**
      * delete this item that has the same primary key with the object
+     *
      * @param model is the object contains the data and primary key
      * @return status of deleting
      */
@@ -86,12 +92,12 @@ public abstract class AbstractModel<T extends Model<T>> implements Jsonable {
         return effectedRows == 1;
     }
 
-
     /**
      * change the object from object to string with style like json
      * helps if you want to save the data in json file
      * oops, there is no way to retrieve data from json to object :(
      * you can help by create a pull request
+     *
      * @return string of data as json
      */
     @Override
@@ -130,6 +136,13 @@ public abstract class AbstractModel<T extends Model<T>> implements Jsonable {
         return result.toString();
     }
 
+    /**
+     * get the model data from json text, </br>
+     * this method is taken a json value as string and get the
+     * model result from it
+     * @param jsonText the json as string to get the data from
+     * @return a model filled by data from json
+     */
     public T fromJson(String jsonText) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchFieldException {
         Json json = new Json(jsonText);
         return json.getObject(clazz);

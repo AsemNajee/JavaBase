@@ -11,12 +11,15 @@ import java.sql.SQLException;
 
 /**
  * the parent model of all your models
+ *
  * @author Asem Najee
+ * @version 1.0
  */
 public class Model<T extends Model<T>> extends AbstractModel<T> {
 
     /**
-     * save the data in the object into database
+     * save the data from the object into database
+     *
      * @return status of save
      */
     public boolean save() throws Exception{
@@ -24,7 +27,8 @@ public class Model<T extends Model<T>> extends AbstractModel<T> {
     }
 
     /**
-     * delete the item in the database with the same of primary key
+     * delete the item in the database with the same primary key value
+     *
      * @return status of deleting
      */
     public boolean delete() throws SQLException, NoSuchFieldException, IllegalAccessException {
@@ -34,11 +38,12 @@ public class Model<T extends Model<T>> extends AbstractModel<T> {
     /**
      * find the data in the database
      * based on the primary key and the class of model
-     * @param clazz the class of the model
-     *              to create the object and store data in it
+     *
+     * @param clazz the class of the model to create the object
+     *              and store data in it and get the data from its table
      * @param key the primary key to get its row from the database
-     * @return object of {@code clazz} contains the data
-     * @param <R> the result type
+     * @return new instance of {@code clazz} contains the data
+     * @param <R> the result types
      */
     public static <R extends Model<R>> R find(Class<R> clazz, Object key) throws SQLException, NoSuchFieldException, InvocationTargetException, IllegalAccessException, NoSuchMethodException, InstantiationException, ClassNotFoundException {
         var t = clazz.getDeclaredConstructor().newInstance();
@@ -46,7 +51,9 @@ public class Model<T extends Model<T>> extends AbstractModel<T> {
     }
 
     /**
-     * get all rows in database based on the {@code clazz} parameter
+     * get all rows in database from the model table
+     * based on the {@code clazz} parameter
+     *
      * @param clazz the class of the model to create collection of
      *              models contains the data retrieved from the database
      * @return collection of models of {@code clazz} class
@@ -59,6 +66,7 @@ public class Model<T extends Model<T>> extends AbstractModel<T> {
 
     /**
      * get the factory of this model
+     *
      * @return instance of factory of this model
      */
     public Factory<T> factory(){
@@ -67,6 +75,7 @@ public class Model<T extends Model<T>> extends AbstractModel<T> {
 
     /**
      * get the Seeder of this model
+     *
      * @return instance of Seeder of this model
      */
     public Seeder seeder(){
@@ -74,7 +83,8 @@ public class Model<T extends Model<T>> extends AbstractModel<T> {
     }
 
     /**
-     * get new instance of the model child
+     * get new empty instance of the model child
+     *
      * @param clazz type of the object will be returned
      * @return new instance of the object of {@code clazz}
      */
@@ -83,18 +93,31 @@ public class Model<T extends Model<T>> extends AbstractModel<T> {
     }
 
     /**
-     * get new instance of the model child
+     * get new empty instance of the model child
+     *
      * @param model name of the class that the object will be returned
      * @return new instance of the object of {@code model} class
      */
     public static <T extends Model<T>> T of(String model) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
-        return (T) Recorder.getRecordedClass(model).getClazz().getDeclaredConstructor().newInstance();
+        return Recorder.<T>getRecordedClass(model).getClazz().getDeclaredConstructor().newInstance();
     }
 
+    /**
+     * get a query builder of {@link javabaseproject.javabase.core.database.querybuilders.query.DB}
+     * to build a sql query and adding conditions and join and more
+     *
+     * @return instance of the query builder
+     */
     public DB<T> query(){
         return new DB<>(Recorder.getRecordedClass(this.getClass()).getName());
     }
 
+    /**
+     * get the value of the primary key, this depends on the annotation
+     * {@literal @PrimaryKey} in the model class
+     *
+     * @return value of the primary key
+     */
     public Object getKey() {
         try {
             return super.getKey(this);

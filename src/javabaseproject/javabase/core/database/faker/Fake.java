@@ -4,13 +4,20 @@ import java.util.Random;
 
 /**
  * fake and random data for help developer in factories and where he wants :)
+ *
+ * @author AsemNajee
+ * @version 1.0
  */
 public class Fake {
 
-    private static Random random;
+    /**
+     * random instance to ensure the random values is not repeated
+     */
+    private static final Random random;
     static {
         random = new Random();
     }
+
     /**
      * random name of person
      * all names are for men

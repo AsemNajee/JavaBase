@@ -2,6 +2,12 @@ package javabaseproject.javabase.core.database.querybuilders.query;
 
 import java.util.Arrays;
 
+/**
+ * adding conditions to queries
+ *
+ * @author AsemNajee
+ * @version 1.0
+ */
 public class Condition{
     protected String left;
     protected String right;
@@ -55,6 +61,11 @@ public class Condition{
         NORMAL, COLUMN, IN, LIKE
     }
 
+    /**
+     * implode the in condition to params instead of values
+     * @param ar all values from in condition
+     * @return result of in condition braces
+     */
     private static String implode(Object[] ar){
         return Arrays.toString(ar)
                 .replace("[", "(")

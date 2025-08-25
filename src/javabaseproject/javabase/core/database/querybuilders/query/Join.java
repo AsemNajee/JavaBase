@@ -3,10 +3,16 @@ package javabaseproject.javabase.core.database.querybuilders.query;
 import javabaseproject.javabase.core.database.models.Model;
 import javabaseproject.javabase.core.recorder.Recorder;
 
+/**
+ * joins in queries
+ *
+ * @author AsemNajee
+ * @version 1.0
+ */
 public class Join<J extends Model<J>> {
-    private Class<J> model;
-    private Condition condition;
-    private JoinType type;
+    private final Class<J> model;
+    private final Condition condition;
+    private final JoinType type;
 
     public Class<J> getModel() {
         return model;
@@ -44,7 +50,7 @@ public class Join<J extends Model<J>> {
         return type + " JOIN " + Recorder.getRecordedClass(model).getName() + " ON " + condition;
     }
 
-    public static enum JoinType{
+    public enum JoinType{
         INNER, OUTER, LEFT, RIGHT
     }
 }

@@ -11,12 +11,18 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 
+/**
+ * fetching data from the result of the database query
+ *
+ * @version 1.0
+ */
 public class Fetcher {
 
     /**
      * fetch the result set to Object Model
+     *
      * @param result the result set from the database
-     * @return object of the caller class filled with the data
+     * @return new instance of the model class filled with the data
      */
     public static <T extends Model<T>> T fetch(Class<T> clazz, ResultSet result) throws NoSuchFieldException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException, SQLException {
         T item;
@@ -34,11 +40,14 @@ public class Fetcher {
         return item;
     }
 
-    public static HashMap<String, Integer> metaData(ResultSet result) throws SQLException {
-        var map = new HashMap<String, Integer>();
-        for (int i = 1; i <= result.getMetaData().getColumnCount(); i++) {
-            map.put(result.getMetaData().getColumnName(i), i);
-        }
-        return map;
-    }
+//    /**
+//     * getting the metadata of the model , this mean the column names and the number of columns
+//     */
+//    public static HashMap<String, Integer> metaData(ResultSet result) throws SQLException {
+//        var map = new HashMap<String, Integer>();
+//        for (int i = 1; i <= result.getMetaData().getColumnCount(); i++) {
+//            map.put(result.getMetaData().getColumnName(i), i);
+//        }
+//        return map;
+//    }
 }

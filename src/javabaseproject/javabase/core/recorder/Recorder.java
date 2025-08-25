@@ -18,12 +18,21 @@ import javabaseproject.javabase.framework.FilePaths;
 import javabaseproject.javabase.framework.commandline.Command;
 
 /**
- * 
+ * record all models in the project from the package of models
+ * in {@link javabaseproject.ENV#MODELS_PACKAGE }
  * @author AsemNajee
  */
 public class Recorder {
+    /**
+     * store temporarily fields having foreign keys to
+     * firstly register models then register foreign keys
+     */
     private static final List<RecordedField> fieldsWithForeignKeys;
 
+    /**
+     * record models as key value, the key is the model name as full package
+     * the value is model but after filtering and recorded as {@link RecordedClass}
+     */
     private static final HashMap<String, RecordedClass<? extends Model<?>>> modelsAsKeyValue;
     
     static {
@@ -31,13 +40,28 @@ public class Recorder {
         modelsAsKeyValue = new HashMap<>();
     }
 
+    /**
+     * getting all registered models
+     * @return hashMap of registered models
+     */
     public static HashMap<String, RecordedClass<? extends Model<?>>> getModels(){
         return modelsAsKeyValue;
     }
 
+    /**
+     * get recorded model as {@link RecordedClass}
+     * @param clazz the class of the model
+     * @return a recorded class model
+     */
     public static RecordedClass<? extends Model<?>> getRecordedClass(Class<?> clazz){
         return modelsAsKeyValue.get(clazz.getName());
     }
+
+    /**
+     * get recorded model as {@link RecordedClass}
+     * @param modelName the name of the model
+     * @return a recorded class model
+     */
     public static <M extends Model<M>> RecordedClass<M> getRecordedClass(String modelName){
         for(var rc : getModels().values()){
             if(rc.getName().equals(modelName)){
@@ -74,7 +98,16 @@ public class Recorder {
         modelsAsKeyValue.put(clazz.getName(), cls);
         return cls;
     }
-    
+
+    /**
+     * filtering all model fields from model class to register the model
+     * and save the as {@link RecordedField}
+     * @param clazz the model class
+     * @param cls the model as {@link RecordedClass} to save fields in it
+     * @param isParent if the fields from the parent of the model
+     *                 this help to set and get the value from the field
+     *                 using reflection without errors
+     */
     private static <M extends Model<M>> void filterAllFields(Class<M> clazz, RecordedClass<M> cls, boolean isParent) {
         for(Field f : clazz.getDeclaredFields()){
             if(isFieldAcceptable(f)){
@@ -85,9 +118,9 @@ public class Recorder {
     }
 
     /**
-     * filter field attributes and return them as object of RecordedField
-     * this method is filter the name and type of the field
-     *
+     * filter field attributes and return them
+     * as object of {@link RecordedField}</br>
+     * this method is filter the name, type, constraints, ownerClass and flags
      */
     private static RecordedField filterField(Field field, boolean isFromParent) {
         var rField =  new RecordedField(
@@ -103,7 +136,12 @@ public class Recorder {
         }
         return rField;
     }
-    
+
+    /**
+     * adding primary key constraint to the recorded class
+     * @param clazz the model class
+     * @param cls the recorded model to save a key in it
+     */
     private static <M extends Model<M>> void setPrimaryKey(Class<M> clazz, RecordedClass<M> cls){
         if(clazz.isAnnotationPresent(PrimaryKey.class)){
             cls.setPrimaryKey(cls.getField(clazz.getAnnotation(PrimaryKey.class).value()));
@@ -114,7 +152,12 @@ public class Recorder {
             }
         }
     }
-    
+
+    /**
+     * get all constraint for the field and register them
+     * @param field the field in the model class to get annotations of it
+     * @return list of constraints of the field
+     */
     private static ArrayList<Constraints> getFieldConstraints(Field field){
         ArrayList<Constraints> constraints = new ArrayList<>();
         if(field.isAnnotationPresent(Unique.class)){
@@ -133,11 +176,13 @@ public class Recorder {
     }
     
     /**
-     * if and only if the field is preemptive or string and protected
-     * the field is acceptable, otherwise not
-     * 
-     * @param f
-     * @return 
+     * if and only if the field is preemptive or string
+     * and protected or private without any more flags
+     * the field is acceptable, otherwise not </br>
+     * the field will not register if it's not acceptable
+     *
+     * @param f the field to check
+     * @return acceptability of the field
      */
     protected static boolean isFieldAcceptable(Field f){
         return f.getAnnotatedType().toString().matches("^[A-Za-z0-9.]*(String|int|float|long|byte|short|boolean)$")
@@ -147,6 +192,9 @@ public class Recorder {
                         .count() == f.accessFlags().size();
     }
 
+    /**
+     * start register all foreign keys after recording all models
+     */
     public static void registerForeignKeys(){
         for (var field : fieldsWithForeignKeys){
             Field realField = field.getRealField();

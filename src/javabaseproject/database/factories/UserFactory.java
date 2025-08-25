@@ -7,7 +7,6 @@ import javabaseproject.javabase.core.database.faker.Fake;
 public class UserFactory extends Factory<User>{
     public User item() {
         return new User(
-                
 			Fake.name(),
 			Fake.randomNumber()
         );

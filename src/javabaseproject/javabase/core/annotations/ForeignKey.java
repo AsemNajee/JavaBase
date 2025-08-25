@@ -9,7 +9,6 @@ import java.lang.annotation.Target;
 
 /**
  * add foreign key to another model and link them in the database
- * this annotation is not work and need to implement
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)

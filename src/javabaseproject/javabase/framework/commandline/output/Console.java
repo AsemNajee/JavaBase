@@ -1,8 +1,5 @@
 package javabaseproject.javabase.framework.commandline.output;
 
-import javabaseproject.javabase.framework.commandline.output.Colors;
-import javabaseproject.javabase.framework.commandline.output.Style;
-
 public class Console {
     public static String help(){
         return style("""

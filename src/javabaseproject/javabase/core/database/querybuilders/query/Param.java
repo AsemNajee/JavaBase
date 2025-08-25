@@ -4,6 +4,13 @@ import javabaseproject.javabase.core.recorder.RecordedClass;
 import javabaseproject.javabase.core.recorder.Recorder;
 import javabaseproject.javabase.core.recorder.Types;
 
+/**
+ * params instead of values, to store a params
+ * and metadata for help in bind when query execute
+ *
+ * @author AsemNajee
+ * @version 1.0
+ */
 public class Param{
     public final Types type;
     public final String value;

@@ -4,7 +4,6 @@ import javabaseproject.javabase.core.annotations.PrimaryKey;
 import javabaseproject.javabase.core.annotations.Unique;
 import javabaseproject.javabase.core.collections.ModelsCollection;
 import javabaseproject.javabase.core.database.models.Model;
-import javabaseproject.javabase.core.database.models.Pivot;
 import javabaseproject.javabase.core.database.models.Relations;
 
 @PrimaryKey("name")

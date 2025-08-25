@@ -53,6 +53,10 @@ public class ENV {
      * the dir is based on your {@code ROOT_PACKAGE}
      */
     public static final String MODELS_PACKAGE;
+    /**
+     * directory where pivots will create
+     * pivots are middle table for many-to-many relations
+     */
     public static final String PIVOTS_PACKAGE;
     /**
      * directory where new factories will create in

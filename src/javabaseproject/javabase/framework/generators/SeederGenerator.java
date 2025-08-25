@@ -15,16 +15,12 @@ public class SeederGenerator {
                 package {seedersPackage};
                                 
                 import {baseSeederPackage};
-                import {basePackage}.javabase.core.interfaces.CheckedRunnable;
                 import {basePackage}.javabase.core.database.models.Model;
                 import {modelsPackage}.{model};
-                import {basePackage}.javabase.framework.exceptions.ExceptionHandler;
                                 
                 public class {model}Seeder extends Seeder {
-                    public void run() {
-                        ExceptionHandler.handle(() -> {
-                            Model.of({model}.class).factory().create(10);
-                        });
+                    public void run() throws Exception{
+                        Model.of({model}.class).factory().create(10);
                     }
                 }
                 """.replace("{modelsPackage}", FilePaths.getModelsPackage())

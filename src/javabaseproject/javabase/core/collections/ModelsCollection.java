@@ -17,9 +17,26 @@ public class ModelsCollection<M extends Model<M>> extends ArrayList<M> implement
     public ModelsCollection(int length){
         super(length);
     }
+
+    /**
+     * chang data from a model object to json string it will return
+     * all data in the collection as a json string with only one tab
+     * in the beginning of each line to format the json
+     *
+     * @return data as json string
+     */
     public String toJson(){
         return toJson(0);
     }
+
+    /**
+     * chang data from a model object to json string it will return
+     * all data in the collection as a json string with {@code level} tabs
+     * in the beginning of each line to format the json
+     *
+     * @param level count tabs before each line to format the output
+     * @return data as json string
+     */
     @Override
     public String toJson(int level){
         if(this.isEmpty())

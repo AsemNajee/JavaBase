@@ -4,11 +4,10 @@ import javabaseproject.javabase.core.annotations.ForeignKey;
 import javabaseproject.javabase.core.annotations.PrimaryKey;
 import javabaseproject.javabase.core.collections.ModelsCollection;
 import javabaseproject.javabase.core.database.models.Model;
-import javabaseproject.javabase.core.database.models.Pivot;
 import javabaseproject.javabase.core.database.models.Relations;
 
 @PrimaryKey("id")
-public class BookPerson extends Model<BookPerson> implements Pivot<Book, Person> {
+public class BookPerson extends Model<BookPerson> {
 
     protected int id;
     @ForeignKey(Book.class)
@@ -21,7 +20,6 @@ public class BookPerson extends Model<BookPerson> implements Pivot<Book, Person>
         this.personId = person.getId();
         this.id = id;
     }
-
     public static ModelsCollection<Person> belongsToMany(Book book) throws Exception {
         return Relations.belongsToMany(BookPerson.class, Person.class, book);
     }

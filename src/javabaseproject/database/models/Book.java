@@ -5,6 +5,7 @@ import javabaseproject.javabase.core.annotations.Unique;
 import javabaseproject.javabase.core.collections.ModelsCollection;
 import javabaseproject.javabase.core.database.models.Model;
 import javabaseproject.javabase.core.database.models.Relations;
+import javabaseproject.javabase.framework.commandline.Command;
 
 @PrimaryKey("id")
 public class Book extends Model<Book>{

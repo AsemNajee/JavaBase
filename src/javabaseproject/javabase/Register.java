@@ -20,7 +20,6 @@ public class Register {
     private static <M extends Model<M>> void registerAll() throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         String path = FilePaths.toPath(FilePaths.getModelsPackage(), "/");
         var res = Thread.currentThread().getContextClassLoader().getResource(path);
-//        if(res == null) throw new RuntimeException("The library not work with you, please tell me on github on telegram");
         if(res == null) return;
         File outputDir = new File(res.getFile());
         if(!outputDir.exists()) throw new RuntimeException("The library not work with you, please tell me on github on telegram");

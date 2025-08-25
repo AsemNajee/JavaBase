@@ -14,9 +14,22 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * filler of the prepared statements queries
+ *
+ * @author AsemNajee
+ * @version 1.0
+ */
 public class ParameterFiller {
     private ParameterFiller(){}
 
+    /**
+     * fill the statement by params from the model instance
+     *
+     * @param stmt the statement to fill its params
+     * @param item the instance to get the data from its fields
+     * @param varArgs specify some fields names to get them values
+     */
     public static <M extends Model<M>> void fill(PreparedStatement stmt, Model<M> item, String ...varArgs) throws SQLException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException{
         int i = 1;
         String[] params;
@@ -26,10 +39,6 @@ public class ParameterFiller {
             params = Arrays.stream(varArgs).filter(field -> Recorder.getRecordedClass(item.getClass()).getFields().containsKey(field)).toList().toArray(new String[0]);
         }
         if(params.length != stmt.getParameterMetaData().getParameterCount()){
-            Command.println(Arrays.toString(params));
-            for (int j = 0; j < stmt.getParameterMetaData().getParameterCount(); j++) {
-                Command.println(stmt.getParameterMetaData().getParameterClassName(i));
-            }
             throw new SQLException("parameter count is not the same with placeholders count");
         }
         for(String fname : params){
@@ -51,6 +60,12 @@ public class ParameterFiller {
         }
     }
 
+    /**
+     * fill statement from values from the list
+     *
+     * @param stmt the statement to fill its params
+     * @param params values to bind them in placeholders
+     */
     public static void fill(PreparedStatement stmt, List<Param> params) throws SQLException {
         int i = 1;
         for (var param : params) {
@@ -58,6 +73,13 @@ public class ParameterFiller {
         }
     }
 
+    /**
+     * bind a param value to statement
+     * @param stmt statement to bind the param
+     * @param type type fo the value and the field in database
+     * @param value the value to bind it
+     * @param i the order of the param
+     */
     public static void bindParam(PreparedStatement stmt, Types type, Object value, int i) throws SQLException {
         switch(type){
             case BOOLEAN -> {

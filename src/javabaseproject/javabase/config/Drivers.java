@@ -2,7 +2,9 @@ package javabaseproject.javabase.config;
 
 /**
  * only mysql is supported for now
- * @author PC
+ *
+ * @author AsemNajee
+ * @version 1.0
  */
 public enum Drivers {
     MYSQL, SQLITE, ORACLE
