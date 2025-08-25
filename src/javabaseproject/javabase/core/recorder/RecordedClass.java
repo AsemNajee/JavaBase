@@ -4,6 +4,7 @@ import javabaseproject.javabase.core.database.Factory;
 import javabaseproject.javabase.core.database.models.Model;
 import javabaseproject.javabase.core.database.Seeder;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -107,27 +108,34 @@ public class RecordedClass<T extends Model<T>> {
         private final Types type;
         private final ArrayList<Constraints> constraints;
         private final boolean parentField;
+        private final Field field;
+        private Class<? extends Model<?>> references;
 
         private final boolean hidden;
 
-        public RecordedField(String name, Types type, ArrayList<Constraints> constraints, boolean parentField, boolean isHidden) {
+        public RecordedField(String name, Types type, ArrayList<Constraints> constraints, Field field, boolean parentField, boolean isHidden) {
             this.name = name;
             this.type = type;
             this.constraints = constraints;
             this.parentField = parentField;
             this.hidden = isHidden;
+            this.field = field;
         }
 
-        public RecordedField(String name, Types type, ArrayList<Constraints> constraints){
-            this(name, type, constraints, false);
+        public RecordedField(String name, Types type, ArrayList<Constraints> constraints, Field field){
+            this(name, type, constraints, field, false);
         }
 
-        public RecordedField(String name, Types type, ArrayList<Constraints> constraints, boolean isParent){
-            this(name, type, constraints, isParent, false);
+        public RecordedField(String name, Types type, ArrayList<Constraints> constraints, Field field, boolean isParent){
+            this(name, type, constraints, field, isParent, false);
         }
         
         public RecordedField addConstraint(Constraints cons){
             constraints.add(cons);
+            return this;
+        }
+        public RecordedField references(Class<? extends Model<?>> references){
+            this.references = references;
             return this;
         }
 
@@ -137,6 +145,17 @@ public class RecordedClass<T extends Model<T>> {
 
         public Types getType() {
             return type;
+        }
+
+        public Field getRealField() {
+            return field;
+        }
+        public String getReferences(){
+            if(references == null){
+                return "";
+            }
+            RecordedClass<?> fRClass = Recorder.getRecordedClass(references);
+            return "REFERENCES " + fRClass.getName() + "(" + fRClass.getPrimaryKey().getName() + ")";
         }
 
         /**

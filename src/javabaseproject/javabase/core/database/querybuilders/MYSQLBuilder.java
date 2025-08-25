@@ -4,6 +4,7 @@ import javabaseproject.javabase.core.database.models.Model;
 import javabaseproject.javabase.core.database.querybuilders.query.DB;
 import javabaseproject.javabase.core.recorder.RecordedClass;
 import javabaseproject.javabase.core.recorder.RecordedClass.RecordedField;
+import javabaseproject.javabase.framework.commandline.Command;
 
 /**
  * 
@@ -67,9 +68,10 @@ public class MYSQLBuilder {
 
     private static String filterConstraints(RecordedField f){
         StringBuilder subSql = new StringBuilder();
-        for(var field : f.getConstraints()){
-            subSql.append(" ").append(field);
+        for(var constraint : f.getConstraints()){
+            subSql.append(" ").append(constraint);
         }
+        subSql.append(" ").append(f.getReferences());
         return subSql.toString();
     }
 }

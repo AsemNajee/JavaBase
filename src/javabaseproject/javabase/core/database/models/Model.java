@@ -62,7 +62,7 @@ public class Model<T extends Model<T>> extends AbstractModel<T> {
      * @return instance of factory of this model
      */
     public Factory<T> factory(){
-        return Recorder.getRecordedClass(this.getClass()).getFactory();
+        return (Factory<T>) Recorder.getRecordedClass(this.getClass()).getFactory();
     }
 
     /**

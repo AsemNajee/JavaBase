@@ -37,7 +37,7 @@ public class Migration {
     public static boolean migrate(RecordedClass<?> rclass) throws SQLException {
         String query = Build.create(rclass);
         try(var stmt = Connector.getConnection().createStatement()){
-            stmt.executeUpdate(query);
+//            stmt.executeUpdate(query);
             return true;
         }catch (SQLException e){
             ExceptionHandler.print(e);

@@ -14,5 +14,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ForeignKey{
-    public Class<? extends Model<?>> value();
+    Class<? extends Model<?>> value();
 }

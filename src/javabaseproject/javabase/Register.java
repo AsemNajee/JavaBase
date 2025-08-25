@@ -4,6 +4,7 @@ import javabaseproject.javabase.core.database.models.Model;
 import javabaseproject.javabase.core.recorder.RecordedClass;
 import javabaseproject.javabase.core.recorder.Recorder;
 import javabaseproject.javabase.framework.FilePaths;
+import javabaseproject.javabase.framework.commandline.Command;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
@@ -30,6 +31,7 @@ public class Register {
         for(var item : outputDir.list()){
             Recorder.add((Class<M>) Class.forName(FilePaths.getModelPackage(item).replace(".class", "")));
         }
+        Recorder.registerForeignKeys();
         registerDone = true;
     }
 

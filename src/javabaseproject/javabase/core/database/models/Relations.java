@@ -25,12 +25,12 @@ public class Relations {
                 .get();
     }
     public static <T extends Model<T>, F extends Model<F>> F hasOne(T model, Class<F> foreignModel, String foreignKey) throws Exception {
-        RecordedClass<T> rclass = Recorder.getRecordedClass(model.getClass());
+        RecordedClass<?> rclass = Recorder.getRecordedClass(model.getClass());
         String localKey = rclass.getPrimaryKey().getName();
         return hasOne(model, foreignModel, foreignKey, localKey);
     }
     public static <T extends Model<T>, F extends Model<F>> F hasOne(T model, Class<F> foreignModel) throws Exception {
-        RecordedClass<T> rclass = Recorder.getRecordedClass(model.getClass());
+        RecordedClass<?> rclass = Recorder.getRecordedClass(model.getClass());
         String localKey = rclass.getPrimaryKey().getName();
         String foreignKey = rclass.getName().toLowerCase() + "_" + localKey;
         return hasOne(model, foreignModel, foreignKey, localKey);
@@ -42,12 +42,12 @@ public class Relations {
         return DB.from(foreignModel).where(foreignKey, relationKeyValue).all();
     }
     public static <T extends Model<T>, F extends Model<F>> List<F> hasMany(T model, Class<F> foreignModel, String foreignKey) throws Exception {
-        RecordedClass<T> rclass = Recorder.getRecordedClass(model.getClass());
+        RecordedClass<?> rclass = Recorder.getRecordedClass(model.getClass());
         String localKey = rclass.getPrimaryKey().getName();
         return hasMany(model, foreignModel, foreignKey, localKey);
     }
     public static <T extends Model<T>, F extends Model<F>> ModelsCollection<F> hasMany(T model, Class<F> foreignModel) throws Exception {
-        RecordedClass<T> rclass = Recorder.getRecordedClass(model.getClass());
+        RecordedClass<?> rclass = Recorder.getRecordedClass(model.getClass());
         String localKey = rclass.getPrimaryKey().getName();
         String foreignKey = rclass.getName().toLowerCase() + "_" + localKey;
         return hasMany(model, foreignModel, foreignKey, localKey);
@@ -59,12 +59,12 @@ public class Relations {
         return Model.of(parentModel).query().where(localKey, relationKeyValue).get();
     }
     public static <T extends Model<T>, F extends Model<F>> F belongsTo(T model, Class<F> parentModel, String foreignKey) throws Exception {
-        RecordedClass<F> rclass = Recorder.getRecordedClass(parentModel);
+        RecordedClass<?> rclass = Recorder.getRecordedClass(parentModel);
         String localKey = rclass.getPrimaryKey().getName();
         return belongsTo(model, parentModel, foreignKey, localKey);
     }
     public static <T extends Model<T>, F extends Model<F>> F belongsTo(T model, Class<F> parentModel) throws Exception {
-        RecordedClass<F> rclass = Recorder.getRecordedClass(parentModel);
+        RecordedClass<?> rclass = Recorder.getRecordedClass(parentModel);
         String localKey = rclass.getPrimaryKey().getName();
         String foreignKey = rclass.getName().toLowerCase() + "_" + localKey;
         return belongsTo(model, parentModel, foreignKey, localKey);

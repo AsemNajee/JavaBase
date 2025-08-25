@@ -5,7 +5,10 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
+import javabaseproject.javabase.core.annotations.ForeignKey;
 import javabaseproject.javabase.core.database.Factory;
 import javabaseproject.javabase.core.database.Seeder;
 import javabaseproject.javabase.core.recorder.RecordedClass.RecordedField;
@@ -15,16 +18,19 @@ import javabaseproject.javabase.core.annotations.Unique;
 import javabaseproject.javabase.core.database.models.Model;
 import javabaseproject.javabase.framework.FileHandler;
 import javabaseproject.javabase.framework.FilePaths;
+import javabaseproject.javabase.framework.commandline.Command;
 
 /**
  * 
  * @author AsemNajee
  */
 public class Recorder {
+    private static final List<RecordedField> fieldsWithForeignKeys;
 
     private static final HashMap<String, RecordedClass<? extends Model<?>>> modelsAsKeyValue;
     
     static {
+        fieldsWithForeignKeys = new LinkedList<>();
         modelsAsKeyValue = new HashMap<>();
     }
 
@@ -32,8 +38,8 @@ public class Recorder {
         return modelsAsKeyValue;
     }
 
-    public static <M extends Model<M>> RecordedClass<M> getRecordedClass(Class<M> clazz){
-        return (RecordedClass<M>) modelsAsKeyValue.get(clazz.getName());
+    public static RecordedClass<? extends Model<?>> getRecordedClass(Class<?> clazz){
+        return modelsAsKeyValue.get(clazz.getName());
     }
     public static <M extends Model<M>> RecordedClass<M> getRecordedClass(String modelName){
         for(var rc : getModels().values()){
@@ -87,13 +93,18 @@ public class Recorder {
      *
      */
     private static RecordedField filterField(Field field, boolean isFromParent) {
-        return new RecordedField(
+        var rField =  new RecordedField(
                 field.getName(),
                 FieldController.getFieldType(field),
                 getFieldConstraints(field),
+                field,
                 isFromParent,
                 field.accessFlags().contains(AccessFlag.PRIVATE)
         );
+        if(field.isAnnotationPresent(ForeignKey.class)){
+            fieldsWithForeignKeys.add(rField);
+        }
+        return rField;
     }
     
     private static <M extends Model<M>> void setPrimaryKey(Class<M> clazz, RecordedClass<M> cls){
@@ -118,9 +129,6 @@ public class Recorder {
         if(field.isAnnotationPresent(PrimaryKey.class)){
             constraints.add(Constraints.PRIMARY_KEY);
         }
-//        if(field.isAnnotationPresent(ForeignKey.class)){
-//            constraints.add(Constraints.FOREIGN_KEY);
-//        }
         return constraints;
     }
     
@@ -137,5 +145,13 @@ public class Recorder {
                 && f.accessFlags().stream()
                         .filter(m -> m == AccessFlag.PROTECTED || m == AccessFlag.PRIVATE)
                         .count() == f.accessFlags().size();
+    }
+
+    public static void registerForeignKeys(){
+        for (var field : fieldsWithForeignKeys){
+            Field realField = field.getRealField();
+            var foreignModel = realField.getAnnotation(ForeignKey.class).value();
+            field.references(foreignModel);
+        }
     }
 }
