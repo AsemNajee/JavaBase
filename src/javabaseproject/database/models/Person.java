@@ -26,9 +26,9 @@ public class Person extends Model<Person>{
         return Relations.belongsTo(this, User.class);
     }
 
-//    public ModelsCollection<Book> books() throws Exception {
-//        return BookPerson.belongsToMany(this);
-//    }
+    public ModelsCollection<Book> books() throws Exception {
+        return BookPerson.related(this);
+    }
 
     public void setId(int id){
         this.id = id;

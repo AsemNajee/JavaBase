@@ -11,6 +11,8 @@ import java.lang.annotation.Target;
  * add foreign key to another model and link them in the database
  * this annotation is not work and need to implement
  */
-@Target(ElementType.METHOD)
+@Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ForeignKey{}
+public @interface ForeignKey{
+    public Class<? extends Model<?>> value();
+}

@@ -94,4 +94,12 @@ public class Model<T extends Model<T>> extends AbstractModel<T> {
     public DB<T> query(){
         return new DB<>(Recorder.getRecordedClass(this.getClass()).getName());
     }
+
+    public Object getKey() {
+        try {
+            return super.getKey(this);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

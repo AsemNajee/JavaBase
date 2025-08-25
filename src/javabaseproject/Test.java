@@ -16,9 +16,9 @@ import javabaseproject.javabase.framework.commandline.Command;
 public class Test {
 
     public static void main(String[] args) throws Exception {
-//        Book book = Model.of(Book.class).find(1);
-        Person person = Model.of(Person.class).find(2);
-        Command.print(BookPerson.related(person));
+        Book book = Model.of(Book.class).find(1);
+        Person person = Model.of(Person.class).find(1);
+        Command.print(person.books());
 //        book.save();
 //        person.save();
 //        BookPerson bp = new BookPerson(2, book, person);

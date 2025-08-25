@@ -2,6 +2,7 @@ package javabaseproject.database.models;
 
 import javabaseproject.javabase.core.annotations.PrimaryKey;
 import javabaseproject.javabase.core.annotations.Unique;
+import javabaseproject.javabase.core.collections.ModelsCollection;
 import javabaseproject.javabase.core.database.models.Model;
 
 @PrimaryKey("id")
@@ -31,6 +32,9 @@ public class Book extends Model<Book>{
     }
     public String getName(){
         return name;
+    }
+    public ModelsCollection<Person> persons() throws Exception {
+        return BookPerson.related(this);
     }
 
 // ... add more fields with protected access modifier

@@ -136,6 +136,14 @@ public abstract class AbstractModel<T extends Model<T>> implements Jsonable {
     }
 
     /**
+     * get the value of the primary key
+     */
+    protected Object getKey(Model<T> model) throws NoSuchFieldException, IllegalAccessException {
+        String keyName = Recorder.getRecordedClass(model.getClass()).getPrimaryKey().getName();
+        return FieldController.get(keyName, model);
+    }
+
+    /**
      * check if the field is hidden, all private fields are hidden
      * @param field the field to check
      * @return status of hidden
