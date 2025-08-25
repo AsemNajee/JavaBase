@@ -16,6 +16,7 @@ public class ENV {
         ROOT_PACKAGE        = "javabaseproject";
         LANGUAGE            = Languages.EN;
         MODELS_PACKAGE      = "database.models";
+        PIVOTS_PACKAGE      = "database.models";
         FACTORIES_PACKAGE   = "database.factories";
         SEEDERS_PACKAGE     = "database.seeders";
     };
@@ -52,6 +53,7 @@ public class ENV {
      * the dir is based on your {@code ROOT_PACKAGE}
      */
     public static final String MODELS_PACKAGE;
+    public static final String PIVOTS_PACKAGE;
     /**
      * directory where new factories will create in
      * you can read the docs of {@code MODELS_PACKAGE} for more details

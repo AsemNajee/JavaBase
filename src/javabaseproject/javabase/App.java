@@ -15,8 +15,11 @@ public class App {
         ExceptionHandler.handle(() -> {
             Register.getRegisteredModels();
             Connector.start();
-            fn.run();
-            Connector.close();
+            try{
+                fn.run();
+            }finally {
+                Connector.close();
+            }
         });
     }
 }

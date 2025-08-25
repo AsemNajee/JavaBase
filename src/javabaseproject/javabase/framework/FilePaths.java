@@ -8,6 +8,9 @@ public class FilePaths {
     public static String getModelsPath(){
         return basePath(ENV.MODELS_PACKAGE) + File.separator;
     }
+    public static String getPivotsPath(){
+        return basePath(ENV.PIVOTS_PACKAGE) + File.separator;
+    }
     public static String getFactoriesPath(){
         return basePath(ENV.FACTORIES_PACKAGE) + File.separator;
     }
@@ -19,6 +22,9 @@ public class FilePaths {
     }
     public static String getModelPath(String model){
         return getModelsPath() + File.separator + model + ".java";
+    }
+    public static String getPivotPath(String pivot){
+        return getPivotsPath() + File.separator + pivot + ".java";
     }
     public static String getFactoryPath(String model){
         return getFactoriesPath() + File.separator + model.replaceAll("(.*)Factory$", "$1") + "Factory.java";

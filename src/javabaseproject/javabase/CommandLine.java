@@ -1,9 +1,9 @@
 package javabaseproject.javabase;
 
 import javabaseproject.Handler;
-import javabaseproject.Main;
 import javabaseproject.javabase.framework.commandline.*;
 import javabaseproject.javabase.framework.commandline.output.Console;
+import javabaseproject.javabase.framework.commandline.PivotCommands;
 
 import java.util.Scanner;
 
@@ -33,6 +33,9 @@ public class CommandLine {
             }else
             if(inpc.isCommandFor(ModelCommands.class)){
                 ModelCommands.handle(inpc.getMatcher().group("verb"), inpc.getMatcher().group("model"), inpc.getMatcher());
+            }else
+            if(inpc.isCommandFor(PivotCommands.class)){
+                PivotCommands.handle(inpc.getMatcher().group("verb"), inpc.getMatcher().group("pivot"), inpc.getMatcher().group("first"), inpc.getMatcher().group("second"));
             }else
             if(inpc.isCommandFor(DatabaseCommands.class)){
                 DatabaseCommands.handle(inpc.getMatcher().group("verb"), inpc.getMatcher().group("model"));

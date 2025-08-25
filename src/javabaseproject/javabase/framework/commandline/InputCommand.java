@@ -37,5 +37,7 @@ public class InputCommand{
         commandsPatterns.put(FactoryCommands.class.getName(), Pattern.compile("^(?<verb>make|drop):factory( )+(?<model>[A-Z][A-Za-z0-9]*)?(Factory)?"));
 //        make:seeder Animal, drop:seeder Animal, start:seeder, start:seeder Animal
         commandsPatterns.put(SeederCommands.class.getName(), Pattern.compile("^(?<verb>make|drop|start):seeder( )?(?<model>[A-Z][A-Za-z0-9]*)?(Seeder)?"));
+//        make:pivot PivotName FirstModel SecondModel
+        commandsPatterns.put(PivotCommands.class.getName(), Pattern.compile("^(?<verb>make|drop):pivot( )+(?<pivot>[A-Z][A-Za-z0-9]*)( )+(?<first>[A-Z][A-Za-z0-9]*)( )+(?<second>[A-Z][A-Za-z0-9]*)"));
     }
 }

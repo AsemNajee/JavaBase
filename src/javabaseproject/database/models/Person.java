@@ -7,7 +7,7 @@ import javabaseproject.javabase.core.database.models.Model;
 import javabaseproject.javabase.core.database.models.Pivot;
 import javabaseproject.javabase.core.database.models.Relations;
 
-@PrimaryKey("id")
+@PrimaryKey("name")
 public class Person extends Model<Person>{
 
     protected int id;

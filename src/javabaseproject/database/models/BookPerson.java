@@ -6,11 +6,6 @@ import javabaseproject.javabase.core.collections.ModelsCollection;
 import javabaseproject.javabase.core.database.models.Model;
 import javabaseproject.javabase.core.database.models.Pivot;
 import javabaseproject.javabase.core.database.models.Relations;
-import javabaseproject.javabase.core.database.querybuilders.query.DB;
-import javabaseproject.javabase.core.recorder.Recorder;
-import javabaseproject.javabase.framework.commandline.Command;
-
-import java.lang.reflect.InvocationTargetException;
 
 @PrimaryKey("id")
 public class BookPerson extends Model<BookPerson> implements Pivot<Book, Person> {

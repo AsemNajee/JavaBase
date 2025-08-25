@@ -1,11 +1,5 @@
 package javabaseproject.javabase.core.database.querybuilders.query;
 
-// columns & aliases
-// table & aliases
-// condition
-// grouping
-// ordering
-// join
 
 import javabaseproject.javabase.core.collections.ModelsCollection;
 import javabaseproject.javabase.core.database.Connector;

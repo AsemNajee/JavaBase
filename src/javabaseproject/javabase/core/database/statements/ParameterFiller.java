@@ -7,7 +7,6 @@ import javabaseproject.javabase.core.recorder.Recorder;
 import javabaseproject.javabase.core.database.models.Model;
 import javabaseproject.javabase.core.recorder.Types;
 import javabaseproject.javabase.framework.commandline.Command;
-import javabaseproject.javabase.framework.commandline.output.Colors;
 
 import java.lang.reflect.Field;
 import java.sql.PreparedStatement;
@@ -22,7 +21,7 @@ public class ParameterFiller {
         int i = 1;
         String[] params;
         if(varArgs == null || varArgs.length == 0){
-            params = (String[]) Recorder.getRecordedClass(item.getClass()).getFields().keySet().toArray(new String[0]);
+            params = Recorder.getRecordedClass(item.getClass()).getFields().keySet().toArray(new String[0]);
         }else{
             params = Arrays.stream(varArgs).filter(field -> Recorder.getRecordedClass(item.getClass()).getFields().containsKey(field)).toList().toArray(new String[0]);
         }
@@ -31,7 +30,7 @@ public class ParameterFiller {
             for (int j = 0; j < stmt.getParameterMetaData().getParameterCount(); j++) {
                 Command.println(stmt.getParameterMetaData().getParameterClassName(i));
             }
-            throw new SQLException("parameter count is not the same with placeholders cound");
+            throw new SQLException("parameter count is not the same with placeholders count");
         }
         for(String fname : params){
             RecordedClass.RecordedField rField = Recorder.getRecordedClass(item.getClass()).getField(fname);
