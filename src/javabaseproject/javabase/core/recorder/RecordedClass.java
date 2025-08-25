@@ -94,6 +94,17 @@ public class RecordedClass<T extends Model<T>> {
         return this;
     }
 
+    public String getForeignKeyWith(Class<? extends Model<?>> foreignModel){
+        var fields = getFields();
+        for (var key : fields.keySet()) {
+            var field = fields.get(key);
+            if(field.references.equals(foreignModel)){
+                return field.getName();
+            }
+        }
+        return null;
+    }
+
     @Override
     public String toString() {
         return "\nRecordedClass{\n" + "\tname=" + name + ", \n\tclazz=" + clazz + ", \n\tfields=" + fields + "\n}";
@@ -150,7 +161,7 @@ public class RecordedClass<T extends Model<T>> {
         public Field getRealField() {
             return field;
         }
-        public String getReferences(){
+        public String references(){
             if(references == null){
                 return "";
             }

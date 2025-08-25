@@ -30,9 +30,9 @@ public class MYSQLBuilder {
         }
         fields = new StringBuilder(fields.substring(0, fields.length() - 2));
         String sql = """
-                     INSERT INTO {{table}} 
-                        ({{fields}}) 
-                     VALUES 
+                     INSERT INTO {{table}}
+                        ({{fields}})
+                     VALUES
                         ({{values}});
                      """.replace("{{table}}", rclass.getName())
                         .replace("{{fields}}", fields.toString())
@@ -71,7 +71,7 @@ public class MYSQLBuilder {
         for(var constraint : f.getConstraints()){
             subSql.append(" ").append(constraint);
         }
-        subSql.append(" ").append(f.getReferences());
+        subSql.append(" ").append(f.references());
         return subSql.toString();
     }
 }

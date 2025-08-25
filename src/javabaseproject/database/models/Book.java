@@ -4,6 +4,7 @@ import javabaseproject.javabase.core.annotations.PrimaryKey;
 import javabaseproject.javabase.core.annotations.Unique;
 import javabaseproject.javabase.core.collections.ModelsCollection;
 import javabaseproject.javabase.core.database.models.Model;
+import javabaseproject.javabase.core.database.models.Relations;
 
 @PrimaryKey("id")
 public class Book extends Model<Book>{
@@ -34,7 +35,7 @@ public class Book extends Model<Book>{
         return name;
     }
     public ModelsCollection<Person> persons() throws Exception {
-        return BookPerson.related(this);
+        return BookPerson.belongsToMany(this);
     }
 
 // ... add more fields with protected access modifier

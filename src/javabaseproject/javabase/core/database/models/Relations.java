@@ -1,5 +1,8 @@
 package javabaseproject.javabase.core.database.models;
 
+import javabaseproject.database.models.Book;
+import javabaseproject.database.models.BookPerson;
+import javabaseproject.database.models.Person;
 import javabaseproject.javabase.core.collections.ModelsCollection;
 import javabaseproject.javabase.core.database.querybuilders.query.Condition;
 import javabaseproject.javabase.core.database.querybuilders.query.DB;
@@ -70,6 +73,17 @@ public class Relations {
         return belongsTo(model, parentModel, foreignKey, localKey);
     }
 
+
+    public static <R extends Model<R>, M extends Model<M>, P extends Pivot<?, ?>> ModelsCollection<R> belongsToMany(Class<P> pivot, Class<R> returnedItem, M model) throws Exception {
+        String keyFromPivotToModel = Recorder.getRecordedClass(pivot).getForeignKeyWith((Class<? extends Model<?>>) model.getClass());
+        var relationKeys = Model.of(BookPerson.class).query().where(keyFromPivotToModel, model.getKey()).all();
+        var keys = relationKeys.stream().map(Model::getKey);
+        return DB.from(returnedItem)
+                .whereIn(
+                        Recorder.getRecordedClass(returnedItem).getPrimaryKey().getName(),
+                        keys.toArray())
+                .all();
+    }
 
     /**
      * id
