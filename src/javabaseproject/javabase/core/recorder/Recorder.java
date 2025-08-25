@@ -8,13 +8,10 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import javabaseproject.javabase.core.annotations.ForeignKey;
+import javabaseproject.javabase.core.annotations.*;
 import javabaseproject.javabase.core.database.Factory;
 import javabaseproject.javabase.core.database.Seeder;
 import javabaseproject.javabase.core.recorder.RecordedClass.RecordedField;
-import javabaseproject.javabase.core.annotations.NotNull;
-import javabaseproject.javabase.core.annotations.PrimaryKey;
-import javabaseproject.javabase.core.annotations.Unique;
 import javabaseproject.javabase.core.database.models.Model;
 import javabaseproject.javabase.framework.FileHandler;
 import javabaseproject.javabase.framework.FilePaths;
@@ -128,6 +125,9 @@ public class Recorder {
         }
         if(field.isAnnotationPresent(PrimaryKey.class)){
             constraints.add(Constraints.PRIMARY_KEY);
+        }
+        if(field.isAnnotationPresent(AutoIncrement.class)){
+            constraints.add(Constraints.AUTO_INCREMENT);
         }
         return constraints;
     }
