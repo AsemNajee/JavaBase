@@ -7,7 +7,8 @@ import javabaseproject.javabase.framework.exceptions.ExceptionHandler;
 
 /**
  * this is the container of the application .
- * Is register all
+ * Is start the application and start connection and register all models
+ *
  * @author AsemNajee
  */
 public class App {

@@ -1,11 +1,13 @@
 package javabaseproject.javabase.framework.generators;
 
 import javabaseproject.ENV;
-import javabaseproject.javabase.config.STATIC;
 import javabaseproject.javabase.core.recorder.RecordedClass;
 import javabaseproject.javabase.core.recorder.Recorder;
 import javabaseproject.javabase.framework.FilePaths;
 import javabaseproject.javabase.framework.commandline.controllers.PivotController;
+
+import static javabaseproject.javabase.framework.commandline.controllers.PivotController.toInstanceName;
+import static javabaseproject.javabase.framework.commandline.controllers.PivotController.toPluralName;
 
 public class PivotGenerator {
     private String pivotName;
@@ -34,11 +36,10 @@ public class PivotGenerator {
                 import {basePackage}.javabase.core.annotations.PrimaryKey;
                 import {basePackage}.javabase.core.collections.ModelsCollection;
                 import {basePackage}.javabase.core.database.models.Model;
-                import {basePackage}.javabase.core.database.models.Pivot;
                 import {basePackage}.javabase.core.database.models.Relations;
                                 
                 @PrimaryKey("id")
-                public class {pivotName} extends Model<{pivotName}> implements Pivot<{first}, {second}> {
+                public class {pivotName} extends Model<{pivotName}>{
                                 
                     protected int id;
                     
@@ -74,5 +75,22 @@ public class PivotGenerator {
                 .replace("{secondKey}",  PivotController.toClassName(secondKey.getName()))
                 .replace("{secondCast}", secondKey.getType().getJavaType())
                 .replace("{secondInstance}", secondInstance);
+    }
+
+    private String getRelationMethodFor(String returnModel){
+        return """
+                    public ModelsCollection<{returned}> {name}() throws Exception {
+                        return {pivot}.belongsToMany(this);
+                    }
+                """.replace("{name}", toInstanceName(toPluralName(returnModel)))
+                .replace("{pivot}", pivotName)
+                .replace("{returned}", returnModel);
+    }
+
+    public String getRelationFromFirstModelToSecondModel(){
+        return getRelationMethodFor(second);
+    }
+    public String getRelationFromSecondModelToFirstModel(){
+        return getRelationMethodFor(first);
     }
 }

@@ -77,12 +77,21 @@ public class Command {
         System.out.printf(Console.style(text.toString()) + "\n", varArgs);
     }
 
+    /**
+     * printing json with colors in the console
+     *
+     * @param json text of json to print
+     */
     public static void printJson(String json){
+        char colorOfStrings     = 'g';
+        char colorOfCarlyBraces = 'p';
+        char colorOfNumbers     = 'y';
+        char colorOfSquerBraces = 'y';
         Command.println(json
-                .replaceAll("(?s)\\{(.*?)}", "p{{}$1p{\\\\}}")
-                .replaceAll("(?s)\\[(.*?)]", "b{[}$1b{]}")
-                .replaceAll("(?s)\"(?<text>.*?)(?<!\\\\)\"", "g{\"${text}\"}")
-                .replaceAll("(?s)(\\d)", "y{$1}")
+                .replaceAll("(?s)\\{(.*?)}",                colorOfCarlyBraces  + "{{}$1p{\\\\}}")
+                .replaceAll("(?s)\\[(.*?)]",                colorOfSquerBraces  + "{[}$1b{]}")
+                .replaceAll("(?s)\"(?<s>.*?)(?<!\\\\)\"",   colorOfStrings      + "{\"${s}\"}")
+                .replaceAll("(?s)(\\d)",                    colorOfNumbers      + "{$1}")
         );
     }
 }

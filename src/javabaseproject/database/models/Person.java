@@ -1,5 +1,7 @@
+
 package javabaseproject.database.models;
 
+import javabaseproject.javabase.core.collections.ModelsCollection;
 import javabaseproject.javabase.core.annotations.PrimaryKey;
 import javabaseproject.javabase.core.annotations.Unique;
 import javabaseproject.javabase.core.collections.ModelsCollection;
@@ -43,5 +45,8 @@ public class Person extends Model<Person>{
         return name;
     }
 
-// ... add more fields with protected access modifier
+    public ModelsCollection<User> users() throws Exception {
+        return UserPerson.belongsToMany(this);
+    }
+
 }

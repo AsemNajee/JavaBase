@@ -1,3 +1,4 @@
+
 package javabaseproject.database.models;
 
 import javabaseproject.javabase.core.annotations.AutoIncrement;
@@ -45,5 +46,4 @@ public class Book extends Model<Book>{
         return BookPerson.belongsToMany(this);
     }
 
-// ... add more fields with protected access modifier
 }

@@ -14,6 +14,17 @@ import java.io.IOException;
 public class SeederController {
 
     public static void make(String modelName) throws IOException {
+        if(!FileHandler.of(FilePaths.getFactoryPath(modelName)).exists()){
+            Command.println("""
+                    +--------------------------------+
+                    |   the model has not factory,   |
+                    |   please create factory first  |
+                    |                                |
+                    |      g{make:factory {model}}      |
+                    +--------------------------------+
+                    """.replace("{model}", modelName + " ".repeat(Math.max(7 - modelName.length(), 0)))
+            );
+        }
         FileHandler.of(FilePaths.getSeederPath(modelName))
                 .write(new SeederGenerator(modelName).seederFile());
         Command.printf("g{Seeder %s Has created successfully.}", modelName);

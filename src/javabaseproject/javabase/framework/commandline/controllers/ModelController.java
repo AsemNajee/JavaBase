@@ -46,6 +46,7 @@ public class ModelController {
 
     /**
      * create model java file in models package
+     *
      * @param modelName name of the model to create
      * @param key the name of primary key in the model, default is {@code id}
      * @param keyType type of primary key, default is {@code int}
@@ -69,6 +70,7 @@ public class ModelController {
 
     /**
      * delete table of the model from the database
+     *
      * @param rclass the class of the model
      * @throws SQLException
      */
@@ -78,6 +80,7 @@ public class ModelController {
 
     /**
      * delete the java file from models package
+     *
      * @param model the model name which will its java class be deleted
      */
     private static void deleteModelFile(String model) {
@@ -86,5 +89,26 @@ public class ModelController {
         if(file.isFile()){
             file.delete();
         }
+    }
+
+    /**
+     * add new method to the end of the model
+     *
+     * @param modelName the name of the model
+     * @param methodImplements the method implementation as string
+     */
+    public static void addNewMethodToModel(String modelName, String methodImplements) throws IOException {
+        FileHandler file = FileHandler.of(FilePaths.getModelPath(modelName));
+        if(!file.exists()){
+            Command.printf("r{model %s not found}", modelName);
+            return;
+        }
+        String content = file.read();
+        // adding the method to the end of the class, before closing the bracket
+        content = content.replaceAll("(?s)(?<cDef>.*class(.*)Model<.*>\\{)(?<content>.*)}", "${cDef}${content}" + methodImplements + "\n}");
+        if(!content.matches(".*import .*ModelsCollection;")){
+            content = content.replaceFirst("import", "import " + ENV.ROOT_PACKAGE + ".javabase.core.collections.ModelsCollection;\nimport");
+        }
+        file.write(content);
     }
 }

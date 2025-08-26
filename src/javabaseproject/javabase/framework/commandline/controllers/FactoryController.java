@@ -8,6 +8,12 @@ import javabaseproject.javabase.framework.generators.ModelGenerator;
 
 import java.io.IOException;
 
+/**
+ * control and handle the factory commands
+ *
+ * @author AsemNajee
+ * @version 1.0
+ */
 public class FactoryController {
     public static void make(String modelName, boolean isNew) throws IOException {
         String content = new FactoryGenerator(modelName, false).factoryFile();
@@ -19,8 +25,8 @@ public class FactoryController {
             String modelContent = FileHandler.of(FilePaths.getModelPath(modelName)).read();
             FileHandler.of(FilePaths.getModelPath(modelName))
                     .write(modelContent.replaceAll(
-                            "(public class .* extends Model<.*>\\{)",
-                            "$1\n\t" + ModelGenerator.constructorForAllFields(modelName))
+                            "(public( )+class .* extends( )+Model( )+<.*>( )+\\{)",
+                            "$1\n\n\t" + ModelGenerator.constructorForAllFields(modelName))
                     );
         }
         Command.printf("g[Factory %sFactory Created Successfully.]", modelName);

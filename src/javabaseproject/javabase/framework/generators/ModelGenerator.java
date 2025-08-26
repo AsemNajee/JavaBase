@@ -53,7 +53,6 @@ public class ModelGenerator {
                         return name;
                     }
                     
-                // ... add more fields with protected access modifier
                 }
                 """.replace("{Model}", modelName)
                 .replace("{key}", key)
