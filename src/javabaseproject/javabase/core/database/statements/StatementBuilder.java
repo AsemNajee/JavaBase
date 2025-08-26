@@ -7,6 +7,7 @@ import javabaseproject.javabase.core.database.models.Model;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
  * create prepared statements and fills there's parameters
@@ -29,7 +30,7 @@ public class StatementBuilder {
     }
     public static <M extends Model<M>> PreparedStatement getInsertQueryForOneItem(Model<M> item) throws SQLException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException{
         String sql = Build.insert(Recorder.getRecordedClass(item.getClass()));
-        var stmt = Connector.getConnection().prepareStatement(sql);
+        var stmt = Connector.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
         ParameterFiller.fill(stmt, item);
         return stmt;
     }

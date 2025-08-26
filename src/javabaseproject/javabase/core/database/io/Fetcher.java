@@ -25,11 +25,10 @@ public class Fetcher {
      * @param result the result set from the database
      * @return new instance of the model class filled with the data
      */
-    public static <T extends Model<T>> T fetch(Class<T> clazz, ResultSet result) throws NoSuchFieldException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException, SQLException {
+    public static <T extends Model<T>> T fetch(ResultSet result, T model) throws NoSuchFieldException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException, SQLException {
+        Class<T> clazz = (Class<T>) model.getClass();
         var metaData = metaData(result);
-        T item;
         HashMap<String, RecordedClass.RecordedField> fields = Recorder.getRecordedClass(clazz).getFields();
-        item = clazz.getDeclaredConstructor().newInstance();
         Class<?> cls;
         for(var field : fields.keySet()){
             if(fields.get(field).isParentField()) {
@@ -39,10 +38,14 @@ public class Fetcher {
             }
             Field realField = cls.getDeclaredField(field);
             if(metaData.containsKey(realField.getName())){
-                FieldController.set(realField, result, item);
+                FieldController.set(realField, result, model);
             }
         }
-        return item;
+        return model;
+    }
+
+    public static <T extends Model<T>> T fetch(Class<T> clazz, ResultSet result) throws NoSuchFieldException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException, SQLException {
+        return fetch(result, clazz.getDeclaredConstructor().newInstance());
     }
 
     /**

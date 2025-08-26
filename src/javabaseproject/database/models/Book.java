@@ -1,5 +1,6 @@
 package javabaseproject.database.models;
 
+import javabaseproject.javabase.core.annotations.AutoIncrement;
 import javabaseproject.javabase.core.annotations.PrimaryKey;
 import javabaseproject.javabase.core.annotations.Unique;
 import javabaseproject.javabase.core.collections.ModelsCollection;
@@ -10,6 +11,7 @@ import javabaseproject.javabase.framework.commandline.Command;
 @PrimaryKey("id")
 public class Book extends Model<Book>{
 
+    @AutoIncrement
     protected int id;
     @Unique
     protected String name;
@@ -19,6 +21,10 @@ public class Book extends Model<Book>{
 
     public Book(int id, String name){
         this.id = id;
+        this.name = name;
+    }
+
+    public Book(String name){
         this.name = name;
     }
 

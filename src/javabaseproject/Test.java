@@ -5,6 +5,7 @@ import javabaseproject.database.models.BookPerson;
 import javabaseproject.database.models.Person;
 import javabaseproject.database.models.User;
 import javabaseproject.javabase.core.database.Connector;
+import javabaseproject.javabase.core.database.faker.Fake;
 import javabaseproject.javabase.core.database.io.Fetcher;
 import javabaseproject.javabase.core.database.models.Model;
 import javabaseproject.javabase.core.database.models.Relations;
@@ -18,14 +19,18 @@ import java.util.regex.Pattern;
 
 public class Test {
     public static void main(String[] args) throws Exception {
-        Command.printJson("""
-                [
-                	{
-                		"name" : "null",
-                		"id" : 1
-                	}
-                ]
-                """);
+
+//        Command.println("------------");
+                Book book = new Book(Fake.name());
+                Command.println(book);
+                book.save();
+                Command.println(book);
+//                new Book("Chemistry"),
+//                new Book("Math")
+//        ));
+//        Command.println("------------");
+//        Command.println(DB.from(Book.class).all());
+
 //        Command.println(DB.from(Person.class).all("id"));
 //        Command.println(Condition.where("Asem", DB.from(Person.class).all("name")));
 //        String file = """
@@ -53,7 +58,25 @@ public class Test {
 //        BookPerson bp1 = new BookPerson(2, book1, person);
 //        bp.save();
 //        bp1.save();
-//        Command.print(DB.from(User.class).whereIn("id", 1, 2, 3, 4, 5).all());
+
+        /*
+        User user = new User(1, "Asem");
+        User user1 = new User(2, "Abdullah");
+        User user2 = new User(3, "Saeed");
+        user.save();
+        user1.save();
+        user2.save();
+
+        Command.print(
+                DB.from(User.class).whereIn("id", 1, 2, 3).all()
+        );
+
+        DB.from(User.class).all(); // all users
+        DB.from(User.class).where("id", 1).get(); // one user
+        User asem = Model.of(User.class).find(1);
+
+        Book book = new Book();
+         */
     }
 }
 

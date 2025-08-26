@@ -22,6 +22,7 @@ public class MYSQLBuilder {
         }
         sql = new StringBuilder(sql.substring(0, sql.length() - 3));
         sql.append("\n);");
+        Command.println(sql);
         return sql.toString();
     }
     

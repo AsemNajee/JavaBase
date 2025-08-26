@@ -36,19 +36,23 @@ public class FieldController {
         var rfield = Recorder.getRecordedClass(instance.getClass()).getField(field.getName());
         set(
                 field,
-                switch(rfield.getType())
-                {
-                    case INT -> result.getInt(field.getName());
-                    case LONG -> result.getLong(field.getName());
-                    case STRING -> result.getString(field.getName());
-                    case BOOLEAN -> result.getBoolean(field.getName());
-                    case BYTE -> result.getByte(field.getName());
-                    case SHORT -> result.getShort(field.getName());
-                    case DOUBLE -> result.getDouble(field.getName());
-                    case FLOAT -> result.getFloat(field.getName());
-                },
+                getColumnData(rfield.getType(), field.getName(), result),
                 instance
         );
+    }
+
+    public static Object getColumnData(Types type, String name, ResultSet result) throws SQLException {
+        return switch(type)
+        {
+            case INT -> result.getInt(name);
+            case LONG -> result.getLong(name);
+            case STRING -> result.getString(name);
+            case BOOLEAN -> result.getBoolean(name);
+            case BYTE -> result.getByte(name);
+            case SHORT -> result.getShort(name);
+            case DOUBLE -> result.getDouble(name);
+            case FLOAT -> result.getFloat(name);
+        };
     }
 
     private static void set(Field field, Object value, Model<? extends Model<?>> instance) throws IllegalAccessException {

@@ -30,6 +30,6 @@ public enum Constraints {
 
     @Override
     public String toString(){
-        return sqlConstraint.replace("_", " ");
+        return sqlConstraint.replaceAll("_(?>!INCREMENT)", " "); // not replace the underscore of the auto increment constraint
     }
 }

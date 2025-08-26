@@ -61,7 +61,6 @@ public class Condition{
 
     @Override
     public String toString() {
-        Command.println(Arrays.toString(values));
         return switch (type){
             case NORMAL -> left + " " + operation + " ?";
             case COLUMN, IN -> left + " " + operation + " " + right;

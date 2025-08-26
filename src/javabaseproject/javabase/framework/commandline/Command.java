@@ -36,6 +36,8 @@ public class Command {
      * @param text the object value
      */
     public static void println(Object text){
+        if(text == null)
+            Command.println("null");
         System.out.println(Console.style(text.toString()));
     }
 
