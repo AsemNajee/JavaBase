@@ -53,6 +53,7 @@ public class Build {
 
     /**
      * get query to select one item from the database
+     *
      * @param rclass .
      * @return .
      */

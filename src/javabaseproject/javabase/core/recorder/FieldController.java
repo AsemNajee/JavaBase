@@ -12,9 +12,6 @@ import java.sql.SQLException;
  */
 public class FieldController {
     public static Object get(Field field, Model<? extends Model<?>> instance) throws IllegalAccessException {
-//        if(instance.isHidden(field)){
-//            return null;
-//        }
         field.setAccessible(true);
         Object value = field.get(instance);
         field.setAccessible(false);
@@ -30,11 +27,10 @@ public class FieldController {
 
     /**
      * this is used when fetching data from database to set field value
+     *
      * @param field
      * @param result
      * @param instance
-     * @throws SQLException
-     * @throws IllegalAccessException
      */
     public static <M extends Model<M>> void set(Field field, ResultSet result, Model<M> instance) throws SQLException, IllegalAccessException {
         var rfield = Recorder.getRecordedClass(instance.getClass()).getField(field.getName());

@@ -18,19 +18,29 @@ import java.util.regex.Pattern;
 
 public class Test {
     public static void main(String[] args) throws Exception {
-        String file = """
-                    public void setId(int id){
-                        this.id = id;
-                    }
-                   
-                    public int getId(){
-                        return id;
-                    }
-                """;
-        var p = Pattern.compile("^.*(?<space>(\\}.*\\{)).*").matcher(file);
-        while(p.find()){
-            Command.println(p.group("space"));
-        }
+        Command.printJson("""
+                [
+                	{
+                		"name" : "null",
+                		"id" : 1
+                	}
+                ]
+                """);
+//        Command.println(DB.from(Person.class).all("id"));
+//        Command.println(Condition.where("Asem", DB.from(Person.class).all("name")));
+//        String file = """
+//                    public void setId(int id){
+//                        this.id = id;
+//                    }
+//
+//                    public int getId(){
+//                        return id;
+//                    }
+//                """;
+//        var p = Pattern.compile("^.*(?<space>(\\}.*\\{)).*").matcher(file);
+//        while(p.find()){
+//            Command.println(p.group("space"));
+//        }
 
 //        Person person = Model.of(Person.class).find(1);
 //        Command.print(person.books());

@@ -25,20 +25,21 @@ public class Console {
 
     public static String style(String output){
         return output
-                .replaceAll("r\\{(.*)\\}", Style.textColor("$1", Colors.RED))
-                .replaceAll("b\\{(.*)\\}", Style.textColor("$1", Colors.BLUE))
-                .replaceAll("g\\{(.*)\\}", Style.textColor("$1", Colors.GREEN))
-                .replaceAll("w\\{(.*)\\}", Style.textColor("$1", Colors.WHITE))
-                .replaceAll("p\\{(.*)\\}", Style.textColor("$1", Colors.PURPLE))
-                .replaceAll("k\\{(.*)\\}", Style.textColor("$1", Colors.BLACK))
-                .replaceAll("y\\{(.*)\\}", Style.textColor("$1", Colors.YELLOW))
-                .replaceAll("r\\[(.*)\\]", Style.bgColor("$1", Colors.RED))
-                .replaceAll("b\\[(.*)\\]", Style.bgColor("$1", Colors.BLUE))
-                .replaceAll("g\\[(.*)\\]", Style.bgColor("$1", Colors.GREEN))
-                .replaceAll("w\\[(.*)\\]", Style.bgColor("$1", Colors.WHITE))
-                .replaceAll("p\\[(.*)\\]", Style.bgColor("$1", Colors.PURPLE))
-                .replaceAll("k\\[(.*)\\]", Style.bgColor("$1", Colors.BLACK))
-                .replaceAll("y\\[(.*)\\]", Style.bgColor("$1", Colors.YELLOW));
+                .replaceAll("(?s)r\\{(.*?)(?<!\\\\)}", Style.textColor("$1", Colors.RED))
+                .replaceAll("(?s)b\\{(.*?)(?<!\\\\)}", Style.textColor("$1", Colors.BLUE))
+                .replaceAll("(?s)g\\{(.*?)(?<!\\\\)}", Style.textColor("$1", Colors.GREEN))
+                .replaceAll("(?s)w\\{(.*?)(?<!\\\\)}", Style.textColor("$1", Colors.WHITE))
+                .replaceAll("(?s)p\\{(.*?)(?<!\\\\)}", Style.textColor("$1", Colors.PURPLE))
+                .replaceAll("(?s)k\\{(.*?)(?<!\\\\)}", Style.textColor("$1", Colors.BLACK))
+                .replaceAll("(?s)y\\{(.*?)(?<!\\\\)}", Style.textColor("$1", Colors.YELLOW))
+                .replaceAll("(?s)r\\[(.*?)(?<!\\\\)]", Style.bgColor("$1", Colors.RED))
+                .replaceAll("(?s)b\\[(.*?)(?<!\\\\)]", Style.bgColor("$1", Colors.BLUE))
+                .replaceAll("(?s)g\\[(.*?)(?<!\\\\)]", Style.bgColor("$1", Colors.GREEN))
+                .replaceAll("(?s)w\\[(.*?)(?<!\\\\)]", Style.bgColor("$1", Colors.WHITE))
+                .replaceAll("(?s)p\\[(.*?)(?<!\\\\)]", Style.bgColor("$1", Colors.PURPLE))
+                .replaceAll("(?s)k\\[(.*?)(?<!\\\\)]", Style.bgColor("$1", Colors.BLACK))
+                .replaceAll("(?s)y\\[(.*?)(?<!\\\\)]", Style.bgColor("$1", Colors.YELLOW))
+                .replaceAll("(\\\\)(?<escaped>([}\"\\]]))", "${escaped}"); // delete escapes
 
     }
 }

@@ -21,6 +21,10 @@ import javabaseproject.javabase.framework.commandline.output.Console;
  *     <li>k : black</li>
  * </ur>
  *
+ * @apiNote you can escape braces with escape character
+ * like "r{Hello, {Asem\\}}" this will print =>  Hello, {Asem} <br/>
+ * you must escape }] and "
+ *
  * @author AsemNajee
  * @version 1.0
  */
@@ -41,7 +45,7 @@ public class Command {
      * @param model the value of model to print
      */
     public static void println(Jsonable model){
-        println(model.toJson());
+        printJson(model.toJson());
     }
 
     /**
@@ -69,5 +73,14 @@ public class Command {
      */
     public static void printf(Object text, Object ...varArgs){
         System.out.printf(Console.style(text.toString()) + "\n", varArgs);
+    }
+
+    public static void printJson(String json){
+        Command.println(json
+                .replaceAll("(?s)\\{(.*?)}", "p{{}$1p{\\\\}}")
+                .replaceAll("(?s)\\[(.*?)]", "b{[}$1b{]}")
+                .replaceAll("(?s)\"(?<text>.*?)(?<!\\\\)\"", "g{\"${text}\"}")
+                .replaceAll("(?s)(\\d)", "y{$1}")
+        );
     }
 }

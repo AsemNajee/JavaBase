@@ -7,8 +7,10 @@ import javabaseproject.javabase.core.recorder.RecordedClass.RecordedField;
 import javabaseproject.javabase.framework.commandline.Command;
 
 /**
- * 
+ * ready sql queries to insert all instance and delete and update
+ *
  * @author AsemNajee
+ * @version 1.0
  */
 public class MYSQLBuilder {
     public static <M extends Model<M>> String createTableQuery(RecordedClass<M> rclass){
@@ -66,6 +68,12 @@ public class MYSQLBuilder {
                 """.replace("{{table}}", rclass.getName());
     }
 
+    /**
+     * filter all constraints and get them as string as query sql
+     *
+     * @param f the field to get its constraints
+     * @return constraints as string
+     */
     private static String filterConstraints(RecordedField f){
         StringBuilder subSql = new StringBuilder();
         for(var constraint : f.getConstraints()){
