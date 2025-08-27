@@ -1,10 +1,13 @@
 package javabaseproject.javabase.core.database.querybuilders;
 
 import javabaseproject.javabase.core.database.models.Model;
-import javabaseproject.javabase.core.database.querybuilders.query.DB;
+import javabaseproject.javabase.core.recorder.Constraints;
 import javabaseproject.javabase.core.recorder.RecordedClass;
 import javabaseproject.javabase.core.recorder.RecordedClass.RecordedField;
+import javabaseproject.javabase.core.recorder.References;
 import javabaseproject.javabase.framework.commandline.Command;
+
+import java.util.stream.Collectors;
 
 /**
  * ready sql queries to insert all instance and delete and update
@@ -23,6 +26,21 @@ public class MYSQLBuilder {
         sql = new StringBuilder(sql.substring(0, sql.length() - 3));
         sql.append("\n);");
         Command.println(sql);
+        return sql.toString();
+    }
+
+    public static <M extends Model<M>> String addingForeignKeys(RecordedClass<M> rclass){
+        var fieldsWithForeignKeys = rclass.getFields().values().stream().filter(item -> item.getConstraints().contains(Constraints.FOREIGN_KEY)).collect(Collectors.toList());
+        if(fieldsWithForeignKeys.isEmpty()){
+            return "";
+        }
+        StringBuilder sql = new StringBuilder("ALTER TABLE ");
+        sql.append(rclass.getName());
+        for (var field : fieldsWithForeignKeys) {
+            References ref = field.getReferences();
+            sql.append("\n").append("ADD CONSTRAINT FOREIGN KEY (").append(field.getName()).append(") ").append(ref).append(",");
+        }
+        sql.deleteCharAt(sql.length()-1);
         return sql.toString();
     }
     
@@ -78,9 +96,12 @@ public class MYSQLBuilder {
     private static String filterConstraints(RecordedField f){
         StringBuilder subSql = new StringBuilder();
         for(var constraint : f.getConstraints()){
+            if(Constraints.FOREIGN_KEY.equals(constraint)){
+                continue;
+            }
             subSql.append(" ").append(constraint);
         }
-        subSql.append(" ").append(f.references());
+//        subSql.append(" ").append(f.references());
         return subSql.toString();
     }
 }

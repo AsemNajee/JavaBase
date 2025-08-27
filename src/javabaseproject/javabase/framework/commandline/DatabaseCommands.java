@@ -1,11 +1,8 @@
 package javabaseproject.javabase.framework.commandline;
 
-import javabaseproject.javabase.App;
 import javabaseproject.javabase.core.recorder.RecordedClass;
 import javabaseproject.javabase.core.recorder.Recorder;
 import javabaseproject.javabase.core.database.Migration;
-import javabaseproject.javabase.core.database.models.Model;
-import javabaseproject.javabase.framework.commandline.output.Console;
 
 public class DatabaseCommands extends Command{
 

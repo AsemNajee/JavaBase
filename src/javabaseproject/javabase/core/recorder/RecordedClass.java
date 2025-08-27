@@ -125,7 +125,8 @@ public class RecordedClass<T extends Model<T>> {
         private final ArrayList<Constraints> constraints;
         private final boolean parentField;
         private final Field field;
-        private Class<? extends Model<?>> references;
+//        private Class<? extends Model<?>> references;
+        private References references;
 
         private final boolean hidden;
 
@@ -150,8 +151,14 @@ public class RecordedClass<T extends Model<T>> {
             constraints.add(cons);
             return this;
         }
+        public RecordedField references(Class<? extends Model<?>> references, String field){
+            var model = Recorder.getRecordedClass(references);
+            this.references = new References(model, model.getField(field));
+            return this;
+        }
         public RecordedField references(Class<? extends Model<?>> references){
-            this.references = references;
+            var model = Recorder.getRecordedClass(references);
+            this.references = new References(model);
             return this;
         }
 
@@ -166,12 +173,8 @@ public class RecordedClass<T extends Model<T>> {
         public Field getRealField() {
             return field;
         }
-        public String references(){
-            if(references == null){
-                return "";
-            }
-            RecordedClass<?> fRClass = Recorder.getRecordedClass(references);
-            return "REFERENCES " + fRClass.getName() + "(" + fRClass.getPrimaryKey().getName() + ")";
+        public References getReferences(){
+            return references;
         }
 
         /**

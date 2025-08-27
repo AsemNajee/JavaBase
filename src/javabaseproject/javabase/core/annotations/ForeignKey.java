@@ -14,4 +14,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ForeignKey{
     Class<? extends Model<?>> value();
+    String key() default "";
+
 }

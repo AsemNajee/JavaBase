@@ -5,6 +5,7 @@ import java.sql.SQLException;
 
 import javabaseproject.ENV;
 import javabaseproject.javabase.Register;
+import javabaseproject.javabase.core.database.models.Model;
 import javabaseproject.javabase.core.recorder.RecordedClass;
 import javabaseproject.javabase.core.database.querybuilders.Build;
 import javabaseproject.javabase.framework.commandline.Command;
@@ -32,9 +33,11 @@ public class Migration {
             }
         }
         Command.printf("b{tables migrated: }" + tables);
+        migrateForeignKeys();
+        Command.println("b{foreign keys migrated}");
     }
 
-    public static boolean migrate(RecordedClass<?> rclass) throws SQLException {
+    public static boolean migrate(RecordedClass<?> rclass) {
         String query = Build.create(rclass);
         try(var stmt = Connector.getConnection().createStatement()){
             stmt.executeUpdate(query);
@@ -43,6 +46,14 @@ public class Migration {
             ExceptionHandler.print(e);
         }
         return false;
+    }
+
+    private static void migrateForeignKeys() throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, SQLException {
+        for (var model : Register.getRegisteredModels().values()) {
+            String sql = Build.createForeignKeys(model);
+            if("".equals(sql)) continue;
+            Connector.getConnection().prepareStatement(sql).execute();
+        }
     }
     
     public static boolean initDatabase() throws SQLException{

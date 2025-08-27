@@ -12,7 +12,7 @@ public class BookPerson extends Model<BookPerson> {
     protected int id;
     @ForeignKey(Book.class)
     protected int bookId;
-    @ForeignKey(Person.class)
+    @ForeignKey(value = Person.class, key = "id")
     protected int personId;
     public BookPerson(){}
     public BookPerson(int id, Book book, Person person){

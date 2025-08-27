@@ -1,19 +1,22 @@
 
 package javabaseproject.database.models;
 
+import javabaseproject.javabase.core.annotations.ForeignKey;
+import javabaseproject.javabase.core.annotations.NotNull;
 import javabaseproject.javabase.core.collections.ModelsCollection;
 import javabaseproject.javabase.core.annotations.PrimaryKey;
 import javabaseproject.javabase.core.annotations.Unique;
-import javabaseproject.javabase.core.collections.ModelsCollection;
 import javabaseproject.javabase.core.database.models.Model;
 import javabaseproject.javabase.core.database.models.Relations;
 
 @PrimaryKey("name")
 public class Person extends Model<Person>{
 
+    @Unique @NotNull
     protected int id;
-    @Unique
     protected String name;
+    @ForeignKey(User.class)
+    protected int userId;
 
     // Don't delete this constructor please (: it will cause a problem
     public Person(){}

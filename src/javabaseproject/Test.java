@@ -9,8 +9,10 @@ import javabaseproject.javabase.core.database.faker.Fake;
 import javabaseproject.javabase.core.database.io.Fetcher;
 import javabaseproject.javabase.core.database.models.Model;
 import javabaseproject.javabase.core.database.models.Relations;
+import javabaseproject.javabase.core.database.querybuilders.MYSQLBuilder;
 import javabaseproject.javabase.core.database.querybuilders.query.Condition;
 import javabaseproject.javabase.core.database.querybuilders.query.DB;
+import javabaseproject.javabase.core.recorder.Recorder;
 import javabaseproject.javabase.framework.commandline.Command;
 import javabaseproject.javabase.framework.commandline.controllers.PivotController;
 
@@ -20,76 +22,9 @@ import java.util.regex.Pattern;
 
 public class Test {
     public static void main(String[] args) throws Exception {
-
-        String modelContent = """
-                package javabaseproject.database.models;
-                                
-                import javabaseproject.javabase.core.annotations.PrimaryKey;
-                import javabaseproject.javabase.core.annotations.Unique;
-                import javabaseproject.javabase.core.collections.ModelsCollection;
-                import javabaseproject.javabase.core.database.models.Model;
-                import javabaseproject.javabase.core.database.models.Relations;
-                                
-                @PrimaryKey("name")
-                public class Person extends Model<Person>{
-                                
-                    protected int id;
-                    @Unique
-                    protected String name;
-                                
-                    // Don't delete this constructor please (: it will cause a problem
-                    public Person(){}
-                                
-                    public Person(int id, String name){
-                        this.id = id;
-                        this.name = name;
-                    }
-                                
-                    public User user() throws Exception {
-                        return Relations.belongsTo(this, User.class);
-                    }
-                                
-                    public ModelsCollection<Book> books() throws Exception {
-                        return BookPerson.belongsToMany(this);
-                    }
-                                
-                    public void setId(int id){
-                        this.id = id;
-                    }
-                    public int getId(){
-                        return id;
-                    }
-                                
-                    public void setName(String name){
-                        this.name = name;
-                    }
-                    public String getName(){
-                        return name;
-                    }
-                                
-                // ... add more fields with protected access modifier
-                }
-                                
-                """;
-
-        String method = """
-                    public ModelsCollection<Book> newMethod() throws Exception {
-                        return BookPerson.belongsToMany(this);
-                    }
-                """;
-
-//        Command.println(modelContent.replaceAll("(?s)(?<cDef>.*class(.*)Model<.*>\\{)(?<content>.*)}", "${cDef}${content}" + method + "\n}"));
+        Command.println(MYSQLBuilder.addingForeignKeys(Recorder.getRecordedClass(BookPerson.class)));
 
 
-        PivotController.make("BookPerson", "Book", "Person");
-//        Command.println("------------");
-//                Book book = new Book(Fake.name());
-//                Command.println(book);
-//                book.save();
-//                Command.println(book);
-//                new Book("Chemistry"),
-//                new Book("Math")
-//        ));
 //        Command.println("------------");
 //        Command.println(DB.from(Book.class).all());
 

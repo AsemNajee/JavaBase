@@ -26,6 +26,13 @@ public class Build {
         };
     }
 
+    public static String createForeignKeys(RecordedClass<? extends Model<?>> rclass){
+        return switch (ENV.DRIVER) {
+            case MYSQL -> MYSQLBuilder.addingForeignKeys(rclass);
+            default -> MYSQLBuilder.addingForeignKeys(rclass);
+        };
+    }
+
     /**
      * get query to insert new row in the database table with all fields form the model
      *

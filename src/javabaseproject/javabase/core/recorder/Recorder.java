@@ -138,7 +138,10 @@ public class Recorder {
     }
 
     /**
-     * adding primary key constraint to the recorded class
+     * adding primary key constraint to the recorded class,
+     * if the annotation of the primary key is missing and there is a field with name (id)
+     * it will be the primary key
+     *
      * @param clazz the model class
      * @param cls the recorded model to save a key in it
      */
@@ -168,6 +171,9 @@ public class Recorder {
         }
         if(field.isAnnotationPresent(PrimaryKey.class)){
             constraints.add(Constraints.PRIMARY_KEY);
+        }
+        if(field.isAnnotationPresent(ForeignKey.class)){
+            constraints.add(Constraints.FOREIGN_KEY);
         }
         if(field.isAnnotationPresent(AutoIncrement.class)){
             constraints.add(Constraints.AUTO_INCREMENT);
@@ -199,7 +205,12 @@ public class Recorder {
         for (var field : fieldsWithForeignKeys){
             Field realField = field.getRealField();
             var foreignModel = realField.getAnnotation(ForeignKey.class).value();
-            field.references(foreignModel);
+            var key = realField.getAnnotation(ForeignKey.class).key();
+            if("".equals(key)){
+                field.references(foreignModel);
+            }else{
+                field.references(foreignModel, key);
+            }
         }
     }
 }

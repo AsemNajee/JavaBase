@@ -2,7 +2,7 @@
 
 package javabaseproject.database.models;
 
-import javabaseproject.javabase.core.collections.ModelsCollection;
+import javabaseproject.javabase.core.annotations.ForeignKey;
 import javabaseproject.javabase.core.collections.ModelsCollection;
 import javabaseproject.javabase.core.annotations.PrimaryKey;
 import javabaseproject.javabase.core.annotations.Unique;
@@ -19,6 +19,8 @@ public class User extends Model<User>{
     protected int id;
     @Unique
     protected String name;
+    @ForeignKey(value = Person.class, key = "id")
+    protected int personId;
 
     public Person person() throws Exception {
         return Relations.hasOne(this, Person.class);

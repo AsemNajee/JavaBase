@@ -23,7 +23,6 @@ public class Register {
         if(res == null) return;
         File outputDir = new File(res.getFile());
         if(!outputDir.exists()) throw new RuntimeException("The library not work with you, please tell me on github on telegram");
-
         if(outputDir.list() == null){
             return;
         }
