@@ -16,6 +16,10 @@ import java.sql.SQLException;
  * @version 1.0
  */
 public class Model<T extends Model<T>> extends AbstractModel<T> {
+    /**
+     * determine if the model is created from user of returned from database
+     */
+    private final boolean isDatabase = false;
 
     /**
      * save the data from the object into database

@@ -131,6 +131,9 @@ public class Recorder {
                 isFromParent,
                 field.accessFlags().contains(AccessFlag.PRIVATE)
         );
+        if(field.isAnnotationPresent(Default.class)){
+            rField.defaultValue(field.getAnnotation(Default.class).value());
+        }
         if(field.isAnnotationPresent(ForeignKey.class)){
             fieldsWithForeignKeys.add(rField);
         }
@@ -177,6 +180,9 @@ public class Recorder {
         }
         if(field.isAnnotationPresent(AutoIncrement.class)){
             constraints.add(Constraints.AUTO_INCREMENT);
+        }
+        if(field.isAnnotationPresent(Default.class)){
+            constraints.add(Constraints.DEFAULT);
         }
         return constraints;
     }

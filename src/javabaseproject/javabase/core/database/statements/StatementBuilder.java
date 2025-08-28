@@ -12,10 +12,13 @@ import java.sql.Statement;
 /**
  * create prepared statements and fills there's parameters
  * by {@code ParameterFiller} or by hand
+ *
+ * @author AsemNajee
+ * @version 1.0
  */
 public class StatementBuilder {
 
-    public static <M extends Model<M>> PreparedStatement getSelectQueryForItemWithKey(Class<M> clazz, Object key) throws SQLException, NoSuchFieldException, IllegalAccessException {
+    public static <M extends Model<M>> PreparedStatement getSelectQueryForItemWithKey(Class<M> clazz, Object key) throws SQLException{
         String sql = Build.select(Recorder.getRecordedClass(clazz));
         var stmt = Connector.getConnection().prepareStatement(sql);
         ParameterFiller.bindParam(
@@ -29,7 +32,7 @@ public class StatementBuilder {
         return Connector.getConnection().prepareStatement(sql);
     }
     public static <M extends Model<M>> PreparedStatement getInsertQueryForOneItem(Model<M> item) throws SQLException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException{
-        String sql = Build.insert(Recorder.getRecordedClass(item.getClass()));
+        String sql = Build.insert(item);
         var stmt = Connector.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
         ParameterFiller.fill(stmt, item);
         return stmt;
@@ -41,11 +44,12 @@ public class StatementBuilder {
         return stmt;
     }
 
-    public static PreparedStatement getSelectQueryForOneItemWithForeignKey(Class clazzOfForeignModel, Object foreignKey) throws SQLException {
-//        need to change select to selectWithForeignKey
-        String sql = Build.select(Recorder.getRecordedClass(clazzOfForeignModel));
+    public static <M extends Model<M>> PreparedStatement getUpdateQueryForOneItem(Model<M> item) throws NoSuchFieldException, IllegalAccessException, SQLException {
+        String sql = Build.update(item);
         var stmt = Connector.getConnection().prepareStatement(sql);
-        ParameterFiller.bindParam(stmt, Recorder.getRecordedClass(clazzOfForeignModel).getPrimaryKey().getType(), foreignKey, 1);
+        int last = ParameterFiller.fill(stmt, item);
+//       bind the condition param
+        ParameterFiller.bindParam(stmt, Recorder.getRecordedClass(item.getClass()).getPrimaryKey().getType(), item.getKey(), last);
         return stmt;
     }
 }

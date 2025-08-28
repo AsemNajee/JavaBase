@@ -8,7 +8,7 @@ import javabaseproject.javabase.framework.commandline.Command;
  * @author AsemNajee
  */
 public enum Constraints {
-    UNIQUE, PRIMARY_KEY("PRIMARY KEY"), NOT_NULL("NOT NULL"), FOREIGN_KEY, AUTO_INCREMENT;
+    UNIQUE, PRIMARY_KEY("PRIMARY KEY"), NOT_NULL("NOT NULL"), FOREIGN_KEY, AUTO_INCREMENT, DEFAULT;
 
     private final String sqlConstraint;
     private Class<? extends Model<?>> foreignModel;

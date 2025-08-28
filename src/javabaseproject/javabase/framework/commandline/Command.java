@@ -38,7 +38,8 @@ public class Command {
     public static void println(Object text){
         if(text == null)
             Command.println("null");
-        System.out.println(Console.style(text.toString()));
+        else
+            System.out.println(Console.style(text.toString()));
     }
 
     /**
@@ -47,7 +48,10 @@ public class Command {
      * @param model the value of model to print
      */
     public static void println(Jsonable model){
-        printJson(model.toJson());
+        if(model == null)
+            println("null");
+        else
+            printJson(model.toJson());
     }
 
     /**
@@ -56,7 +60,10 @@ public class Command {
      * @param models the value of model to print
      */
     public static void print(Jsonable models){
-        print(models.toJson());
+        if(models == null)
+            print("null");
+        else
+            printJson(models.toJson());
     }
 
     /**
@@ -65,7 +72,10 @@ public class Command {
      * @param text the object value
      */
     public static void print(Object text){
-        System.out.print(Console.style(text.toString()));
+        if(text == null)
+            Command.print("null");
+        else
+            System.out.print(Console.style(text.toString()));
     }
 
     /**
@@ -74,7 +84,10 @@ public class Command {
      * @param text the object value
      */
     public static void printf(Object text, Object ...varArgs){
-        System.out.printf(Console.style(text.toString()) + "\n", varArgs);
+        if(text == null)
+            println("null");
+        else
+            System.out.printf(Console.style(text.toString()) + "\n", varArgs);
     }
 
     /**
@@ -82,16 +95,21 @@ public class Command {
      *
      * @param json text of json to print
      */
-    public static void printJson(String json){
+    public static void printJson(String json) {
+        if (json == null){
+            print("null");
+            return;
+        }
         char colorOfStrings     = 'g';
         char colorOfCarlyBraces = 'p';
         char colorOfNumbers     = 'y';
-        char colorOfSquerBraces = 'y';
+        char colorOfSquerBraces = 'b';
         Command.println(json
                 .replaceAll("(?s)\\{(.*?)}",                colorOfCarlyBraces  + "{{}$1p{\\\\}}")
                 .replaceAll("(?s)\\[(.*?)]",                colorOfSquerBraces  + "{[}$1b{]}")
                 .replaceAll("(?s)\"(?<s>.*?)(?<!\\\\)\"",   colorOfStrings      + "{\"${s}\"}")
                 .replaceAll("(?s)(\\d)",                    colorOfNumbers      + "{$1}")
+                .replaceAll("null([^\"]*?,?)",              colorOfNumbers      + "{null}$1")
         );
     }
 }

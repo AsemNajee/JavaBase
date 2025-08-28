@@ -36,13 +36,19 @@ public class Build {
     /**
      * get query to insert new row in the database table with all fields form the model
      *
-     * @param rclass model to insert the data into its table
+     * @param model model to insert the data into its table
      * @return sql query of inserting with placeholder
      */
-    public static String insert(RecordedClass<?> rclass){
+    public static <T extends Model<T>> String insert(Model<? extends T> model) throws NoSuchFieldException, IllegalAccessException {
         return switch(ENV.DRIVER) {
-            case MYSQL -> MYSQLBuilder.insertQuery(rclass);
-            default -> MYSQLBuilder.insertQuery(rclass);
+            case MYSQL -> MYSQLBuilder.insertQuery(model);
+            default -> MYSQLBuilder.insertQuery(model);
+        };
+    }
+    public static <T extends Model<T>> String update(Model<T> model) throws NoSuchFieldException, IllegalAccessException {
+        return switch(ENV.DRIVER) {
+            case MYSQL -> MYSQLBuilder.update(model);
+            default -> MYSQLBuilder.update(model);
         };
     }
 
@@ -77,7 +83,6 @@ public class Build {
             case MYSQL -> MYSQLBuilder.selectAllQuery(rclass);
             default -> MYSQLBuilder.selectAllQuery(rclass);
         };
-
     }
 
     public static String dropTable(RecordedClass<?> rclass){

@@ -1,7 +1,7 @@
 
 package javabaseproject.database.models;
 
-import javabaseproject.javabase.core.annotations.ForeignKey;
+import javabaseproject.javabase.core.annotations.Default;
 import javabaseproject.javabase.core.annotations.NotNull;
 import javabaseproject.javabase.core.collections.ModelsCollection;
 import javabaseproject.javabase.core.annotations.PrimaryKey;
@@ -15,14 +15,18 @@ public class Person extends Model<Person>{
     @Unique @NotNull
     protected int id;
     protected String name;
-    @ForeignKey(User.class)
-    protected int userId;
+    @Default("male")
+    protected String gender;
 
     // Don't delete this constructor please (: it will cause a problem
     public Person(){}
 
     public Person(int id, String name){
         this.id = id;
+        this.name = name;
+    }
+
+    public Person(String name) {
         this.name = name;
     }
 

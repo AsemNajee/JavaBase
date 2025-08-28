@@ -11,6 +11,11 @@ public class DatabaseCommands extends Command{
      */
     public static void handle(String verb, String model) throws Exception {
         switch (verb){
+            case "fresh"-> {
+                DatabaseCommands.handle("drop", null);
+                DatabaseCommands.handle("init", null);
+                DatabaseCommands.handle("migrate", null);
+            }
             case "init" -> {
                 Migration.initDatabase();
                 Command.println("g[The database was created]");

@@ -55,7 +55,7 @@ public class FieldController {
         };
     }
 
-    private static void set(Field field, Object value, Model<? extends Model<?>> instance) throws IllegalAccessException {
+    public static void set(Field field, Object value, Model<? extends Model<?>> instance) throws IllegalAccessException {
         field.setAccessible(true);
         field.set(instance, value);
         field.setAccessible(false);

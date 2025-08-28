@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 /**
  * record information about class to be able to change it to database table
  *
- * @author PC
+ * @author AsemNajee
  */
 public class RecordedClass<T extends Model<T>> {
     private final String name;
@@ -125,8 +125,8 @@ public class RecordedClass<T extends Model<T>> {
         private final ArrayList<Constraints> constraints;
         private final boolean parentField;
         private final Field field;
-//        private Class<? extends Model<?>> references;
         private References references;
+        private String defaultValue;
 
         private final boolean hidden;
 
@@ -161,7 +161,13 @@ public class RecordedClass<T extends Model<T>> {
             this.references = new References(model);
             return this;
         }
-
+        public String defaultValue(){
+            return defaultValue;
+        }
+        public RecordedField defaultValue(String defaultValue){
+            this.defaultValue = defaultValue;
+            return this;
+        }
         public String getName() {
             return name;
         }

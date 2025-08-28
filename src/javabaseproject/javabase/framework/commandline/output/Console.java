@@ -13,6 +13,7 @@ public class Console {
                -g{db:migrate}                     : migrate models to the database for first time only
                     b{<ModelName>}                  :> migrate a specific model
                -g{db:init}                        : create the database
+               -g{db:fresh}                        : refresh the database [drop, init, migrate]
                -g{make:factory} b{<ModelName>}       : create new factory for the model
                -g{drop:factory} b{<ModelName>}       : drop the factory of the model
                -g{make:seeder} b{<ModelName>}        : create new seeder for the model

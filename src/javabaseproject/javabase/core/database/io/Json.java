@@ -41,7 +41,7 @@ public class Json {
      *
      * @return result hasMap of the json
      */
-    public HashMap<String, String> getAsHash(){
+    public HashMap<String, String> getAsMap(){
         return json;
     }
 
@@ -55,7 +55,7 @@ public class Json {
         var fields = Recorder.getRecordedClass(clazz).getFields();
         var ins = clazz.getDeclaredConstructor().newInstance();
         for(var field : fields.keySet()){
-            FieldController.set(User.class.getDeclaredField(field), getAsHash().get(field), ins);
+            FieldController.set(User.class.getDeclaredField(field), getAsMap().get(field), ins);
         }
         return ins;
     }

@@ -32,7 +32,7 @@ public class InputCommand{
 //        drop:model Animal -force
         commandsPatterns.put(ModelCommands.class.getName(), Pattern.compile("^(?<verb>make|drop):model( )+(?<model>[A-Z][A-Za-z0-9]*)( -key=(?<key>[A-Za-z]+))?( -key[Tt]ype=(?<keyType>(String|int|float|double|byte|long|short)))?(?<factory> -f)?(?<force> -force)?"));
 //        db:init, db:migrate, db:migrate Animal, db:seed, db:seed Animal, db:drop
-        commandsPatterns.put(DatabaseCommands.class.getName(), Pattern.compile("^db:(?<verb>init|migrate|seed|drop)( )?(?<model>[A-Z][A-Za-z0-9]*)?"));
+        commandsPatterns.put(DatabaseCommands.class.getName(), Pattern.compile("^db:(?<verb>init|migrate|seed|drop|fresh)( )?(?<model>[A-Z][A-Za-z0-9]*)?"));
 //        make:factory Animal, drop:factory Animal
         commandsPatterns.put(FactoryCommands.class.getName(), Pattern.compile("^(?<verb>make|drop):factory( )+(?<model>[A-Z][A-Za-z0-9]*)?(Factory)?"));
 //        make:seeder Animal, drop:seeder Animal, start:seeder, start:seeder Animal

@@ -22,7 +22,12 @@ import java.util.regex.Pattern;
 
 public class Test {
     public static void main(String[] args) throws Exception {
-        Command.println(MYSQLBuilder.addingForeignKeys(Recorder.getRecordedClass(BookPerson.class)));
+        var b = Model.of(Person.class).find("Bashar");
+        Command.println(b);
+        b.setId(11);
+        b.save();
+        Command.println(Model.of(Person.class).getAll());
+//        Command.println(MYSQLBuilder.addingForeignKeys(Recorder.getRecordedClass(BookPerson.class)));
 
 
 //        Command.println("------------");
@@ -56,18 +61,24 @@ public class Test {
 //        bp.save();
 //        bp1.save();
 
-        /*
-        User user = new User(1, "Asem");
-        User user1 = new User(2, "Abdullah");
-        User user2 = new User(3, "Saeed");
-        user.save();
-        user1.save();
-        user2.save();
 
-        Command.print(
-                DB.from(User.class).whereIn("id", 1, 2, 3).all()
-        );
-
+//        User user = new User(1, "Asem");
+//        User user1 = new User(2, "Abdullah");
+//        User user2 = new User(3, "Saeed");
+//        user.save();
+//        Command.println(user);
+//        user1.save();
+//        Command.println(user1);
+//        user2.save();
+//        Command.println(user2);
+//        Person p = new Person(Fake.randomNumber(1, 10000), Fake.name());
+//        p.save();
+//        Command.println(p);
+//
+//        Command.print(
+//                DB.from(Person.class).whereIn("id", 1, 2, 3).all()
+//        );
+/*
         DB.from(User.class).all(); // all users
 
         User asem;

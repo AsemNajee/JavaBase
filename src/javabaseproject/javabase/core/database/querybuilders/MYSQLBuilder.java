@@ -1,10 +1,8 @@
 package javabaseproject.javabase.core.database.querybuilders;
 
 import javabaseproject.javabase.core.database.models.Model;
-import javabaseproject.javabase.core.recorder.Constraints;
-import javabaseproject.javabase.core.recorder.RecordedClass;
+import javabaseproject.javabase.core.recorder.*;
 import javabaseproject.javabase.core.recorder.RecordedClass.RecordedField;
-import javabaseproject.javabase.core.recorder.References;
 import javabaseproject.javabase.framework.commandline.Command;
 
 import java.util.stream.Collectors;
@@ -44,9 +42,15 @@ public class MYSQLBuilder {
         return sql.toString();
     }
     
-    public static <M extends Model<M>> String insertQuery(RecordedClass<M> rclass){
+    public static <M extends Model<M>> String insertQuery(Model<? extends M> model) throws NoSuchFieldException, IllegalAccessException {
         StringBuilder fields = new StringBuilder();
+        RecordedClass<? extends M> rclass = (RecordedClass<? extends M>) Recorder.getRecordedClass(model.getClass());
         for(String f : rclass.getFields().keySet()){
+//            continue if the field is null and has a default value
+//            because the database can apply the default value
+            if(rclass.getField(f).defaultValue() != null && FieldController.get(f, model) == null){
+                continue;
+            }
             fields.append(f).append(", ");
         }
         fields = new StringBuilder(fields.substring(0, fields.length() - 2));
@@ -87,6 +91,28 @@ public class MYSQLBuilder {
                 """.replace("{{table}}", rclass.getName());
     }
 
+    public static  <M extends Model<M>> String update(Model<M> model) throws NoSuchFieldException, IllegalAccessException {
+        RecordedClass<? extends M> rclass = (RecordedClass<? extends M>) Recorder.getRecordedClass(model.getClass());
+        String sql = """
+                UPDATE {{table}} SET {{cols}}
+                WHERE {{key}} = ?
+                """;
+        String tableName = rclass.getName();
+        sql = sql.replace("{{table}}", tableName);
+        StringBuilder cols = new StringBuilder();
+        for (var field : rclass.getFields().keySet()) {
+            if(rclass.getField(field).defaultValue() != null && FieldController.get(field, model) == null){
+                continue;
+            }
+            cols.append("\n").append(field).append(" = ?,");
+        }
+        cols.deleteCharAt(cols.length()-1);
+        sql = sql.replace("{{cols}}", cols);
+        sql = sql.replace("{{key}}", rclass.getPrimaryKey().getName());
+        Command.println(sql);
+        return sql;
+    }
+
     /**
      * filter all constraints and get them as string as query sql
      *
@@ -100,8 +126,10 @@ public class MYSQLBuilder {
                 continue;
             }
             subSql.append(" ").append(constraint);
+            if(Constraints.DEFAULT.equals(constraint)){
+                subSql.append(" '").append(f.defaultValue()).append("'");
+            }
         }
-//        subSql.append(" ").append(f.references());
         return subSql.toString();
     }
 }

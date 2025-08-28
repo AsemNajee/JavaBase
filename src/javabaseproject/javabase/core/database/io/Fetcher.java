@@ -1,7 +1,7 @@
 package javabaseproject.javabase.core.database.io;
 
+import javabaseproject.javabase.core.collections.ModelsCollection;
 import javabaseproject.javabase.core.database.models.Model;
-import javabaseproject.javabase.core.database.querybuilders.query.DB;
 import javabaseproject.javabase.core.recorder.FieldController;
 import javabaseproject.javabase.core.recorder.RecordedClass;
 import javabaseproject.javabase.core.recorder.Recorder;
@@ -41,11 +41,20 @@ public class Fetcher {
                 FieldController.set(realField, result, model);
             }
         }
+        FieldController.set(Model.class.getDeclaredField("isDatabase"), true, model);
         return model;
     }
 
     public static <T extends Model<T>> T fetch(Class<T> clazz, ResultSet result) throws NoSuchFieldException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException, SQLException {
         return fetch(result, clazz.getDeclaredConstructor().newInstance());
+    }
+
+    public static <T extends Model<T>> ModelsCollection<T> fetchAll(Class<T> clazz, ResultSet result) throws SQLException, NoSuchFieldException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        var models = new ModelsCollection<T>();
+        while(result.next()){
+            models.add(fetch(clazz, result));
+        }
+        return models;
     }
 
     /**
