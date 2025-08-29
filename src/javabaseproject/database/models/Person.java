@@ -39,10 +39,6 @@ public class Person extends Model<Person>{
         return Relations.belongsTo(this, User.class);
     }
 
-    public ModelsCollection<Book> books() throws Exception {
-        return BookPerson.belongsToMany(this);
-    }
-
     public void setId(int id){
         this.id = id;
     }
@@ -57,8 +53,16 @@ public class Person extends Model<Person>{
         return name;
     }
 
-    public ModelsCollection<User> users() throws Exception {
-        return UserPerson.belongsToMany(this);
+    /**
+     * this Person class is related with the Book class by relation
+     * many to many, so this relation is need to middleware table and that
+     * is BookPerson class and that called 'pivot' . </br>
+     * this method is get all books of this person using pivot
+     *
+     * @return collection of books related with this person
+     */
+    public ModelsCollection<Book> books() throws Exception {
+        return BookPerson.belongsToMany(this);
     }
 
 }

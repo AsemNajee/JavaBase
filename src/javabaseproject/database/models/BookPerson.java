@@ -20,9 +20,23 @@ public class BookPerson extends Model<BookPerson> {
         this.personId = person.getId();
         this.id = id;
     }
+
+    /**
+     * get all persons related with the book by this pivot
+     *
+     * @param book the book to get its related persons
+     * @return collection of persons
+     */
     public static ModelsCollection<Person> belongsToMany(Book book) throws Exception {
         return Relations.belongsToMany(BookPerson.class, Person.class, book);
     }
+
+    /**
+     * get all books related with the person by this pivot
+     *
+     * @param person the person to get its related books
+     * @return collection of books
+     */
     public static ModelsCollection<Book> belongsToMany(Person person) throws Exception {
         return Relations.belongsToMany(BookPerson.class, Book.class, person);
     }

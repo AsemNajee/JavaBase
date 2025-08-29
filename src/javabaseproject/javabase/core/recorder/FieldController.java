@@ -95,4 +95,16 @@ public class FieldController {
             default -> Types.STRING;
         };
     }
+
+    public static void setEmpty(Field field, Model<? extends Model<?>> instance) throws IllegalAccessException {
+        var rfield = Recorder.getRecordedClass(instance.getClass()).getField(field.getName());
+        set(field, switch (rfield.getType()){
+            case STRING -> null;
+            case INT, SHORT, BYTE -> 0;
+            case FLOAT -> 0.0f;
+            case LONG -> 0L;
+            case DOUBLE -> 0.0d;
+            case BOOLEAN -> false;
+        }, instance);
+    }
 }

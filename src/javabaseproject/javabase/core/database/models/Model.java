@@ -3,6 +3,7 @@ package javabaseproject.javabase.core.database.models;
 import javabaseproject.javabase.core.collections.ModelsCollection;
 import javabaseproject.javabase.core.database.Factory;
 import javabaseproject.javabase.core.database.Seeder;
+import javabaseproject.javabase.core.database.io.Json;
 import javabaseproject.javabase.core.database.querybuilders.query.DB;
 import javabaseproject.javabase.core.recorder.Recorder;
 
@@ -123,6 +124,33 @@ public class Model<T extends Model<T>> extends AbstractModel<T> {
     public Object getKey() {
         try {
             return super.getKey(this);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * change the object from object to string with style like json
+     * helps if you want to save the data in json file
+     * oops, there is no way to retrieve data from json to object :(
+     * you can help by create a pull request
+     *
+     * @return string of data as json
+     */
+    @Override
+    public String toJson() {
+        return toJson(0);
+    }
+
+    /**
+     * @param level count tabs before each line to format the output
+     *
+     * @return this object as json string
+     */
+    @Override
+    public String toJson(int level) {
+        try {
+            return new Json<T>(this).toJson(level);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

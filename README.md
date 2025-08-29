@@ -21,9 +21,58 @@ git clone https://github.com/AsemNajee/JavaBase
 
 ## الاعتماديات
 
-يجب ان تكون مثبت لقاعدة البيانات ```Mysql``` ان كنت ستستخدمها وايضاً من المحرر اضف مكتبة الاتصال بالقاعدة ، ستجد مكتبة الاتصال بقاعدة بيانات ```mysql``` مرفقة مع المكتبة هذه
+يجب ان تحمل وتثبت قاعدة البيانات ```Mysql``` ان كنت ستستخدمها وايضاً من المحرر اضف مكتبة الاتصال بالقاعدة ، ستجد مكتبة الاتصال بقاعدة بيانات ```mysql``` مرفقة مع هذه المكتبة
+
+## البدء في العمل 
+
+بعد نسخ المستودع الى حاسوبك وتثبيت قاعدة البيانات واضافة مكتبة الاتصال الى المحرر ، الان تستطيع البدء بالعمل .
+
+افتح الملف `Handler` وقم بتشغيله ، هذا هو نقطة البداية لمشروعك ، لا تقم بالتعديل على هذا الملف كي لا تظهر لك مشاكل ان كنت لا تعرف مالذي تفعله .
+
+بما اننا عرفنا ان نقطة البدء هي `Handler` تبقى الان معرفه اين سيتم كتابة البرنامج ، وايضاً يوجد ملف باسم `Test` قم بكتابه برنامجك بداخله .
+
+افتح ملف `DevHandler` وقم بتشغيله ، هذا الملف هو مساعدك الخاص لتسريع عملية التطوير .
+
+بعد تشغيل ملف `DevHandler` قم بكتابة الامر التالي لانشاء قاعدة البيانات
+
+```
+db:init
+```
+الامر السابق يقوم بانشاء قاعدة البيانات باسم `javabase` يمكنك تغير الاسم من خلال ملف `ENV.java`
+
+## انشاء الجداول 
+
+ايضاً من ملف `DevHandler` استعمل الامر التالي لانشاء فئة جديدة
+
+```
+make:model Animal
+```
+
+سيتم انشاء ملف جديد في الحزمة `database.models` باسم `Animal` قم بعمل خصائص فيها مثل `age` واعد تشغيل ملف `DevHandler` واستعمل الامر التالي لتحويل الفئة الى جدول في قاعدة البيانات
+
+```
+db:migrate Animal
+```
+
+ملاحظة : يتم اعتماد الخصائص النصية وذات انواع البيانات العادي ولا يتم اعتماد الكائنات الاخرى ، كما يتم اعتماد الخصائص ذات محددات الوصول `private` , `protected` فقط .
+
+اذا كنت تريد انشاء جداول لكل الفئات استعمل
+
+```
+db:migrate
+```
+
+قبل اي امر عليك ان تنشئ قاعدة البيانات اولاً والتي يمكنك تحديد اسمها في ملف ```javabase.config.ENV``` وانشئها في مدير قواعد البيانات باستخدام الامر :
+
+اكتب الامر ```help``` لاستعراض كل الاوامر
+
+---
+
+---
 
 ## الية العمل
+
+سنشرح طريقة انشاء فئة تتحول الى جدول ولكن بدون استعمال ملف `DevHandler`
 
 لكي تبدا باستخدام المكتبة عليك اولاً ان تنشئ فئة جديدة ترث من الفئة ```Model``` ، سنضرب مثالاُ باستخدام فئة ```User``` كالتالي :
 
@@ -37,118 +86,40 @@ public class User extends Model<User>{
 
 المثال يوضح بساطة انشاء مودل جديد ولك كامل الحرية في اضافة المزيد من الخصائص والدوال ، لكن عليك ان تنتبه ان تكون الخصائص التي تريد ان يتم تخزينها في قاعدة البيانات لها محدد وصول <u> protected</u>.
 
- (كنت اعمل على جعلها private وواجهتني بعض المشاكل ساحلها في التحديث القادم مع تمكين الوراثة ان شاء الله)
-
 كما من الضروري ان تحدد النوع العام للمودل الاب ويكون المودل الابن كما في ```Model<User>``` .
 
 تهانينا الان اصبحت الفئة User قادرة على الاتصال بقاعدة البيانات .
 
-## انشاء جدول في قاعدة البيانات
+---
 
-كي لا تضطر لاستعمال دوال من داخل المكتبة بنفسك قمت ببنا مجموعة من الاوامر لتسهل عليك العمل يمكنك تشغيل الفئة Handler المرفقة افتراضياً مع المكتبة للتظهر لك الاوامر المتاحة .
-
-من المهم التنبيه الى ان المكتبة يجب ان تعمل داخل حاوية وهي ```App.start()``` هذه الحاوية تهيئ الاتصال بقاعدة البيانات وتقوم بامور اخرى قبل تنفيذ الاوامر .
-
-لتخفف على نفسك يمكنك كتابة نقطة البداية في فئة ```Main``` المرفقة ايضاً افتراضياً ثم استدعائها داخل الحاوية في ```Handler``` ومن ثم قم بتشغيل ```Handler``` وستسير الامور على ما يرام .
-
-بالعودة الى المحتوى الافتراضي لل ```Handler``` ستجد الاتي :
-
-~~~java
-public class Handler {
-    public static void main(String[] args) throws Exception {
-        App.start(() -> CommandLine.main(args));
-    }
-}
-~~~
-
-الاوامر التي تكلمت عنها موجودة في الفئة ```javabase.CommandLine``` وهي كالاتي .
-
-الامر ```make:model``` يقوم بانشاء مودل جديد ، يعني بدلاً من انشاء فئة ```User``` وجعها ترث وتسجيلها في ```MyModels``` فقط عليك كتابة الامر التالي :
-```
-make:model Person
-```
-سيتم انشاء ملف جديد في الحزمة ```database.models``` باسم ```Person.java``` ويحتوي على الاتي : 
-
-~~~java
-package javabaseproject.database.models;
-
-import javabaseproject.javabase.core.annotations.PrimaryKey;
-import javabaseproject.javabase.core.annotations.Unique;
-import javabaseproject.javabase.core.database.models.Model;
-
-@PrimaryKey("id")
-public class Person extends Model<Person>{
-
-    protected int id;
-    @Unique
-    protected String name;
-
-    // Don't delete this constructor please (: it will cause a problem
-    public Person(){}
-
-    public Person(int id, String name){
-        this.id = id;
-        this.name = name;
-    }
-
-    public void setId(int id){
-        this.id = id;
-    }
-    public int getId(){
-        return id;
-    }
-
-    public void setName(String name){
-        this.name = name;
-    }
-    public String getName(){
-        return name;
-    }
-
-// ... add more fields with protected access modifier
-}
-~~~
+## القيود 
 
 يمكنك تخصيص القيود على الاعمدة باستخدام الملاحظات Annotations كما في ```@PrimaryKey("id")``` و ```@Unique``` .
 
-استعمل الامر ```db:migrate``` لانشاء جدول في قاعدة البيانات بالاعتماد على الخصائص الموجودة في الفئة :
+|     القيد      |                         وظيفته                         |                                   مثال                                   |
+|:--------------:|:------------------------------------------------------:|:------------------------------------------------------------------------:|
+|    @Unique     |               جعل العمود في الجدول فريد                |                                                                          |
+|    @NotNull    |       جعل العمود في الجدول لا يقبل القيم الفارغة       |                                                                          |
+|    @Default    | جعل العمود يستعمل قيمة افتراضية اذا تم اسناد Null اليه |                                                                          |
+| @AutoIncrement |   جعل المفتاح الرئيسي ان كان رقمي يزداد بشكل تلقائي    |                                                                          |
+|  @ForeignKey   |             جعل الحق مفتاح اجنبي لجدول اخر             | @ForeignKey(Person.class) \|\| @ForeignKey(value=Person.class, key="id") |
+|  @PrimaryKey   |         اضفه على الفئة لتحديد مفتاحها الرئيسي          |                            @PrimaryKey("id")                             |
 
-```
-db:migrate Person
-```
 
-او اذا كنت تريد انشاء جداول لكل الفئات استعمل
-
-```
-db:migrate
-```
-
-قبل اي امر عليك ان تنشئ قاعدة البيانات اولاً والتي يمكنك تحديد اسمها في ملف ```javabase.config.ENV``` وانشئها في مدير قواعد البيانات باستخدام الامر :
-
-~~~
-db:init
-~~~
-
-يمكنك استعمال الامر ```drop:model``` لحذف الموديل وجدوله من قاعدة البيانات :
-
-```
-drop:model Person
-```
-
-اكتب الامر ```help``` لاستعراض كل الاوامر
+---
 
 ## حفظ البيانات وجلبها من قاعدة البيانات
 
 اذا اردت ادخال بيانات الى قاعدة البيانات يمكنك انشاء كائن ثم استدعا الدالة ```save()``` منه كالتالي : 
 
-~~~java
+```java
 public class Main{
     public static void main(String[] args) {
         Person person = new Person(1, "Asem");
         person.save();
     }
 }
-~~~
+```
 
 تم حفظ البيانات في قاعدة البيانات .
 
@@ -168,7 +139,7 @@ public class Main{
 ```java 
 public class Main {
     public static void main(String[] args) {
-        Person person = (Person) Model.of(Person.class).find(1);
+        Person person = Model.of(Person.class).find(1);
     }
 }
 ```
@@ -183,10 +154,10 @@ public class Main {
 }
 ```
 
-استعمل الدالة ```toJson()``` لتحويل النص الى json لطباعته .
+افتراضياً اذا حاولت طباعة الكائن المرتبط بقاعدة البيانات سيتم طباعته بتنسيق `json`
 
 ```
-Command.println(person.toJson());
+Command.println(person);
 ```
 
 والمخرجات ستكون :
@@ -198,15 +169,49 @@ Command.println(person.toJson());
 }
 ```
 
-## مرجع شامل للدوال التي يمكنك استعمالها
+---
 
-| اسم الدالة      | وظيفتها                                                                                                    |
-|-----------------|------------------------------------------------------------------------------------------------------------|
-| ```find(key)``` | جلب البيانات من قاعدة البيانات اعتماداً على المفتاح الرئيسي الذي تم تحديده في الفئة باستخدام @PrimaryKey() |
-| ```getAll()```  | جلب كل الحقول المخزنة في القاعدة وتعيد ```ArrayList``` تحتوي على كائنات من من نفس نوع الفئة التي استدعتها  |
-| ```delete()```  | حذف البيانات من قاعدة البيانات اعتماداً على قيمة محتوى المفتاح الرئيسي                                     |
-| ```factory()``` | جلب كائن من كلاس المصنع ، هذا الكلاس يمكنك انشائه باستخدام الامر ```make:factory Person```                 |
-| ```seeder()```  | جلب كائن من كلاس البذر ، هذا الكلاس يمكنك انشائه باستخدام الامر ```make:seeder Person```                   |
+## باني الاستعلامات 
+
+من افضل الميزات في المشروع انك تستطيع عمل استعلامات على قاعدة البيانات بشكل سهل جداً ، لاحظ استعلام من جدول `person` الذي تم انشاءه من الفئة `Person`
+
+```java
+import javabaseproject.database.models.Person;
+import javabaseproject.database.models.User;
+import javabaseproject.javabase.core.database.querybuilders.query.Condition;
+import javabaseproject.javabase.core.database.querybuilders.query.DB;
+
+public class Main {
+    public static void main(String[] args) {
+//        all rows
+        DB.from(Person.class).all();
+//        first row
+        DB.from(Person.class).get();
+//        first row with id = 1
+        DB.from(Person.class).where("id", 1).get();
+//        rows with id's in 1,2,3
+        DB.from(Person.class).whereIn("id", 1, 2, 3).get();
+//        joins
+        DB.from(Person.class).innerJoin(User.class, Condition.on("person.userId", "user.id")).all();
+    }
+}
+```
+
+---
+
+## مرجع شامل للدوال التي يمكنك استعمالها في الفئات المتصلة بقاعدة البيانات 
+
+| اسم الدالة  | وظيفتها                                                                                                    |
+|-------------|------------------------------------------------------------------------------------------------------------|
+| `save()`    | حفظ بيانات الكائن في قاعدة البيانات ان كان الكائن جديد او تحديث بياناته ان كان تم جلبه من قاعدة البيانات   |
+| `delete()`  | حذف البيانات من قاعدة البيانات اعتماداً على قيمة محتوى المفتاح الرئيسي                                     |
+| `find(key)` | جلب البيانات من قاعدة البيانات اعتماداً على المفتاح الرئيسي الذي تم تحديده في الفئة باستخدام @PrimaryKey() |
+| `getAll()`  | جلب كل الحقول المخزنة في القاعدة وتعيد ```ArrayList``` تحتوي على كائنات من من نفس نوع الفئة التي استدعتها  |
+| `factory()` | جلب كائن من كلاس المصنع ، هذا الكلاس يمكنك انشائه باستخدام الامر `make:factory Person`                     |
+| `seeder()`  | جلب كائن من كلاس البذر ، هذا الكلاس يمكنك انشائه باستخدام الامر `make:seeder Person`                       |
+| `query()`   | جلب باني استعلام لعمل استعلامات على جدول قاعدة البيانات                                                    |
+| `getKey()`  | جلب قيمة المفتاح الرئيسي مهما كان اسمه ونوع بياناته                                                        |
+
 
 ## مصانع البيانات
 
@@ -269,10 +274,8 @@ make:seeder Person
 
 ~~~java
 public class PersonSeeder extends Seeder {
-    public void run() {
-        ExceptionHandler.handle(() -> {
-            Model.of(Person.class).factory().create(10);
-        });
+    public void run() throws Exception{
+        Model.of(Person.class).factory().create(10);
     }
 }
 ~~~
@@ -283,17 +286,17 @@ public class PersonSeeder extends Seeder {
 start:seeder Person
 ~~~
 
-وستحصل على 10 صفوف عشوائية البيانات في قاعدة البيانات جرب استدعيها باستعمال الدالة ```getAll()``` :
+وستحصل على 10 صفوف عشوائية البيانات في قاعدة البيانات جرب جلبها باستعمال الدالة ```getAll()``` :
 
 ~~~java
 public class Main{
     public static void main(String[] args) {
-        Model.of(User.class)
-            .getAll().stream()
-            .forEach(item -> Command.println(item.toJson()));
+        Command.println(Model.of(User.class).getAll());
     }
 }
 ~~~
+
+ستحصل عليهم وسيتم طباعتهم بتنسيق `json`
 
 ## الطباعة
 

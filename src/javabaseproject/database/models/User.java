@@ -44,8 +44,4 @@ public class User extends Model<User>{
         return name;
     }
 
-    public ModelsCollection<Person> persons() throws Exception {
-        return UserPerson.belongsToMany(this);
-    }
-
 }

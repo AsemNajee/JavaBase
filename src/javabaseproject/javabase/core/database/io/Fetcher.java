@@ -5,6 +5,7 @@ import javabaseproject.javabase.core.database.models.Model;
 import javabaseproject.javabase.core.recorder.FieldController;
 import javabaseproject.javabase.core.recorder.RecordedClass;
 import javabaseproject.javabase.core.recorder.Recorder;
+import javabaseproject.javabase.framework.commandline.Command;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -31,12 +32,13 @@ public class Fetcher {
         HashMap<String, RecordedClass.RecordedField> fields = Recorder.getRecordedClass(clazz).getFields();
         Class<?> cls;
         for(var field : fields.keySet()){
-            if(fields.get(field).isParentField()) {
-                cls = clazz.getSuperclass();
-            }else{
-                cls = clazz;
-            }
-            Field realField = cls.getDeclaredField(field);
+            var realField = fields.get(field).getRealField();
+//            if(fields.get(field).isParentField()) {
+//                cls = clazz.getSuperclass();
+//            }else{
+//                cls = clazz;
+//            }
+//            Field realField = cls.getDeclaredField(field);
             if(metaData.containsKey(realField.getName())){
                 FieldController.set(realField, result, model);
             }

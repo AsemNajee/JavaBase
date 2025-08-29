@@ -9,12 +9,8 @@ import javabaseproject.javabase.core.database.querybuilders.query.DB;
 import javabaseproject.javabase.core.interfaces.Jsonable;
 import javabaseproject.javabase.core.recorder.FieldController;
 import javabaseproject.javabase.core.recorder.Recorder;
-import static javabaseproject.javabase.core.recorder.RecordedClass.RecordedField;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-
-import javabaseproject.javabase.core.database.statements.StatementBuilder;
-import javabaseproject.javabase.core.recorder.Types;
 
 /**
  * Abstract model is the core class in this framework
@@ -62,7 +58,7 @@ public abstract class AbstractModel<T extends Model<T>> implements Jsonable {
      * @return status of save operation
      */
     protected <M extends Model> boolean save(M model) throws Exception {
-        if((boolean) FieldController.get("isDatabase", model)){
+        if((boolean)FieldController.get(Model.class.getDeclaredField("isDatabase"), model)){
             return update(model);
         }else{
             return DB.insert(model) != null;
@@ -93,44 +89,16 @@ public abstract class AbstractModel<T extends Model<T>> implements Jsonable {
      * @return string of data as json
      */
     @Override
-    public String toJson() {
-        return toJson(0);
-    }
+    public abstract String toJson();
+    @Override
+    public abstract String toJson(int level);
 
-    public String toJson(int level){
-        String prefix = "\t".repeat(level);
-        StringBuilder result = new StringBuilder(prefix).append("{");
-        for(var fname : Recorder.getRecordedClass(this.clazz).getFields().keySet()){
-            RecordedField rField = Recorder.getRecordedClass(clazz).getField(fname);
-            try {
-                Field field;
-                if(rField.isParentField()){
-                    field = this.clazz.getSuperclass().getDeclaredField(fname);
-                }else{
-                    field = this.clazz.getDeclaredField(fname);
-                }
-                if(isHidden(field)){
-                    continue;
-                }
-                result.append("\n").append(prefix).append("\t\"").append(fname).append("\" : ");
-                if(rField.getType() == Types.STRING){
-                    String value = (String) FieldController.get(field, (Model<T>)this);
-                    if(value == null){
-                        result.append("null");
-                    }else{
-                        result.append("\"").append(value).append("\"");
-                    }
-                }else{
-                    result.append((FieldController.get(field, (Model<T>)this)));
-                }
-                result.append(",");
-            } catch (NoSuchFieldException | IllegalAccessException e) {
-                throw new RuntimeException(e);
-            }
+    public String toJson(int level, T model){
+        try {
+            return new Json<>(model).toJson(level);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        result.delete(result.length()-1, result.length());
-        result.append("\n").append(prefix).append("}");
-        return result.toString();
     }
 
     /**
@@ -141,8 +109,8 @@ public abstract class AbstractModel<T extends Model<T>> implements Jsonable {
      * @return a model filled by data from json
      */
     public T fromJson(String jsonText) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchFieldException {
-        Json json = new Json(jsonText);
-        return json.getObject(clazz);
+        Json<T> json = new Json<>(clazz, jsonText);
+        return (T) json.getObject();
     }
 
     /**

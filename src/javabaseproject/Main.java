@@ -1,7 +1,12 @@
 package javabaseproject;
 
+import javabaseproject.database.models.Book;
+import javabaseproject.database.models.BookPerson;
+import javabaseproject.database.models.Person;
 import javabaseproject.database.models.User;
+import javabaseproject.javabase.core.database.faker.Fake;
 import javabaseproject.javabase.core.database.models.Model;
+import javabaseproject.javabase.core.database.querybuilders.query.DB;
 import javabaseproject.javabase.framework.commandline.Command;
 
 /**
@@ -25,10 +30,33 @@ public class Main {
      * and, you have one row in the database with id=1, name=Asem in person table
      */
     public static void main(String[] args) throws Exception {
-        Test.main(null);
-//        Command.println("... Hello From b{Buzog} ^_^");
-//        User user = new User("Asem", 1);
-////        user.save(); // save user in database
-//        Command.print(Model.of(User.class).find(1)); // get user from database
+        Person person = new Person(1, "Asem");
+        // save user in database
+        person.save();
+        // get user from database
+        Command.print(Model.of(Person.class).find(1));
+
+        // create books
+        Book book1 = new Book(1, "Java");
+        Book book2 = new Book(2, "PHP");
+        Book book3 = new Book(3, "JS");
+        // save books in database
+        book1.save();
+        book2.save();
+        book3.save();
+//        DB.insertAll(book1, book2, book3);
+        Command.println("All Books:");
+        Command.print(Model.of(Book.class).getAll());
+
+        // make a relation (many to many)
+        BookPerson bp1 = new BookPerson(1, book1, person);
+        BookPerson bp2 = new BookPerson(2, book2, person);
+        BookPerson bp3 = new BookPerson(2, book2, person);
+        // save a relation in database
+        bp1.save();
+        bp2.save();
+        bp3.save();
+        // print person books
+        Command.println(person.books());
     }
 }

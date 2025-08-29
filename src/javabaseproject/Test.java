@@ -1,5 +1,20 @@
 package javabaseproject;
 
+/**
+ * DON'T TRY HERE
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ * TESTING THE FRAMEWORK FUNCTIONS DURING DEVELOPMENT
+ */
+
+import com.mysql.cj.xdevapi.JsonString;
 import javabaseproject.database.models.Book;
 import javabaseproject.database.models.BookPerson;
 import javabaseproject.database.models.Person;
@@ -7,6 +22,7 @@ import javabaseproject.database.models.User;
 import javabaseproject.javabase.core.database.Connector;
 import javabaseproject.javabase.core.database.faker.Fake;
 import javabaseproject.javabase.core.database.io.Fetcher;
+import javabaseproject.javabase.core.database.io.Json;
 import javabaseproject.javabase.core.database.models.Model;
 import javabaseproject.javabase.core.database.models.Relations;
 import javabaseproject.javabase.core.database.querybuilders.MYSQLBuilder;
@@ -51,28 +67,16 @@ public class Test {
 //        Command.println(MYSQLBuilder.addingForeignKeys(Recorder.getRecordedClass(BookPerson.class)));
         Person person = Model.of(Person.class).find("Tariq");
         Command.println(person);
-        person.setId(10);
-        person.save();
-        Command.println(person);
+        Command.printJson(new Json<>(person).toJson(0));
+//        person.setId(10);
+//        person.save();
+//        Command.println(person);
 
 //        Command.println("------------");
 //        Command.println(DB.from(Book.class).all());
 
 //        Command.println(DB.from(Person.class).all("id"));
 //        Command.println(Condition.where("Asem", DB.from(Person.class).all("name")));
-//        String file = """
-//                    public void setId(int id){
-//                        this.id = id;
-//                    }
-//
-//                    public int getId(){
-//                        return id;
-//                    }
-//                """;
-//        var p = Pattern.compile("^.*(?<space>(\\}.*\\{)).*").matcher(file);
-//        while(p.find()){
-//            Command.println(p.group("space"));
-//        }
 
 //        Person person = Model.of(Person.class).find(1);
 //        Command.print(person.books());

@@ -7,7 +7,6 @@ import javabaseproject.javabase.core.database.faker.Fake;
 public class BookFactory extends Factory<Book>{
     public Book item() {
         return new Book(
-
                 Fake.randomNumber(),
                 Fake.name()
         );

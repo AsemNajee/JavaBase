@@ -12,10 +12,14 @@ import javabaseproject.javabase.framework.exceptions.ExceptionHandler;
  * @author AsemNajee
  */
 public class App {
-    public static void start(CheckedRunnable fn) throws Exception {
+    public static void start(CheckedRunnable fn) {
         ExceptionHandler.handle(() -> {
             Register.getRegisteredModels();
-            Connector.start();
+            try{
+                Connector.start();
+            } catch (Exception e){
+                throw new RuntimeException(e);
+            }
             try{
                 fn.run();
             }finally {
