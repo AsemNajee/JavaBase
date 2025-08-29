@@ -8,6 +8,7 @@ import javabaseproject.javabase.core.database.models.Model;
 import javabaseproject.javabase.core.database.statements.ParameterFiller;
 import javabaseproject.javabase.core.recorder.FieldController;
 import javabaseproject.javabase.core.recorder.Recorder;
+import javabaseproject.javabase.framework.commandline.Command;
 
 import java.lang.reflect.InvocationTargetException;
 import java.sql.PreparedStatement;
@@ -136,7 +137,7 @@ public class DB<T extends Model<T>> {
     public static <M extends Model<M>> M insert(M model) throws SQLException, NoSuchFieldException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, InstantiationException {
         var generatedKey = insertModel(model);
         if(generatedKey.next()){
-            return (M) DB.from(model.getClass()).where(generatedKey).get();
+            return (M) DB.from(model.getClass()).where(generatedKey.getInt(1)).get();
         }else{
             return (M) DB.from(model.getClass()).where(model.getKey()).get();
         }

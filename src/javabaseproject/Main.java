@@ -33,8 +33,9 @@ public class Main {
         Person person = new Person(1, "Asem");
         // save user in database
         person.save();
-        // get user from database
-        Command.print(Model.of(Person.class).find(1));
+        // get user from database with primary key (name is primary key)
+        Command.println("Person Info:");
+        Command.print(Model.of(Person.class).find("Asem"));
 
         // create books
         Book book1 = new Book(1, "Java");
@@ -48,15 +49,16 @@ public class Main {
         Command.println("All Books:");
         Command.print(Model.of(Book.class).getAll());
 
-        // make a relation (many to many)
+        // make a relation (many to many) between books and person
         BookPerson bp1 = new BookPerson(1, book1, person);
         BookPerson bp2 = new BookPerson(2, book2, person);
-        BookPerson bp3 = new BookPerson(2, book2, person);
+        BookPerson bp3 = new BookPerson(3, book2, person);
         // save a relation in database
         bp1.save();
         bp2.save();
         bp3.save();
         // print person books
+        Command.printf("Books of Person(%s)", person.getName());
         Command.println(person.books());
     }
 }

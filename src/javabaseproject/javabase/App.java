@@ -18,7 +18,7 @@ public class App {
             try{
                 Connector.start();
             } catch (Exception e){
-                throw new RuntimeException(e);
+                Connector.getConnectionWithoutDatabaseName();
             }
             try{
                 fn.run();

@@ -152,6 +152,7 @@ public class Relations {
      */
     public static <T extends Model<T>, F extends Model<F>> F belongsTo(T model, Class<F> parentModel, String foreignKey) throws Exception {
         RecordedClass<?> rclass = Recorder.getRecordedClass(parentModel);
+//        need to fix the problem of linking key not the primary key
         String localKey = rclass.getPrimaryKey().getName();
         return belongsTo(model, parentModel, foreignKey, localKey);
     }
@@ -182,9 +183,10 @@ public class Relations {
      *
      * @return collection of new instances with type of {@code returnedItem}
      */
-    public static <R extends Model<R>, M extends Model<M>, P> ModelsCollection<R> belongsToMany(Class<P> pivot, Class<R> returnedItem, M model) throws Exception {
+    public static <R extends Model<R>, M extends Model<M>, P extends Model<P>> ModelsCollection<R> belongsToMany(Class<P> pivot, Class<R> returnedItem, M model) throws Exception {
         String keyFromPivotToModel = Recorder.getRecordedClass(pivot).getForeignKeyWith((Class<? extends Model<?>>) model.getClass());
-        var relationKeys = Model.of(BookPerson.class).query().where(keyFromPivotToModel, model.getKey()).all();
+        String localKey = Recorder.getRecordedClass(pivot).getField(keyFromPivotToModel).getReferences().getField().getName();
+        var relationKeys = Model.of(pivot).query().where(keyFromPivotToModel, FieldController.get(localKey, model)).all();
         var keys = relationKeys.stream().map(Model::getKey);
         return DB.from(returnedItem)
                 .whereIn(

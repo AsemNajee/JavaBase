@@ -8,6 +8,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -99,7 +100,7 @@ public class RecordedClass<T extends Model<T>> {
         var fields = getFields();
         for (var key : fields.keySet()) {
             var field = fields.get(key);
-            if(field.references.equals(foreignModel)){
+            if(Objects.equals(field.references.getModel().clazz, foreignModel)){
                 return field.getName();
             }
         }
