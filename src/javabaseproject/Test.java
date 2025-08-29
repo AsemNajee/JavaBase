@@ -22,13 +22,38 @@ import java.util.regex.Pattern;
 
 public class Test {
     public static void main(String[] args) throws Exception {
-        var b = Model.of(Person.class).find("Bashar");
-        Command.println(b);
-        b.setId(11);
-        b.save();
-        Command.println(Model.of(Person.class).getAll());
-//        Command.println(MYSQLBuilder.addingForeignKeys(Recorder.getRecordedClass(BookPerson.class)));
+//        var b = Model.of(Person.class).find("Bashar");
+//        Command.println(b);
+//        b.setId(11);
+//        b.save();
 
+//        Command.println(DB.from(Person.class).all());
+//        Person person = new Person(2, "NotAliSalih", "male");
+//        DB.from(Person.class).where("Abdulhamid").update(person);
+//        Command.println(DB.from(Person.class).all());
+//        Command.println(DB.from(Person.class).whereIn("id", 94108, 70660).delete());
+//        Command.println("--------------------------");
+//        Command.println(Model.of(Person.class).getAll());
+//        Person p = new Person(Fake.randomNumber(1, 100000), Fake.name());
+//        p.save();
+//        Command.println(p);
+//        Command.println(DB.from(Person.class).delete());
+//        Command.println(DB.insert(new Person(Fake.randomNumber(10000, 1000000), Fake.name(), Fake.random("male", "female"))));
+//        Command.println(DB.insertAll(
+//                new Person(Fake.randomNumber(1, 100000), Fake.name()),
+//                new Person(Fake.randomNumber(1, 100000), Fake.name()),
+//                new Person(Fake.randomNumber(1, 100000), Fake.name()),
+//                new Person(Fake.randomNumber(1, 100000), Fake.name()),
+//                new Person(Fake.randomNumber(1, 100000), Fake.name())
+//        ));
+
+//        Command.println(DB.from(Person.class).all());
+//        Command.println(MYSQLBuilder.addingForeignKeys(Recorder.getRecordedClass(BookPerson.class)));
+        Person person = Model.of(Person.class).find("Tariq");
+        Command.println(person);
+        person.setId(10);
+        person.save();
+        Command.println(person);
 
 //        Command.println("------------");
 //        Command.println(DB.from(Book.class).all());

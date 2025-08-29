@@ -1,16 +1,11 @@
 package javabaseproject.javabase.core.database.models;
 
 import java.lang.reflect.AccessFlag;
-import java.sql.Connection;
 import java.sql.SQLException;
 
 import javabaseproject.javabase.core.collections.ModelsCollection;
-import javabaseproject.javabase.core.database.Connector;
-import javabaseproject.javabase.core.database.io.Fetcher;
 import javabaseproject.javabase.core.database.io.Json;
-import javabaseproject.javabase.core.database.querybuilders.Build;
 import javabaseproject.javabase.core.database.querybuilders.query.DB;
-import javabaseproject.javabase.core.database.statements.ParameterFiller;
 import javabaseproject.javabase.core.interfaces.Jsonable;
 import javabaseproject.javabase.core.recorder.FieldController;
 import javabaseproject.javabase.core.recorder.Recorder;
@@ -20,7 +15,6 @@ import java.lang.reflect.InvocationTargetException;
 
 import javabaseproject.javabase.core.database.statements.StatementBuilder;
 import javabaseproject.javabase.core.recorder.Types;
-import javabaseproject.javabase.framework.commandline.Command;
 
 /**
  * Abstract model is the core class in this framework
@@ -47,14 +41,7 @@ public abstract class AbstractModel<T extends Model<T>> implements Jsonable {
      * @return new instance of the model how called it, filled by data
      */
     public T find(Object key) throws SQLException, IllegalArgumentException, IllegalAccessException, NoSuchFieldException, NoSuchMethodException, InstantiationException, InvocationTargetException{
-        T item;
-        try (var result = DB.from(clazz).where(key).executeQuery()) {
-            if(!result.next()){
-                return null;
-            }
-            item = Fetcher.fetch(clazz, result);
-        }
-        return item;
+        return DB.from(clazz).where(key).get();
     }
 
     /**
@@ -62,14 +49,8 @@ public abstract class AbstractModel<T extends Model<T>> implements Jsonable {
      *
      * @return a collection of objects of the class which called this method
      */
-    public ModelsCollection<T> getAll() throws SQLException, IllegalArgumentException, IllegalAccessException, NoSuchFieldException, NoSuchMethodException, InstantiationException, InvocationTargetException{
-        var stmt = StatementBuilder.getSelectQueryForAllItems(clazz);
-        var result = stmt.executeQuery();
-        ModelsCollection<T> list = new ModelsCollection<>();
-        while(result.next()){
-            list.add(Fetcher.fetch(clazz, result));
-        }
-        return list;
+    public ModelsCollection<T> getAll() throws Exception {
+        return DB.from(clazz).all();
     }
 
     /**
@@ -80,35 +61,16 @@ public abstract class AbstractModel<T extends Model<T>> implements Jsonable {
      *              not {@code AbstractModel}, so we cannot use {@code this}
      * @return status of save operation
      */
-    protected <M extends Model> boolean save(M model) throws SQLException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, InstantiationException {
-        if((boolean)FieldController.get(Model.class.getDeclaredField("isDatabase"), model)){
+    protected <M extends Model> boolean save(M model) throws Exception {
+        if((boolean) FieldController.get("isDatabase", model)){
             return update(model);
-        }
-        var stmt = StatementBuilder.getInsertQueryForOneItem(model);
-        stmt.executeUpdate();
-        var generatedKeys = stmt.getGeneratedKeys();
-        int key = 0;
-        while(generatedKeys.next()){
-                key = Integer.parseInt(String.valueOf(generatedKeys.getObject(1)));
-        }
-        var statement = StatementBuilder.getSelectQueryForItemWithKey(clazz, model.getKey());
-        Object primaryKey;
-        if(model.getKey() != null && !model.getKey().equals(0)){
-            primaryKey = model.getKey();
         }else{
-            primaryKey = key;
+            return DB.insert(model) != null;
         }
-        ParameterFiller.bindParam(statement, Recorder.getRecordedClass(clazz).getPrimaryKey().getType(), primaryKey, 1);
-        var result = statement.executeQuery();
-        if(result.next()){
-            Fetcher.fetch(result, model);
-        }
-        return true;
     }
 
-    protected <M extends Model<M>> boolean update(Model<M> model) throws SQLException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, InstantiationException {
-        var stmt = StatementBuilder.getUpdateQueryForOneItem(model);
-        stmt.executeUpdate();
+    protected <M extends Model> boolean update(M model) throws SQLException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException{
+        DB.from(model.getClass()).update(model);
         return true;
     }
 
@@ -118,10 +80,8 @@ public abstract class AbstractModel<T extends Model<T>> implements Jsonable {
      * @param model is the object contains the data and primary key
      * @return status of deleting
      */
-    protected boolean delete(Model<T> model) throws SQLException, NoSuchFieldException, IllegalAccessException {
-        var stmt = StatementBuilder.getDeleteQueryForOneItem(model);
-        int effectedRows = stmt.executeUpdate();
-        return effectedRows == 1;
+    protected boolean delete(Model<T> model) throws Exception {
+        return !DB.from(clazz).where(model.getKey()).delete().isEmpty();
     }
 
     /**

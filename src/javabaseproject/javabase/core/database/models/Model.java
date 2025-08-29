@@ -35,7 +35,7 @@ public class Model<T extends Model<T>> extends AbstractModel<T> {
      *
      * @return status of deleting
      */
-    public boolean delete() throws SQLException, NoSuchFieldException, IllegalAccessException {
+    public boolean delete() throws Exception {
         return super.delete(this);
     }
 
@@ -50,8 +50,7 @@ public class Model<T extends Model<T>> extends AbstractModel<T> {
      * @param <R> the result types
      */
     public static <R extends Model<R>> R find(Class<R> clazz, Object key) throws SQLException, NoSuchFieldException, InvocationTargetException, IllegalAccessException, NoSuchMethodException, InstantiationException, ClassNotFoundException {
-        var t = clazz.getDeclaredConstructor().newInstance();
-        return t.find(key);
+        return Model.of(clazz).find(key);
     }
 
     /**
@@ -63,9 +62,8 @@ public class Model<T extends Model<T>> extends AbstractModel<T> {
      * @return collection of models of {@code clazz} class
      * @param <R> the result type
      */
-    public static <R extends Model<R>> ModelsCollection<R> getAll(Class<R> clazz) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException, SQLException, NoSuchFieldException {
-        var t = clazz.getDeclaredConstructor().newInstance();
-        return t.getAll();
+    public static <R extends Model<R>> ModelsCollection<R> getAll(Class<R> clazz) throws Exception {
+        return Model.of(clazz).getAll();
     }
 
     /**
@@ -113,7 +111,7 @@ public class Model<T extends Model<T>> extends AbstractModel<T> {
      * @return instance of the query builder
      */
     public DB<T> query(){
-        return new DB<>(Recorder.getRecordedClass(this.getClass()).getName());
+        return DB.from(this.getClass());
     }
 
     /**

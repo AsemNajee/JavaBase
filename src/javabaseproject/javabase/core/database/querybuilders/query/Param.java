@@ -24,8 +24,8 @@ public class Param{
     @Override
     public String toString() {
         return "Param{" +
-                "type=" + type +
-                ", value='" + value + '\'' +
+                "type=" + type + ", " +
+                "value='" + value + '\'' +
                 '}';
     }
 }

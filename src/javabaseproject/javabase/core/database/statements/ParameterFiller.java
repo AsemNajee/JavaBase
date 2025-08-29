@@ -6,11 +6,11 @@ import javabaseproject.javabase.core.recorder.RecordedClass;
 import javabaseproject.javabase.core.recorder.Recorder;
 import javabaseproject.javabase.core.database.models.Model;
 import javabaseproject.javabase.core.recorder.Types;
+import javabaseproject.javabase.framework.commandline.Command;
 
 import java.lang.reflect.Field;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.SQLType;
 import java.util.Arrays;
 import java.util.List;
 
@@ -25,6 +25,8 @@ public class ParameterFiller {
 
     /**
      * fill the statement by params from the model instance
+     * all acceptable fields will include except values of null
+     * and have default constraint
      *
      * @param stmt the statement to fill its params
      * @param item the instance to get the data from its fields
@@ -68,11 +70,15 @@ public class ParameterFiller {
      * @param stmt the statement to fill its params
      * @param params values to bind them in placeholders
      */
-    public static void fill(PreparedStatement stmt, List<Param> params) throws SQLException {
-        int i = 1;
+    public static int fill(PreparedStatement stmt, List<Param> params) throws SQLException {
+        return fill(stmt, params, 1);
+    }
+    public static int fill(PreparedStatement stmt, List<Param> params, int start) throws SQLException {
+        int i = start;
         for (var param : params) {
             bindParam(stmt, param.type, param.value, i++);
         }
+        return i;
     }
 
     /**

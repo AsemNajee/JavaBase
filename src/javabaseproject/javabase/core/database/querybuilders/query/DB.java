@@ -5,8 +5,8 @@ import javabaseproject.javabase.core.collections.ModelsCollection;
 import javabaseproject.javabase.core.database.Connector;
 import javabaseproject.javabase.core.database.io.Fetcher;
 import javabaseproject.javabase.core.database.models.Model;
-import javabaseproject.javabase.core.database.querybuilders.Build;
 import javabaseproject.javabase.core.database.statements.ParameterFiller;
+import javabaseproject.javabase.core.recorder.FieldController;
 import javabaseproject.javabase.core.recorder.Recorder;
 
 import java.lang.reflect.InvocationTargetException;
@@ -14,9 +14,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * building a query string and execute it by easy way
@@ -58,11 +56,13 @@ public class DB<T extends Model<T>> {
      * collection of joins to apply them in the query
      */
     private final List<Join<?>> joins;
+    private final Map<String, Param> colsToUpdate;
 
     /**
      * maximum row retrieved from the database
      */
     private int limit;
+    private QueryType type;
 
     public DB(String table){
         this.table = table;
@@ -72,6 +72,7 @@ public class DB<T extends Model<T>> {
         this.conditions = new LinkedList<>();
         this.params = new LinkedList<>();
         this.joins = new LinkedList<>();
+        this.colsToUpdate = new HashMap<>();
     }
 
     /**
@@ -81,6 +82,7 @@ public class DB<T extends Model<T>> {
      * @return new instance from the database contains the result of the query
      */
     public T get(String... cols) throws SQLException, NoSuchFieldException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        type = QueryType.SELECT;
         if(cols != null && cols.length != 0){
             this.cols = toList(cols);
         }
@@ -98,15 +100,98 @@ public class DB<T extends Model<T>> {
      * @return collection of new instances from the database contains the result of the query
      */
     public ModelsCollection<T> all(String ...cols) throws Exception {
+        type = QueryType.SELECT;
         if(cols != null && cols.length != 0){
             this.cols = toList(cols);
         }
-        var result = executeQuery();
-        ModelsCollection<T> list = new ModelsCollection<>(limit > 0 ? limit : 10);
-        while(result.next()){
-            list.add(Fetcher.fetch(Recorder.<T>getRecordedClass(table).getClazz(), result));
+        return Fetcher.fetchAll(
+                Recorder.<T>getRecordedClass(table).getClazz(),
+                executeQuery()
+        );
+    }
+
+    private static <M extends Model<M>> ResultSet insertModel(M model) throws NoSuchFieldException, IllegalAccessException, SQLException {
+        DB<M> db = DB.from(model.getClass());
+        var rclass = Recorder.getRecordedClass(model.getClass());
+        db.type = QueryType.INSERT;
+        for (var field : rclass.getFields().keySet()) {
+//            continue if the field is null and has a default value
+//            because the database can apply the default value
+            if(rclass.getField(field).defaultValue() != null && FieldController.get(field, model) == null){
+                continue;
+            }
+            db.colsToUpdate.put(field, new Param(field, String.valueOf(FieldController.get(field, model)), db.table));
         }
-        return list;
+        var stmt = db.prepare();
+        stmt.executeUpdate();
+        return stmt.getGeneratedKeys();
+    }
+
+    /**
+     * insert model to the database
+     *
+     * @param model instance of model to insert into database
+     * @return the model which inserted to the database
+     */
+    public static <M extends Model<M>> M insert(M model) throws SQLException, NoSuchFieldException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, InstantiationException {
+        var generatedKey = insertModel(model);
+        if(generatedKey.next()){
+            return (M) DB.from(model.getClass()).where(generatedKey).get();
+        }else{
+            return (M) DB.from(model.getClass()).where(model.getKey()).get();
+        }
+    }
+
+    /**
+     * insert collection of models and return there new values
+     *
+     * @param models collection of models
+     * @return models from the database
+     */
+    @SafeVarargs
+    public static <M extends Model<M>> ModelsCollection<M> insertAll(M... models) throws Exception {
+        if(models == null || models.length == 0){
+            return null;
+        }
+        Object[] keys = new Object[models.length];
+        int i = 0;
+        for (M model : models) {
+            var generatedKeys = insertModel(model);
+            if(generatedKeys.next()){
+                keys[i++] = generatedKeys.getObject(1);
+            }else{
+                keys[i++] = model.getKey();
+            }
+        }
+        String primaryKey = Recorder.getRecordedClass(models[0].getClass()).getPrimaryKey().getName();
+        return DB.from((Class<M>) models[0].getClass())
+                .whereIn(primaryKey, keys)
+                .all();
+    }
+
+    /**
+     * update the model in the database with new data,
+     * if there are no conditions automatically will add condition
+     * {@code where(model.getKey())} to the query to save your data
+     *
+     * @param model fresh data of the model to update
+     * @return rows effected
+     */
+    public int update(T model) throws NoSuchFieldException, IllegalAccessException, SQLException {
+        type = QueryType.UPDATE;
+        if(conditions.isEmpty()){
+            where(model.getKey());
+        }
+        for (var field : Recorder.getRecordedClass(model.getClass()).getFields().keySet()) {
+            set(field, FieldController.get(field, model));
+        }
+        return executeUpdate();
+    }
+
+    public DB<T> set(String column, Object value){
+        type = QueryType.UPDATE;
+        this.colsToUpdate.put(column, new Param(column, String.valueOf(value), table));
+        return this;
     }
 
     /**
@@ -115,79 +200,123 @@ public class DB<T extends Model<T>> {
      * @return all deleted items
      */
     public ModelsCollection<T> delete() throws Exception {
-        var deletedRows = all(); // wrong
-        StringBuilder sql = new StringBuilder();
-        sql.append("DELETE FROM ").append(table).append(" ");
-        if(!conditions.isEmpty()){
-            sql.append("WHERE ").append(implodeCondition(conditions, " AND "));
-            sql.append("\n");
-        }
-        if(limit > 0){
-            sql.append("LIMIT ").append(limit);
-        }
-        PreparedStatement stmt = Connector.getConnection().prepareStatement(sql.toString());
-        ParameterFiller.fill(stmt, params);
-        stmt.execute();
+        type = QueryType.DELETE;
+        var db = new DB<T>(table);
+        db.conditions.addAll(conditions);
+        var deletedRows = db.all();
+        execute();
         return deletedRows;
     }
 
     public PreparedStatement prepare() throws SQLException {
         String sql = toQueryString();
-        PreparedStatement stmt = Connector.getConnection().prepareStatement(sql);
+        PreparedStatement stmt = Connector.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
         ParameterFiller.fill(stmt, params);
         return stmt;
     }
 
     /**
-     * execute the query built
+     * execute the query built and return result set
      *
      * @return the result from the query
      */
     public ResultSet executeQuery() throws SQLException {
-        String sql = toQueryString();
-        PreparedStatement stmt = Connector.getConnection().prepareStatement(sql);
-        ParameterFiller.fill(stmt, params);
+        var stmt = prepare();
         return stmt.executeQuery();
+    }
+    public int executeUpdate() throws SQLException {
+        var stmt = prepare();
+        return stmt.executeUpdate();
+    }
+    public boolean execute() throws SQLException {
+        var stmt = prepare();
+        return stmt.execute();
     }
 
     /**
      * change the built query to sql string query to execute in the database
+     *
      * @return sql string query
      */
     public String toQueryString(){
-        StringBuilder output = new StringBuilder("SELECT ");
-        if(cols.isEmpty()){
-            output.append("*");
-        }else{
-            output.append(implode(cols, ", "));
-        }
-        output.append("\n");
-        output.append("FROM ").append(table).append(" ");
-        output.append("\n");
-        if(!joins.isEmpty()){
-            output.append(implodeJoin(joins, " AND "));
-            output.append("\n");
-        }
-        if(!conditions.isEmpty()){
-            output.append("WHERE ").append(implodeCondition(conditions, " AND "));
-            output.append("\n");
-        }
-        if(!orderBy.isEmpty()){
-            output.append("ORDER BY ").append(implode(orderBy, ", "));
-            output.append("\n");
-        }
-        if(!groupBy.isEmpty()){
-            output.append("GROUP BY ").append(implode(groupBy, ", "));
-            output.append("\n");
-        }
-        if(limit > 0){
-            output.append("LIMIT ").append(limit);
+        StringBuilder output = new StringBuilder();
+        switch (type){
+            case SELECT -> {
+                output.append("SELECT ");
+                if(cols.isEmpty()){
+                    output.append("*");
+                }else{
+                    output.append(implode(cols, ", "));
+                }
+                output.append("\n");
+                output.append("FROM ").append(table).append(" ");
+                output.append("\n");
+                if(!joins.isEmpty()){
+                    output.append(implodeJoin(joins, " AND "));
+                    output.append("\n");
+                }
+                if(!conditions.isEmpty()){
+                    output.append(" WHERE ").append(implodeCondition(conditions, " AND "));
+                    output.append("\n");
+                }
+                if(!orderBy.isEmpty()){
+                    output.append("ORDER BY ").append(implode(orderBy, ", "));
+                    output.append("\n");
+                }
+                if(!groupBy.isEmpty()){
+                    output.append("GROUP BY ").append(implode(groupBy, ", "));
+                    output.append("\n");
+                }
+                if(limit > 0){
+                    output.append("LIMIT ").append(limit);
+                }
+            }
+            case DELETE -> {
+                output.append("DELETE FROM ").append(table).append(" ");
+                if(!conditions.isEmpty()){
+                    output.append("WHERE ").append(implodeCondition(conditions, " AND "));
+                    output.append("\n");
+                }
+                if(limit > 0){
+                    output.append("LIMIT ").append(limit);
+                }
+            }
+            case INSERT -> {
+                output.append("INSERT INTO ").append(table).append(" (");
+                output.append(implode(colsToUpdate.keySet().stream().toList(), ", "));
+                output.append(") ");
+                output.append("VALUES (").append(implode(colsToUpdate.keySet().stream().map(item -> "?").toList(), ", "));
+                params.addAll(colsToUpdate.values());
+                output.append(") ");
+            }
+            case UPDATE -> {
+                output.append("UPDATE ").append(table).append(" SET ");
+                for (var col : colsToUpdate.keySet()) {
+                    output.append(col).append(" = ?, ");
+                    params.add(colsToUpdate.get(col));
+                }
+                output.deleteCharAt(output.length()-2); // delete last comma
+                if(!conditions.isEmpty()){
+                    output.append("WHERE ").append(implodeCondition(conditions, " AND "));
+                    output.append("\n");
+                }else{
+                    throw new RuntimeException("Must add condition to update query");
+                }
+                if(!orderBy.isEmpty()){
+                    output.append("ORDER BY ").append(implode(orderBy, ", "));
+                    output.append("\n");
+                }
+                if(limit > 0){
+                    output.append("LIMIT ").append(limit);
+                }
+            }
         }
         return output.toString();
     }
 
     /**
      * add columns to order the result by
+     *
      * @param cols columns to order the result
      * @return this
      */
@@ -324,40 +453,6 @@ public class DB<T extends Model<T>> {
     }
 
     /**
-     * insert collection of models and return there new values
-     *
-     * @param models collection of models
-     * @return models from the database
-     */
-    @SafeVarargs
-    public static <M extends Model<M>> ModelsCollection<M> insertAll(M... models) throws Exception {
-        if(models == null || models.length == 0){
-            return null;
-        }
-        Object[] keys = new Object[models.length];
-        int i = 0;
-        var sql = Build.insert(models[0]);
-//        need to set every single query inside the loop
-        var stmt = Connector.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-        var fieldsWithKeys = Recorder.getRecordedClass(models[0].getClass()).getAutoGeneratedKeys();
-        for (M model : models) {
-            ParameterFiller.fill(stmt, model);
-            stmt.executeUpdate();
-            var generatedKeys = stmt.getGeneratedKeys();
-            while(generatedKeys.next()){
-                for (int j = 0; j < fieldsWithKeys.size(); j++) {
-                    keys[i++] = generatedKeys.getObject(j+1);
-                }
-            }
-            stmt.clearParameters();
-        }
-        stmt.close();
-        return DB.from((Class<M>) models[0].getClass())
-                .whereIn(fieldsWithKeys.get(0).getName(), keys)
-                .all();
-    }
-
-    /**
      * helper method
      */
     private static List<String> toList(String ...array){
@@ -428,10 +523,6 @@ public class DB<T extends Model<T>> {
         for (int i = 0; i < condition.parametersCount; i++) {
             params.add(new Param(condition.left, String.valueOf(condition.values[i]), table));
         }
-    }
-
-    public List<Param> getParams() {
-        return params;
     }
 
     @Override
