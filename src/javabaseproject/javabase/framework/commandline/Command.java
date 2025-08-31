@@ -1,7 +1,9 @@
 package javabaseproject.javabase.framework.commandline;
 
 import javabaseproject.javabase.core.interfaces.Jsonable;
+import javabaseproject.javabase.framework.commandline.output.Colors;
 import javabaseproject.javabase.framework.commandline.output.Console;
+import javabaseproject.javabase.framework.commandline.output.OutputTemplate;
 
 import java.util.Arrays;
 
@@ -92,6 +94,17 @@ public class Command {
             varArgs = Arrays.stream(varArgs).map(item -> Console.style(item.toString())).toArray();
             System.out.printf(Console.style(text.toString()) + "\n", varArgs);
         }
+    }
+
+    public static void printTemplate(String content){
+        printTemplate(content, "g");
+    }
+    public static void printTemplate(String content, String color){
+        printTemplate("", content, color);
+    }
+    public static void printTemplate(String title, String content, String color){
+        var template = OutputTemplate.format(title, content);
+         printf(color + "{" + template.getOutput() + "}", template.getParams().toArray());
     }
 
     /**

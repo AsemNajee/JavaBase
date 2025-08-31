@@ -4,6 +4,7 @@ import javabaseproject.database.models.Book;
 import javabaseproject.database.models.BookPerson;
 import javabaseproject.database.models.Person;
 import javabaseproject.javabase.core.database.models.Model;
+import javabaseproject.javabase.core.database.querybuilders.query.DB;
 import javabaseproject.javabase.framework.commandline.Command;
 
 /**
@@ -27,6 +28,11 @@ public class Main {
      * and, you have one row in the database with id=1, name=Asem in person table
      */
     public static void main(String[] args) throws Exception {
+        // clean the database if its contain data
+        DB.from(BookPerson.class).delete();
+        DB.from(Person.class).delete();
+        DB.from(Book.class).delete();
+
         Person person = new Person(1, "Asem");
         // save user in database
         person.save();
@@ -38,11 +44,13 @@ public class Main {
         Book book1 = new Book(1, "Java");
         Book book2 = new Book(2, "PHP");
         Book book3 = new Book(3, "JS");
+        Book book4 = new Book(4, "C#");
         // save books in database
         book1.save();
         book2.save();
         book3.save();
-//        DB.insertAll(book1, book2, book3);
+        book4.save();
+//        DB.insertAll(book1, book2, book3, book4);
         Command.println("All Books:");
         Command.print(Model.of(Book.class).getAll());
 

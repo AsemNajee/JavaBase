@@ -15,32 +15,24 @@ public class SeederController {
 
     public static void make(String modelName) throws IOException {
         if(!FileHandler.of(FilePaths.getFactoryPath(modelName)).exists()){
-            Command.println("""
-                    +--------------------------------+
-                    |   the model has not factory,   |
-                    |   please create factory first  |
-                    |                                |
-                    |      g{make:factory {model}}      |
-                    +--------------------------------+
-                    """.replace("{model}", modelName + " ".repeat(Math.max(7 - modelName.length(), 0)))
-            );
+            Command.printTemplate("the model has not factory, \nplease create factory first", "r");
         }
         FileHandler.of(FilePaths.getSeederPath(modelName))
                 .write(new SeederGenerator(modelName).seederFile());
-        Command.printf("g{Seeder %s Has created successfully.}", modelName);
+        Command.printTemplate("Seeder " + modelName + " Has created successfully.}");
     }
 
     public static void drop(String modelName){
         if(FileHandler.of(FilePaths.getSeederPath(modelName)).delete()){
-            Command.printf("y{Seeder %s has deleted.}", modelName);
+            Command.printTemplate("Seeder " + modelName + " has deleted.}", "y");
         }else{
-            Command.printf("r{Seeder %s not deleted.}", modelName);
+            Command.printTemplate("Seeder " + modelName + " not deleted.}", "r");
         }
     }
 
     public static void seed(String modelName) throws Exception {
         Recorder.getRecordedClass(modelName).getSeeder().run();
-        Command.printf("g{Data for %s has been inserted to database}", modelName);
+        Command.printTemplate("Data for " + modelName + " has been inserted to database}");
     }
 
     public static void seed() throws Exception {
@@ -48,6 +40,6 @@ public class SeederController {
             if(model.getSeeder() != null)
                 seed(model.getName());
         }
-        Command.println("g[All models seeded to the database successfully.]");
+        Command.printTemplate("All models seeded to the database successfully.");
     }
 }

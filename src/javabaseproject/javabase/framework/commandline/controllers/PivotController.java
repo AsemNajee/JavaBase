@@ -18,19 +18,21 @@ public class PivotController {
     public static void make(String pivotName, String firstModel, String secondModel) throws IOException {
         PivotGenerator pivotFile = new PivotGenerator(pivotName, firstModel, secondModel, toInstanceName(firstModel), toInstanceName(secondModel));
         if(createPivotFile(pivotName, pivotFile.PivotFile()) == null){
-            Command.println("r{Pivot not created}");
+            Command.printTemplate(
+                    "Pivot not created",
+                    "r");
         }else{
-            Command.println("g[Pivot created successfully]");
+            Command.printTemplate("Pivot created successfully");
             ModelController.addNewMethodToModel(firstModel, pivotFile.getRelationFromFirstModelToSecondModel());
             ModelController.addNewMethodToModel(secondModel, pivotFile.getRelationFromSecondModelToFirstModel());
-            Command.println("g[Relations in models are created, see your models]");
+            Command.printTemplate("Relations in models are created, see your models");
         }
     }
 
     private static String createPivotFile(String pivotName, String pivotContent) throws IOException {
         File file = new File(FilePaths.getPivotPath(pivotName));
         if (file.isFile()) {
-            Command.println("r{Pivot is already exists.}");
+            Command.printTemplate("Pivot is already exists.", "y");
             return null;
         }
         FileHandler.of(file).write(pivotContent);

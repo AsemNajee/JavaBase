@@ -26,14 +26,19 @@ public class ModelController {
                 FactoryController.make(modelName, true);
                 SeederController.make(modelName);
             }
-            Command.println("g{Model {" + modelName + "} created in " + path + "}");
+            Command.printTemplate(
+                    "Model Created",
+                    "Model " + modelName + " created in \n" + path,
+                    "g");
         }
     }
 
     public static void drop(String model, boolean deleteModelFile) throws IOException, SQLException {
         RecordedClass rclass = Recorder.getRecordedClass(model);
         if(rclass == null){
-            Command.println("y{Model name is wrong}");
+            Command.printTemplate(
+                    "Model is not found",
+                    "r");
             return;
         }
         dropModelTable(rclass);
@@ -41,7 +46,7 @@ public class ModelController {
             deleteModelFile(model); // delete the model file from the project structure
         }
         Register.getModels().remove(model);
-        Command.println("model dropped {" + Style.textColor(model, Colors.RED) + "} successfully");
+        Command.printTemplate("model dropped " + model + "successfully");
     }
 
     /**
@@ -50,12 +55,13 @@ public class ModelController {
      * @param modelName name of the model to create
      * @param key the name of primary key in the model, default is {@code id}
      * @param keyType type of primary key, default is {@code int}
-     * @throws IOException
      */
     private static String createModelFile(String modelName, String key, String keyType) throws IOException {
         File file = new File(FilePaths.getModelPath(modelName));
         if (file.isFile()) {
-            Command.println("r{Model is already exists.}");
+            Command.printTemplate(
+                    "Model is already exists.",
+                    "r");
             return null;
         }
         if(key == null){
@@ -100,7 +106,9 @@ public class ModelController {
     public static void addNewMethodToModel(String modelName, String methodImplements) throws IOException {
         FileHandler file = FileHandler.of(FilePaths.getModelPath(modelName));
         if(!file.exists()){
-            Command.printf("r{model %s not found}", modelName);
+            Command.printTemplate(
+                    "Model " + modelName + "not found",
+                    "r");
             return;
         }
         String content = file.read();

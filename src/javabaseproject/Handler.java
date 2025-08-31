@@ -9,6 +9,6 @@ import javabaseproject.javabase.App;
  */
 public class Handler {
     public static void main(String[] args) throws Exception {
-        App.start(() -> Test.main(args));
+        App.start(() -> Main.main(args));
     }
 }

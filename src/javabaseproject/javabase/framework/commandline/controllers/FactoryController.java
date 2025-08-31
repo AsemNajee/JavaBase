@@ -3,6 +3,7 @@ package javabaseproject.javabase.framework.commandline.controllers;
 import javabaseproject.javabase.framework.FileHandler;
 import javabaseproject.javabase.framework.FilePaths;
 import javabaseproject.javabase.framework.commandline.Command;
+import javabaseproject.javabase.framework.commandline.output.OutputTemplate;
 import javabaseproject.javabase.framework.generators.FactoryGenerator;
 import javabaseproject.javabase.framework.generators.ModelGenerator;
 
@@ -29,14 +30,21 @@ public class FactoryController {
                             "$1\n\n\t" + ModelGenerator.constructorForAllFields(modelName))
                     );
         }
-        Command.printf("g[Factory %sFactory Created Successfully.]", modelName);
+        Command.printTemplate(
+                "Factory created",
+                "Factory " + modelName + "Factory created successfully.",
+                "g");
     }
 
     public static void drop(String modelName){
         if(FileHandler.of(FilePaths.getFactoryPath(modelName)).delete()){
-            Command.printf("y{Factory %s has been deleted}", modelName + "Factory");
+            Command.printTemplate(
+                    "Factory " + modelName + "Factory has been deleted.",
+                    "y");
         }else{
-            Command.printf("r{Factory %s Not deleted}", modelName + "Factory");
+            Command.printTemplate(
+                    "Factory " + modelName + "Factory has not been deleted.",
+                    "r");
         }
     }
 }
