@@ -5,7 +5,9 @@ import javabaseproject.javabase.core.collections.ModelsCollection;
 import javabaseproject.javabase.core.database.Connector;
 import javabaseproject.javabase.core.database.io.Fetcher;
 import javabaseproject.javabase.core.database.models.Model;
+import javabaseproject.javabase.core.database.querybuilders.query.Condition.ConditionType;
 import javabaseproject.javabase.core.database.statements.ParameterFiller;
+import javabaseproject.javabase.core.interfaces.InnerQuery;
 import javabaseproject.javabase.core.recorder.FieldController;
 import javabaseproject.javabase.core.recorder.Recorder;
 import javabaseproject.javabase.framework.commandline.Command;
@@ -74,6 +76,7 @@ public class DB<T extends Model<T>> {
         this.params = new LinkedList<>();
         this.joins = new LinkedList<>();
         this.colsToUpdate = new HashMap<>();
+        this.type = QueryType.SELECT;
     }
 
     /**
@@ -92,6 +95,13 @@ public class DB<T extends Model<T>> {
             return Fetcher.fetch(Recorder.<T>getRecordedClass(table).getClazz(), result);
         }
         return null;
+    }
+
+    public DB<T> select(String... cols){
+        if(cols != null && cols.length != 0){
+            this.cols = toList(cols);
+        }
+        return this;
     }
 
     /**
@@ -384,6 +394,14 @@ public class DB<T extends Model<T>> {
         conditions.add(Condition.whereIn(left, right));
         return this;
     }
+    public DB<T> whereIn(String left, InnerQuery innerQuery){
+        conditions.add(Condition.whereIn(left, innerQuery));
+        return this;
+    }
+    public DB<T> where(String left, InnerQuery innerQuery){
+        conditions.add(Condition.where(left, innerQuery));
+        return this;
+    }
 
     /**
      * set the limit of the retrieved values from the database
@@ -487,7 +505,11 @@ public class DB<T extends Model<T>> {
     private String implodeCondition(List<Condition> conditions, String separator){
         StringBuilder output = new StringBuilder();
         for (var condition : conditions) {
-            addParams(condition, table);
+            if(condition.type == ConditionType.INNER_QUERY){
+                params.addAll(condition.innerQuery.getParams());
+            }else{
+                addParams(condition, table);
+            }
             output.append(condition).append(separator);
         }
         output.delete(output.lastIndexOf(separator), output.length());
@@ -524,6 +546,10 @@ public class DB<T extends Model<T>> {
         for (int i = 0; i < condition.parametersCount; i++) {
             params.add(new Param(condition.left, String.valueOf(condition.values[i]), table));
         }
+    }
+
+    public List<Param> getParams() {
+        return params;
     }
 
     @Override

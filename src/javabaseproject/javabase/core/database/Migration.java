@@ -40,11 +40,9 @@ public class Migration {
                 String sql = Build.dropTable(regModls.get(model));
                 var stmt = Connector.getConnection().prepareStatement(sql);
                 stmt.execute();
-                Command.println(sql);
                 sql = Build.createForeignKeys(regModls.get(model));
                 stmt = Connector.getConnection().prepareStatement(sql);
                 stmt.execute();
-                Command.println(sql);
             }
         }else{
             migrateForeignKeys();

@@ -3,10 +3,7 @@ package javabaseproject;
 import javabaseproject.database.models.Book;
 import javabaseproject.database.models.BookPerson;
 import javabaseproject.database.models.Person;
-import javabaseproject.database.models.User;
-import javabaseproject.javabase.core.database.faker.Fake;
 import javabaseproject.javabase.core.database.models.Model;
-import javabaseproject.javabase.core.database.querybuilders.query.DB;
 import javabaseproject.javabase.framework.commandline.Command;
 
 /**

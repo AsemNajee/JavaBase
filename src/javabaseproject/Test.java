@@ -32,7 +32,6 @@ import javabaseproject.javabase.core.database.querybuilders.query.DB;
 import javabaseproject.javabase.core.recorder.Recorder;
 import javabaseproject.javabase.framework.commandline.Command;
 import javabaseproject.javabase.framework.commandline.controllers.PivotController;
-import javabaseproject.javabase.framework.commandline.output.Dialog;
 import javabaseproject.javabase.framework.commandline.output.OutputTemplate;
 
 import java.util.function.Supplier;
@@ -42,19 +41,21 @@ import java.util.regex.Pattern;
 
 public class Test {
     public static void main(String[] args) throws Exception {
-        Person person = new Person(1, "Asem");
-        Command.println(person.books());
-
-        OutputTemplate dialog = OutputTemplate.format("Hello, World", """
-                Hello sorry you cant use this car Hello sorry you cant use this car Hello sorry you cant use this car
-                
-                you are not user really
-                """);
+        Book book = DB.from(Book.class).where("id", () -> DB.from(Person.class).select("id").where("name", "Asem")).get();
+        Command.println(book);
 
 
-        Command.printf(dialog.getMessage(), dialog.getParams().toArray());
-        Command.printf(dialog.getWarning(), dialog.getParams().toArray());
-        Command.printf(dialog.getError(), dialog.getParams().toArray());
+
+//        OutputTemplate dialog = OutputTemplate.format("Hello, World", """
+//                Hello sorry you cant use this car Hello sorry you cant use this car Hello sorry you cant use this car
+//
+//                you are not user really
+//                """);
+//
+//
+//        Command.printf(dialog.getMessage(), dialog.getParams().toArray());
+//        Command.printf(dialog.getWarning(), dialog.getParams().toArray());
+//        Command.printf(dialog.getError(), dialog.getParams().toArray());
 //        var b = Model.of(Person.class).find("Bashar");
 //        Command.println(b);
 //        b.setId(11);

@@ -1,9 +1,11 @@
 package javabaseproject.javabase.core.database.querybuilders.query;
 
 import javabaseproject.javabase.core.collections.ModelsCollection;
+import javabaseproject.javabase.core.interfaces.InnerQuery;
 import javabaseproject.javabase.framework.commandline.Command;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * adding conditions to queries
@@ -15,16 +17,23 @@ public class Condition{
     protected String left;
     protected String right;
     protected String operation;
-    private final ConditionType type;
+    public final ConditionType type;
     /**
      * values of the placeholders in condition,
      * can be more than one if the condition is (IN) condition
+     * or in inner query in condition
      */
     protected Object[] values;
+    protected DB<?> innerQuery;
     protected int parametersCount;
 
     private Condition(String left, String operation, String right){
         this(left, operation, right, ConditionType.NORMAL, 1, right);
+    }
+    private Condition(String left, String operation, InnerQuery innerQuery){
+        this(left, operation, "", ConditionType.INNER_QUERY, 0);
+        this.innerQuery = innerQuery.query();
+        this.right = this.innerQuery.toQueryString();
     }
     private Condition(String left, String operation, String right, ConditionType type, int parametersCount, Object... values){
         this.left = left;
@@ -35,6 +44,15 @@ public class Condition{
         this.values = values;
     }
 
+    public static Condition where(String left, String operation, InnerQuery innerQuery){
+        return new Condition(left, operation, innerQuery);
+    }
+    public static Condition where(String left, InnerQuery innerQuery){
+        return Condition.where(left, "=", innerQuery);
+    }
+    public static Condition whereIn(String left, InnerQuery innerQuery){
+        return Condition.where(left, " IN ", innerQuery);
+    }
     public static Condition where(String left, String operation, String right){
         return new Condition(left, operation, right);
     }
@@ -65,11 +83,12 @@ public class Condition{
             case NORMAL -> left + " " + operation + " ?";
             case COLUMN, IN -> left + " " + operation + " " + right;
             case LIKE -> null;
+            case INNER_QUERY -> left + " " + operation + " ( " + right + " ) ";
         };
     }
 
-    private enum ConditionType{
-        NORMAL, COLUMN, IN, LIKE
+    public enum ConditionType{
+        NORMAL, COLUMN, IN, LIKE, INNER_QUERY
     }
 
     /**
