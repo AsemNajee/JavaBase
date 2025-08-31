@@ -3,6 +3,8 @@ package javabaseproject.javabase.framework.commandline;
 import javabaseproject.javabase.core.interfaces.Jsonable;
 import javabaseproject.javabase.framework.commandline.output.Console;
 
+import java.util.Arrays;
+
 /**
  * output to the command line console styled and colored
  * <ul>
@@ -86,8 +88,10 @@ public class Command {
     public static void printf(Object text, Object ...varArgs){
         if(text == null)
             println("null");
-        else
+        else{
+            varArgs = Arrays.stream(varArgs).map(item -> Console.style(item.toString())).toArray();
             System.out.printf(Console.style(text.toString()) + "\n", varArgs);
+        }
     }
 
     /**
@@ -105,11 +109,11 @@ public class Command {
         char colorOfNumbers     = 'y';
         char colorOfSquerBraces = 'b';
         Command.println(json
-                .replaceAll("(?s)\\{(.*?)}",                colorOfCarlyBraces  + "{{}$1p{\\\\}}")
-                .replaceAll("(?s)\\[(.*?)]",                colorOfSquerBraces  + "{[}$1b{]}")
-                .replaceAll("(?s)\"(?<s>.*?)(?<!\\\\)\"",   colorOfStrings      + "{\"${s}\"}")
-                .replaceAll("(?s)(\\d)",                    colorOfNumbers      + "{$1}")
-                .replaceAll("null([^\"]*?,?)",              colorOfNumbers      + "{null}$1")
+                .replaceAll("(?s)\\{(.*?)}",                    colorOfCarlyBraces  + "{{}$1p{\\\\}}")
+                .replaceAll("(?s)\\[(.*?)]",                    colorOfSquerBraces  + "{[}$1b{]}")
+                .replaceAll("(?s)\"(?<s>.*?)(?<!\\\\)\"",       colorOfStrings      + "{\"${s}\"}")
+                .replaceAll("(?s)(\\d)",                        colorOfNumbers      + "{$1}")
+                .replaceAll("(?<pre>:( )*)(?<keyword>true|false|null)( )*","${pre}" + colorOfSquerBraces  + "{${keyword}}")
         );
     }
 }

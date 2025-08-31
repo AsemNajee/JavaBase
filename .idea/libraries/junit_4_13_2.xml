@@ -3,6 +3,7 @@
     <CLASSES>
       <root url="jar://C:/Program Files/NetBeans-19/netbeans/platform/modules/ext/junit-4.13.2.jar!/" />
       <root url="jar://E:/Bluetooth/mysql-connector-j-9.1.0/mysql-connector-j-9.1.0/mysql-connector-j-9.1.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../sqlite-jdbc-3.47.1.0.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

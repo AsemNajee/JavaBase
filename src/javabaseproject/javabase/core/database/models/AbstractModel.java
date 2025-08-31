@@ -1,15 +1,12 @@
 package javabaseproject.javabase.core.database.models;
 
-import java.lang.reflect.AccessFlag;
 import java.sql.SQLException;
 
 import javabaseproject.javabase.core.collections.ModelsCollection;
-import javabaseproject.javabase.core.database.io.Json;
 import javabaseproject.javabase.core.database.querybuilders.query.DB;
 import javabaseproject.javabase.core.interfaces.Jsonable;
 import javabaseproject.javabase.core.recorder.FieldController;
 import javabaseproject.javabase.core.recorder.Recorder;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 
 /**
@@ -59,15 +56,14 @@ public abstract class AbstractModel<T extends Model<T>> implements Jsonable {
      */
     protected <M extends Model> boolean save(M model) throws Exception {
         if((boolean)FieldController.get(Model.class.getDeclaredField("isDatabase"), model)){
-            return update(model);
+            return update(model) == 1;
         }else{
             return DB.insert(model) != null;
         }
     }
 
-    protected <M extends Model> boolean update(M model) throws SQLException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException{
-        DB.from(model.getClass()).update(model);
-        return true;
+    protected <M extends Model> int update(M model) throws SQLException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException{
+        return DB.from(model.getClass()).update(model);
     }
 
     /**
@@ -93,40 +89,11 @@ public abstract class AbstractModel<T extends Model<T>> implements Jsonable {
     @Override
     public abstract String toJson(int level);
 
-    public String toJson(int level, T model){
-        try {
-            return new Json<>(model).toJson(level);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * get the model data from json text, </br>
-     * this method is taken a json value as string and get the
-     * model result from it
-     * @param jsonText the json as string to get the data from
-     * @return a model filled by data from json
-     */
-    public T fromJson(String jsonText) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchFieldException {
-        Json<T> json = new Json<>(clazz, jsonText);
-        return (T) json.getObject();
-    }
-
     /**
      * get the value of the primary key
      */
     protected Object getKey(Model<T> model) throws NoSuchFieldException, IllegalAccessException {
         String keyName = Recorder.getRecordedClass(model.getClass()).getPrimaryKey().getName();
         return FieldController.get(keyName, model);
-    }
-
-    /**
-     * check if the field is hidden, all private fields are hidden
-     * @param field the field to check
-     * @return status of hidden
-     */
-    public boolean isHidden(Field field){
-        return field.accessFlags().contains(AccessFlag.PRIVATE);
     }
 }

@@ -23,7 +23,7 @@ public class Main {
      *         3- db:migrate
      * then here uncomment this line
      * <code>
-     *    Person person = new Person("Asem", 1);
+     *    Person person = new Person(1, "Asem");
      *    person.save();
      * </code>
      * now you have a database and table called person with name and id

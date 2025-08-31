@@ -10,7 +10,7 @@ import java.util.ArrayList;
  * to print all models in it with json structure
  * @param <M>
  */
-public class ModelsCollection<M extends Model<M>> extends ArrayList<M> implements Jsonable {
+public class ModelsCollection<M extends Jsonable> extends ArrayList<M> implements Jsonable {
     public ModelsCollection(){
         super();
     }

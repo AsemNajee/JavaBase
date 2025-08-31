@@ -16,8 +16,16 @@ public class Register {
 
     private static boolean registerDone;
 
-    private static <M extends Model<M>> void registerAll() throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
-        String path = FilePaths.toPath(FilePaths.getModelsPackage(), "/");
+    private static void registerAll() throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        registerModelsIn(FilePaths.getModelsPackage());
+        if(!FilePaths.getPivotsPackage().equals(FilePaths.getModelsPackage())){
+            registerModelsIn(FilePaths.getPivotsPackage());
+        }
+        registerDone = true;
+    }
+
+    private static <M extends Model<M>> void registerModelsIn(String pk) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        String path = FilePaths.toPath(pk, "/");
         var res = Thread.currentThread().getContextClassLoader().getResource(path);
         if(res == null) return;
         File outputDir = new File(res.getFile());
@@ -29,7 +37,6 @@ public class Register {
             Recorder.add((Class<M>) Class.forName(FilePaths.getModelPackage(item).replace(".class", "")));
         }
         Recorder.registerForeignKeys();
-        registerDone = true;
     }
 
     public static HashMap<String, RecordedClass<? extends Model<?>>> getRegisteredModels() throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {

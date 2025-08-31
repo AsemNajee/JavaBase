@@ -75,6 +75,9 @@ public class FileHandler {
         if(!(fh = FileHandler.of(FilePaths.getFactoriesPath(), false)).exists()){
             fh.makeDir();
         }
+        if(!(fh = FileHandler.of(FilePaths.getPivotsPath(), false)).exists()){
+            fh.makeDir();
+        }
         dirsCreated = true;
     }
 }

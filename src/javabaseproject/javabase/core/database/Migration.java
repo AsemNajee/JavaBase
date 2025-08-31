@@ -5,9 +5,11 @@ import java.sql.SQLException;
 
 import javabaseproject.ENV;
 import javabaseproject.javabase.Register;
+import javabaseproject.javabase.config.Drivers;
 import javabaseproject.javabase.core.database.models.Model;
 import javabaseproject.javabase.core.recorder.RecordedClass;
 import javabaseproject.javabase.core.database.querybuilders.Build;
+import javabaseproject.javabase.core.recorder.Recorder;
 import javabaseproject.javabase.framework.commandline.Command;
 import javabaseproject.javabase.framework.commandline.output.Colors;
 import javabaseproject.javabase.framework.commandline.output.Style;
@@ -20,7 +22,6 @@ import javabaseproject.javabase.framework.exceptions.ExceptionHandler;
 public class Migration {
     /**
      * publish all models as tables in database
-     * @throws SQLException 
      */
     public static void migrateAll() throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, SQLException {
         var regModls = Register.getRegisteredModels();
@@ -33,7 +34,21 @@ public class Migration {
             }
         }
         Command.printf("b{tables migrated: }" + tables);
-        migrateForeignKeys();
+        if(ENV.DRIVER.equals(Drivers.SQLITE)){
+            // recreate tables with foreign keys
+            for (var model : regModls.keySet()) {
+                String sql = Build.dropTable(regModls.get(model));
+                var stmt = Connector.getConnection().prepareStatement(sql);
+                stmt.execute();
+                Command.println(sql);
+                sql = Build.createForeignKeys(regModls.get(model));
+                stmt = Connector.getConnection().prepareStatement(sql);
+                stmt.execute();
+                Command.println(sql);
+            }
+        }else{
+            migrateForeignKeys();
+        }
         Command.println("b{foreign keys migrated}");
     }
 

@@ -58,6 +58,9 @@ public class FilePaths {
     public static String getModelsPackage(){
         return ENV.ROOT_PACKAGE + "." + ENV.MODELS_PACKAGE;
     }
+    public static String getPivotsPackage(){
+        return ENV.ROOT_PACKAGE + "." + ENV.PIVOTS_PACKAGE;
+    }
     public static String getSeedersPackage(){
         return ENV.ROOT_PACKAGE + "." + ENV.SEEDERS_PACKAGE;
     }

@@ -30,7 +30,7 @@ public class PivotGenerator {
 
     public String PivotFile(){
         return """
-                package {modelsPackage};
+                package {pivotsPackage};
                                 
                 import {basePackage}.javabase.core.annotations.ForeignKey;
                 import {basePackage}.javabase.core.annotations.PrimaryKey;
@@ -65,7 +65,7 @@ public class PivotGenerator {
                 }
                 """
                 .replace("{basePackage}", ENV.ROOT_PACKAGE)
-                .replace("{modelsPackage}", FilePaths.getModelsPackage())
+                .replace("{pivotsPackage}", FilePaths.getPivotsPackage())
                 .replace("{pivotName}", pivotName)
                 .replace("{first}", first)
                 .replace("{firstKey}", PivotController.toClassName(firstKey.getName()))

@@ -22,73 +22,24 @@ public class Build {
     public static String create(RecordedClass<?> rclass) {
         return switch (ENV.DRIVER) {
             case MYSQL -> MYSQLBuilder.createTableQuery(rclass);
-            default -> MYSQLBuilder.createTableQuery(rclass);
+            case SQLITE -> SQLITEBuilder.createTableQuery(rclass, false);
+            case ORACLE -> null;
         };
     }
 
     public static String createForeignKeys(RecordedClass<? extends Model<?>> rclass){
         return switch (ENV.DRIVER) {
             case MYSQL -> MYSQLBuilder.addingForeignKeys(rclass);
-            default -> MYSQLBuilder.addingForeignKeys(rclass);
-        };
-    }
-
-    /**
-     * get query to insert new row in the database table with all fields form the model
-     *
-     * @param model model to insert the data into its table
-     * @return sql query of inserting with placeholder
-     */
-    public static <T extends Model<T>> String insert(Model<? extends T> model) throws NoSuchFieldException, IllegalAccessException {
-        return switch(ENV.DRIVER) {
-            case MYSQL -> MYSQLBuilder.insertQuery(model);
-            default -> MYSQLBuilder.insertQuery(model);
-        };
-    }
-    public static <T extends Model<T>> String update(Model<T> model) throws NoSuchFieldException, IllegalAccessException {
-        return switch(ENV.DRIVER) {
-            case MYSQL -> MYSQLBuilder.update(model);
-            default -> MYSQLBuilder.update(model);
-        };
-    }
-
-    /**
-     * get query to delete a row from the database using primary key
-     *
-     * @param rclass recorded model to get metadata as primary key
-     * @return sql query to delete an item with primary key with placeholder
-     */
-    public static String delete(RecordedClass<?> rclass){
-        return switch(ENV.DRIVER) {
-            case MYSQL -> MYSQLBuilder.deleteItemQuery(rclass);
-            default -> MYSQLBuilder.deleteItemQuery(rclass);
-        };
-    }
-
-    /**
-     * get query to select one item from the database
-     *
-     * @param rclass .
-     * @return .
-     */
-    public static String select(RecordedClass<?> rclass){
-        return switch(ENV.DRIVER) {
-            case MYSQL -> MYSQLBuilder.selectItemQuery(rclass);
-            default -> MYSQLBuilder.selectItemQuery(rclass);
-        };
-    }
-
-    public static String selectAll(RecordedClass<?> rclass){
-        return switch(ENV.DRIVER) {
-            case MYSQL -> MYSQLBuilder.selectAllQuery(rclass);
-            default -> MYSQLBuilder.selectAllQuery(rclass);
+            case SQLITE -> SQLITEBuilder.createTableQuery(rclass, true);
+            case ORACLE -> null;
         };
     }
 
     public static String dropTable(RecordedClass<?> rclass){
         return switch(ENV.DRIVER) {
             case MYSQL -> MYSQLBuilder.dropTable(rclass);
-            default -> MYSQLBuilder.dropTable(rclass);
+            case SQLITE -> SQLITEBuilder.dropTable(rclass);
+            case ORACLE -> null;
         };
     }
 }

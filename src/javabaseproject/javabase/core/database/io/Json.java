@@ -1,10 +1,13 @@
 package javabaseproject.javabase.core.database.io;
 
+import javabaseproject.javabase.core.collections.ModelsCollection;
 import javabaseproject.javabase.core.database.models.Model;
+import javabaseproject.javabase.core.interfaces.Jsonable;
 import javabaseproject.javabase.core.recorder.FieldController;
 import javabaseproject.javabase.core.recorder.RecordedClass;
 import javabaseproject.javabase.core.recorder.Recorder;
 import javabaseproject.javabase.core.recorder.Types;
+import javabaseproject.javabase.framework.commandline.Command;
 
 import java.lang.reflect.AccessFlag;
 import java.lang.reflect.Field;
@@ -19,7 +22,7 @@ import java.util.regex.Pattern;
  * @author AsemNajee
  * @version 1.0
  */
-public class Json<M extends Model<M>> {
+public class Json<M extends Model<M>> implements Jsonable {
     /**
      * all key values from the json text is stored here
      */
@@ -32,7 +35,7 @@ public class Json<M extends Model<M>> {
      *
      * @param jsonText json data
      */
-    public Json(Class<M> clazz, String jsonText){
+    private Json(Class<M> clazz, String jsonText){
         json = new HashMap<>();
         Pattern pattern = Pattern.compile("\"(?<key>[A-Za-z][A-Za-z0-9_$]*)\"( )*:( )*\"?(?<value>[^\",\n}]+)\"?");
         Matcher m = pattern.matcher(jsonText);
@@ -47,7 +50,7 @@ public class Json<M extends Model<M>> {
         }
     }
 
-    public Json(Model<M> model) throws IllegalAccessException {
+    private Json(Model<M> model) throws IllegalAccessException {
         json = new HashMap<>();
         clazz = (Class<M>) model.getClass();
         var rclass = Recorder.getRecordedClass(clazz);
@@ -56,6 +59,23 @@ public class Json<M extends Model<M>> {
         }
         this.model = model;
     }
+
+    public static <M extends Model<M>> Json<M> fromModel(Model<M> model) throws IllegalAccessException {
+        return new Json<>(model);
+    }
+    public static <M extends Model<M>> Json<M> fromJson(Class<M> clazz, String json) {
+        return new Json<>(clazz, json);
+    }
+    public static <M extends Model<M>> ModelsCollection<Json<M>> fromCollectionJson(Class<M> clazz, String json) throws IllegalAccessException {
+        ModelsCollection<Json<M>> jsonCollection = new ModelsCollection<>();
+        Pattern p = Pattern.compile("(?s)\\{(?<modelJson>.*?)}");
+        Matcher m = p.matcher(json);
+        while(m.find()){
+            jsonCollection.add(new Json<>(clazz, "{" + m.group("modelJson") + "}"));
+        }
+        return jsonCollection;
+    }
+
 
     /**
      * getter for hashMap
@@ -94,22 +114,38 @@ public class Json<M extends Model<M>> {
         return model;
     }
 
-    public <T extends Model<T>> String toJson(int level) throws InvocationTargetException, IllegalAccessException, NoSuchMethodException, InstantiationException, NoSuchFieldException {
-        model = getObject();
-        String prefix = "\t".repeat(level);
-        StringBuilder result = new StringBuilder(prefix).append("{");
-        var rclass = Recorder.getRecordedClass(clazz);
-        for (var key : json.keySet()) {
-            result.append("\n").append(prefix).append("\t\"").append(key).append("\"").append(" : ");
-            if(rclass.getField(key).getType() == Types.STRING){
-                result.append("\"").append(json.get(key)).append("\"");
-            }else{
-                result.append(json.get(key));
+    /**
+     * chang data from a model object to json string it will return
+     * all data in the collection as a json string with only one tab
+     * in the beginning of each line to format the json
+     *
+     * @return data as json string
+     */
+    @Override
+    public String toJson() {
+        return this.toJson(0);
+    }
+
+    public String toJson(int level) {
+        try{
+            model = getObject();
+            String prefix = "\t".repeat(level);
+            StringBuilder result = new StringBuilder(prefix).append("{");
+            var rclass = Recorder.getRecordedClass(clazz);
+            for (var key : json.keySet()) {
+                result.append("\n").append(prefix).append("\t\"").append(key).append("\"").append(" : ");
+                if(rclass.getField(key).getType() == Types.STRING){
+                    result.append("\"").append(json.get(key)).append("\"");
+                }else{
+                    result.append(json.get(key));
+                }
+                result.append(",");
             }
-            result.append(",");
+            result.deleteCharAt(result.length()-1);
+            result.append("\n").append(prefix).append("}");
+            return result.toString();
+        }catch (Exception e){
+            throw new RuntimeException(e);
         }
-        result.deleteCharAt(result.length()-1);
-        result.append("\n").append(prefix).append("}");
-        return result.toString();
     }
 }

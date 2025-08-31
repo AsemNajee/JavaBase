@@ -10,10 +10,10 @@ import javabaseproject.javabase.config.Languages;
 public class ENV {
     static 
     {
-        DRIVER              = Drivers.MYSQL;
+        DRIVER              = Drivers.SQLITE;
         DATABASE_NAME       = "javabase";
         DEFAULT_PRIMARY_KEY = "id";
-        ROOT_PACKAGE        = "javabaseproject";
+        ROOT_PACKAGE        = ENV.class.getPackageName();
         LANGUAGE            = Languages.EN;
         MODELS_PACKAGE      = "database.models";
         PIVOTS_PACKAGE      = "database.models";

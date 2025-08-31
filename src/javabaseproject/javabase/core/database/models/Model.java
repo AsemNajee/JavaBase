@@ -150,7 +150,7 @@ public class Model<T extends Model<T>> extends AbstractModel<T> {
     @Override
     public String toJson(int level) {
         try {
-            return new Json<T>(this).toJson(level);
+            return Json.fromModel(this).toJson(level);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

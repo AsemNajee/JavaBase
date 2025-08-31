@@ -4,6 +4,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import javabaseproject.ENV;
+import javabaseproject.javabase.config.Drivers;
 
 /**
  * 
@@ -26,7 +27,8 @@ public class Connector {
      * @return connection with the database
      */
     public static java.sql.Connection getConnection() throws SQLException {
-        return getConnection(getUri(), c);
+        c = getConnection(getUri(), c);
+        return c;
     }
 
     /**
@@ -34,7 +36,8 @@ public class Connector {
      * @return connection with the database management without database
      */
     public static java.sql.Connection getConnectionWithoutDatabaseName() throws SQLException {
-        return getConnection(getUri(false), cWithoutDB);
+        cWithoutDB = getConnection(getUri(false), cWithoutDB);
+        return cWithoutDB;
     }
 
     /**
@@ -47,12 +50,7 @@ public class Connector {
     private static java.sql.Connection getConnection(String uri, java.sql.Connection conn) throws SQLException {
             if(conn != null)
                 return conn;
-            
-            conn = switch(ENV.DRIVER){
-                case MYSQL -> DriverManager.getConnection(uri, "root", "");
-                default -> DriverManager.getConnection(uri, "root", "");
-            };
-            return conn;
+        return DriverManager.getConnection(uri, "root", "");
     }
 
     /**
@@ -61,6 +59,10 @@ public class Connector {
     public static void start() throws SQLException {
         getConnectionWithoutDatabaseName();
         getConnection();
+        if(ENV.DRIVER == Drivers.SQLITE){
+            var stmt = c.prepareStatement("PRAGMA FOREIGN_KEYS = ON");
+            stmt.execute();
+        }
     }
 
     /**
@@ -79,12 +81,13 @@ public class Connector {
     private static String getUri(boolean withDBName){
         return switch(ENV.DRIVER){
             case MYSQL -> "jdbc:mysql://localhost:3306" + (withDBName ? "/" + ENV.DATABASE_NAME : "");
-            default -> "jdbc:mysql://localhost:3306" + (withDBName ? "/" + ENV.DATABASE_NAME : "");
+            case SQLITE -> "jdbc:sqlite:" + ENV.DATABASE_NAME + ".db";
+            case ORACLE -> " ";
         };
     }
 
     /**
-     * close all connection with a database
+     * close all connections with a database
      */
     public static void close() throws SQLException {
         if(c != null) {
